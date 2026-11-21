@@ -1,0 +1,116 @@
+= Jurisdiction profiles
+include::_fpsot-terms.adoc[]
+
+The fees that the research compared share their mechanics and split on every legal value.
+The federal Service Fees Act adjusts most fees each year by the consumer price index of April.
+It skips a change below 1% and carries it to the next year.
+Québec indexes its fees each 1 January by its own index, and rounds the result by bands.
+From 2023 to 2026, a Québec law caps that rate at 3%.
+In France, a decree creates a charge for a service, and the next finance act must ratify it.
+
+No single rule could serve all of them.
+This page therefore keeps each legal value and each legal rule in a jurisdiction profile, apart from the core rules.
+A profile states the practice of {abbr-fpsot-first}, and it is not legal advice.
+
+== Profile files
+
+[[FEE-010]]
+*FEE-010.* Each {term-deploying-body} MUST name the profiles whose law applies to its fees.
+Each profile MUST be a file of the class `FeeProfile` of `model/fees.yaml`, in the folder `profiles/`.
+Each profile MUST list its sources.
+For each source, it MUST state whether the research read it, or mark it `to-be-verified`.
+A source read in an archived copy counts as read, and the profile gives that copy.
+
+[cols="2,3,4",options="header"]
+|===
+|Profile |Applies to |Content of this release
+|`core` |Every fee |The defaults of FEE-014 and the refund reasons that every engine knows.
+|`ca-federal` |Fees of federal bodies of Canada |The yearly adjustment by the consumer price index, the remission for a missed performance standard, the refund of a purpose not fulfilled, the low-materiality thresholds, interest, the charges for a dishonored payment and the exemption from the goods and services tax.
+|`ca-qc` |Fees of Québec public bodies |The indexation of each 1 January, its cap until 2026, the deferral of fees below $5 and the rounding bands.
+|===
+
+A French profile does not exist in this release.
+The research read no French code at its source, so `jurisdictions/fr.yaml` describes France without a normative profile.
+
+The `ca-federal` profile follows the Service Fees Act, the Financial Administration Act and its regulations, as the research read them.
+A body that misses a performance standard remits part of the fee, under section 7 of the Service Fees Act.
+It must do so before 1 July of the next fiscal year.
+Under section 17, the adjustment follows the consumer price index of April, and a change below 1% carries forward.
+The directive of the {abbr-tbs-first} on charging refused automated readers, so its rules are _to be verified_.
+
+The `ca-qc` profile follows chapter VIII.1 of the Loi sur l'administration financière.
+It also follows the rounding regulation and the law that caps indexation.
+The research read all three in archived copies of LégisQuébec.
+A fee below $5 waits until the sum of the deferred rates raises it by $0.05.
+On 2026-11-21, the research found no law that extends the cap past 2026.
+
+== Sources and dates
+
+[[FEE-011]]
+*FEE-011.* Each rule and each value of a profile MUST cite one of the sources of that profile.
+Each value MUST carry the dates to which it applies.
+Each profile MUST have its own version number under Semantic Versioning 2.0.0, apart from the version of this specification.
+A release that removes or relaxes a value of the same profile MUST take a new major version.
+
+Fee law changes each year, and the cap of Québec ends on 31 December 2026.
+A new rate is then a profile release, not a change to the rules.
+The decisions specification dates its parameters in the same way, under DEC-037.
+
+== No law in the core
+
+[[FEE-012]]
+*FEE-012.* An engine MUST take each rate, threshold, deadline and rounding rule from a profile or a fee schedule.
+It MUST take each refund reason and tax treatment from them too.
+It MUST NOT hard-code one.
+A flag of a fee item, such as `low-materiality`, MUST only select rules of its profile.
+It MUST NOT change a value.
+A profile MUST NOT relax a MUST of the core rules.
+
+A schedule holds the fees of one body, and a profile holds the law that many bodies share.
+The same engine then serves a federal office and a Québec body, each with its own profile.
+
+== Missing values
+
+[[FEE-013]]
+*FEE-013.* A rule may need a value that neither the profile, the schedule nor `core` gives for the effective date.
+The rule provider MUST then return the result kind `not-applicable` of DEC-024.
+Its reason code MUST name the missing value.
+The engine MUST NOT create an order from that result.
+It MUST NOT assume a value.
+
+A silent default would turn a gap in a profile into a fee that nobody set.
+The pleasure craft schedule of the examples ends its value on 1 April 2026 for that reason.
+The research did not read the value that the yearly adjustment sets on that date.
+
+== Defaults
+
+[[FEE-014]]
+*FEE-014.* Each fee MUST also follow the `core` profile, which sets these defaults.
+
+* Card payments use a full redirect to the page of the provider, under FEE-047.
+* The engine seals each receipt at least under the profile `seal-log` of the signed records specification, under FEE-082.
+* When no law sets a rounding, amounts round to the cent, and a result halfway goes up.
+The schedule states that rule, as DAT-054 asks.
+* The refund reasons `overpayment`, `duplicate-payment`, `administrative-error`, `purpose-not-fulfilled` and `remission` exist in every profile.
+
+A jurisdiction profile MAY replace a refund reason of `core` that has the same code.
+The `ca-federal` profile replaces `purpose-not-fulfilled` to tie it to its law.
+Under that law, the body keeps the part of the fee for services already rendered.
+
+== References
+
+=== Informative
+
+* link:https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html[Service Fees Act], S.C. 2017, c. 20, s. 451, Justice Laws Website, current to 2026-10-29. link:https://web.archive.org/web/20260731030650/https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html[Financial Administration Act, sections 16.1 to 23], R.S.C. 1985, c. F-11, Justice Laws Website. link:https://web.archive.org/web/20260721172843/https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html[Archived copy]
+* link:https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001[Loi sur l'administration financière], RLRQ, c. A-6.001, chapter VIII.1, LégisQuébec, current to 2025-12-11, archived copy.
+* link:https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1[Règlement sur l'arrondissement des tarifs indexés], RLRQ, c. A-6.001, r. 0.1, LégisQuébec, current to 2025-10-24, archived copy.
+* link:https://web.archive.org/web/20240809061656/https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-7.1[Loi limitant l'indexation de plusieurs tarifs gouvernementaux], RLRQ, c. I-7.1, LégisQuébec, current to 2024-05-01, archived copy.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-21 |First version.
+|===

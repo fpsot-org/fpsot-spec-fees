@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fpsot.org/schemas/fees/events/org.fpsot.fees.payment-attempt.changed.schema.json",
+  "$comment": "SPDX-License-Identifier: Community-Spec-1.0. FPSOT fees event data (FEE-075). The data holds identifiers, codes and instants only, never a party id, a payment reference, an amount or card data (FEE-076). A consumer reads the record by its id. The CloudEvents attributes follow API-101.",
+  "title": "org.fpsot.fees.payment-attempt.changed",
+  "description": "A payment attempt took a new status, after a read at the provider (FEE-043, FEE-071, FEE-075).",
+  "type": "object",
+  "required": [
+    "attemptId",
+    "orderId",
+    "status",
+    "finished",
+    "changedAt"
+  ],
+  "properties": {
+    "attemptId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "The attempt (FEE-041)."
+    },
+    "orderId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "The order (FEE-040)."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "started",
+        "submitted",
+        "capturable",
+        "success",
+        "failed",
+        "cancelled",
+        "error"
+      ],
+      "description": "The new status (FEE-042)."
+    },
+    "finished": {
+      "type": "boolean",
+      "description": "Whether the status is final (FEE-042)."
+    },
+    "failureCode": {
+      "type": "string",
+      "enum": [
+        "method-rejected",
+        "expired",
+        "canceled-by-payer",
+        "canceled-by-service",
+        "provider-error"
+      ],
+      "description": "Why the attempt did not succeed (FEE-043)."
+    },
+    "changedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$",
+      "description": "When the engine set the status (FEE-043)."
+    }
+  },
+  "additionalProperties": false
+}

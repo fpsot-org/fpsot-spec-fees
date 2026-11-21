@@ -1,0 +1,133 @@
+= Remboursements, remises et contestations
+include::_fpsot-terms.adoc[]
+
+Trois actes annulent ou adoucissent un paiement, et chacun a sa propre cause.
+Un remboursement rend de l’argent que l’organisme ne devrait pas garder, comme des frais pour un service jamais rendu.
+Par une remise, l’organisme renonce à une somme due ou la rend, par une décision prise en vertu d’une loi.
+Une contestation part de la banque de la personne qui paie, hors du contrôle de l’organisme.
+
+Le droit fédéral canadien sépare deux fois le remboursement et la remise.
+D’abord, l’article 20 de la Loi sur la gestion des finances publiques vise la fin non réalisée.
+Une somme payée pour cette fin peut être rendue, moins la part des services déjà rendus.
+Ensuite, l’article 23 permet au gouverneur en conseil de remettre une dette, par équité ou dans l’intérêt public.
+
+La Loi sur les frais de service prévoit aussi une remise, à son article 7.
+L’organisme qui rate une norme de rendement remet une partie des frais.
+La politique de remise d’Environnement et Changement climatique Canada ajoute un point.
+Un paiement en trop ou une erreur administrative mène à un remboursement, pas à une remise.
+
+== Remboursements
+
+[[FEE-060]]
+*FEE-060.* Chaque remboursement DOIT être une donnée de la classe `Refund` de `model/fees.yaml`.
+Il DOIT nommer sa demande de paiement et une tentative de cette demande au statut `success`.
+Son statut DOIT être `submitted`, `success` ou `error`, et les deux derniers sont définitifs.
+Un moteur NE DOIT PAS traiter `submitted` comme l’issue d’un remboursement.
+
+GOV.UK Pay prévient que certains fournisseurs gardent un remboursement `submitted` un certain temps.
+Un remboursement qui finit en `error` n’a déplacé aucun argent, et l’organisme peut réessayer avec un nouveau remboursement.
+
+[[FEE-061]]
+*FEE-061.* Les remboursements d’une tentative NE DOIVENT PAS dépasser au total son montant.
+Un remboursement en `error` ne compte pas.
+Chaque demande de remboursement DOIT indiquer le solde remboursable que le client a vu.
+Le moteur DOIT refuser la demande quand ce solde diffère du sien.
+Une interface PEUT répondre au même besoin par une requête conditionnelle sur la tentative, selon API-008 et API-009.
+
+Deux membres du personnel peuvent rembourser le même paiement au même moment.
+GOV.UK Pay s’en protège par le même rappel du solde.
+
+[[FEE-062]]
+*FEE-062.* Chaque remboursement DOIT donner un motif de remboursement de son profil ou de `core`.
+Certains motifs d’un profil s’accompagnent d’une retenue pour les services déjà rendus.
+Un remboursement pour un tel motif DOIT indiquer cette retenue, même nulle.
+Le motif `purpose-not-fulfilled` DOIT servir quand la personne a payé un service que l’organisme n’a pas rendu.
+
+Le droit fédéral garde la part qui correspond aux services rendus.
+Il le fait à l’article 20 de la Loi sur la gestion des finances publiques.
+Il le fait aussi à l’article 2 de son règlement sur le remboursement de recettes.
+Le profil `ca-federal` rattache donc ce motif à une retenue.
+
+[[FEE-063]]
+*FEE-063.* Un remboursement DEVRAIT passer par le mode de paiement du paiement qu’il rembourse.
+Un remboursement par un autre mode DOIT nommer son mode et la raison du changement.
+
+Un fournisseur peut refuser un remboursement vers une carte expirée.
+L’organisme paie alors la personne autrement, et la donnée montre pourquoi.
+
+== Remises
+
+[[FEE-064]]
+*FEE-064.* Chaque remise DOIT reposer sur une décision selon la spécification sur les décisions, avec son propre enregistrement de décision.
+L’enregistrement DOIT avoir le résultat `remitted`, le montant remis, et la base juridique parmi ses fondements juridiques.
+Chaque remise DOIT être une donnée de la classe `Remission`, qui nomme cet enregistrement et sa demande de paiement.
+Quand la personne a payé, la remise DOIT mener à des remboursements dont la somme égale le montant remis.
+Quand la personne n’a pas payé, la remise DOIT plutôt réduire le montant dû de sa demande.
+
+La décision contient les faits, par exemple si l’organisme a respecté sa norme de rendement durant un exercice.
+Le remboursement ne fait que déplacer l’argent.
+
+[[FEE-065]]
+*FEE-065.* Un remboursement NE DOIT PAS impliquer une remise.
+Seul un remboursement pour le motif `remission` PEUT nommer une remise, et un tel remboursement DOIT en nommer une.
+Un rapport des remises DOIT compter les seules données de remise, jamais les remboursements.
+
+L’organisme fédéral déclare ses remises au Parlement selon l’article 20 de la Loi sur les frais de service.
+Il les déclare aussi dans les Comptes publics, selon l’article 24 de la Loi sur la gestion des finances publiques.
+Un remboursement pour une erreur qui paraîtrait dans ces rapports induirait les deux en erreur.
+
+[[FEE-066]]
+*FEE-066.* Un organisme peut remettre des frais à plusieurs personnes à la fois.
+Il DOIT alors créer un enregistrement de décision pour chaque personne et chaque demande de paiement.
+Il NE DOIT PAS couvrir plusieurs personnes par un seul enregistrement.
+
+Une remise pour une norme de rendement non respectée vise toutes les personnes qui ont payé durant l’exercice.
+Chaque enregistrement donne alors les motifs pour une seule personne, selon DEC-052.
+
+== Contestations
+
+[[FEE-067]]
+*FEE-067.* Chaque contestation DOIT être une donnée de la classe `Dispute`, qui nomme sa tentative.
+Son statut DOIT être `needs-response`, `under-review`, `won` ou `lost`, et les deux derniers sont définitifs.
+Une contestation au statut `needs-response` DOIT donner le dernier jour pour envoyer la preuve.
+
+Les quatre statuts viennent de GOV.UK Pay.
+Une contestation ne change jamais le statut de sa tentative, qui reste `success`.
+
+[[FEE-068]]
+*FEE-068.* Un moteur NE DOIT PAS créer de remboursement sur une tentative pendant qu’une contestation de cette tentative est ouverte.
+Une contestation est ouverte depuis son ouverture jusqu’à ce qu’elle atteigne `won` ou `lost`.
+
+Un remboursement pendant que la banque examine une contestation pourrait payer la personne deux fois.
+GOV.UK Pay prévoit un motif de contestation pour un remboursement que la personne attendait et n’a pas reçu.
+
+[[FEE-069]]
+*FEE-069.* Une contestation perdue DOIT figurer au rapprochement comme une ligne de versement du genre `dispute-reversal`.
+Ses frais DOIVENT figurer comme une ligne du genre `dispute-fee`.
+Un moteur NE DOIT PAS consigner une contestation perdue comme un remboursement.
+
+Un fournisseur peut exiger des frais pour une contestation, et certains les exigent que l’organisme gagne ou perde.
+Ces frais réduisent alors le versement suivant, selon FEE-091.
+
+== Références
+
+=== Références normatives
+
+* link:https://docs.payments.service.gov.uk/refunding_payments/[Refund a payment], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20260802114113/https://docs.payments.service.gov.uk/refunding_payments/[Copie archivée]
+* link:https://docs.payments.service.gov.uk/disputes/[Disputes], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/disputes/[Copie archivée]
+
+=== Références informatives
+
+* link:https://laws-lois.justice.gc.ca/fra/lois/F-11/page-4.html[Loi sur la gestion des finances publiques, articles 16.1 à 23], L.R.C. 1985, ch. F-11, site Web de la législation (Justice). link:https://web.archive.org/web/20260807024451/https://laws-lois.justice.gc.ca/fra/lois/F-11/page-4.html[Copie archivée]
+* link:https://laws-lois.justice.gc.ca/fra/lois/F-11/page-5.html[Loi sur la gestion des finances publiques, articles 24 à 25], L.R.C. 1985, ch. F-11, site Web de la législation (Justice). link:https://web.archive.org/web/20260801170225/https://laws-lois.justice.gc.ca/fra/lois/f-11/page-5.html[Copie archivée]
+* link:https://laws-lois.justice.gc.ca/fra/lois/S-8.4/TexteComplet.html[Loi sur les frais de service], L.C. 2017, ch. 20, art. 451, site Web de la législation (Justice), à jour au 2026-10-29. link:https://web.archive.org/web/20260731030959/https://laws-lois.justice.gc.ca/fra/lois/s-8.4/TexteComplet.html[Copie archivée]
+* link:https://laws-lois.justice.gc.ca/fra/reglements/DORS-98-127/TexteComplet.html[Règlement de 1997 sur le remboursement de recettes], DORS/98-127, site Web de la législation (Justice). link:https://web.archive.org/web/20260308051221/https://www.laws-lois.justice.gc.ca/fra/reglements/DORS-98-127/TexteComplet.html[Copie archivée]
+* link:https://www.canada.ca/fr/environnement-changement-climatique/organisation/transparence/priorites-gestion/politiques-lignes-directrices/politique-ministerielle-remises-frais-service.html[Politique ministérielle sur les remises de frais de service], Environnement et Changement climatique Canada, en vigueur le 2021-04-01. link:https://web.archive.org/web/20260801112457/https://www.canada.ca/fr/environnement-changement-climatique/organisation/transparence/priorites-gestion/politiques-lignes-directrices/politique-ministerielle-remises-frais-service.html[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-21 |Première version.
+|===

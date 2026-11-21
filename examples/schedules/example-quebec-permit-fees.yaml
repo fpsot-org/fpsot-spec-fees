@@ -1,0 +1,108 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Fee schedule (FEE-020), in the form of the class FeeSchedule of model/fees.yaml, which extends the
+# ParameterSet of the decisions specification (DEC-037). A fictional Québec body under the ca-qc
+# profile, after the indexation of 1 January 2026 (LAF s. 83.3). Each 2026 value is published in the
+# file, with the indexation step that set it (FEE-023, FEE-024); no engine computes it at run time.
+# The published rate for 2026 is 2.05%, below the 3% cap. The $87.00 fee rises to 88.7835, which
+# rounds to the nearest 0.25: 88.75. The $4.00 fee is below $5, but 2.05% raises it by more than
+# $0.05, so it rises to 4.082, which rounds to the nearest 0.05: 4.10. The $2.00 fee would rise by
+# less than $0.05, so its indexation is deferred and the rate carries forward (r. 0.1, s. 2).
+# The regulation and every address are fictional. Not legal advice.
+code: example-quebec-permit-fees
+version: 1.1.0
+title: {en: Example Québec permit fees, fr: Tarifs d’exemple des permis québécois}
+profile: ca-qc
+roundingRule: quebec-indexed-fees
+roundingStage: per-line
+feeItems:
+  - code: permit-fee
+    title: {en: Permit, fr: Permis}
+    basis: flat
+    amountParameter: permit-fee-amount
+    legalSource:
+      uri: "https://lois.example.org/fr/reglement/EX-1/article-2"
+      otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-2"]
+    taxTreatment: gst-government-license-exempt
+    indexationRule: laf-83-3
+  - code: permit-card-fee
+    title: {en: Permit card, fr: Carte de permis}
+    basis: flat
+    amountParameter: permit-card-fee-amount
+    legalSource:
+      uri: "https://lois.example.org/fr/reglement/EX-1/article-3"
+      otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-3"]
+    taxTreatment: gst-government-license-exempt
+    indexationRule: laf-83-3
+  - code: duplicate-permit-fee
+    title: {en: Duplicate permit, fr: Duplicata de permis}
+    basis: flat
+    amountParameter: duplicate-permit-fee-amount
+    legalSource:
+      uri: "https://lois.example.org/fr/reglement/EX-1/article-4"
+      otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-4"]
+    taxTreatment: gst-government-license-exempt
+    indexationRule: laf-83-3
+parameters:
+  - code: permit-fee-amount
+    values:
+      - validity: {start: "2025-01-01", end: "2026-01-01"}
+        value: {amount: "87.00", currency: CAD}
+        enactedAt: "2024-12-16T15:00:00Z"
+        legalSource: {uri: "https://lois.example.org/fr/reglement/EX-1/article-2", otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-2"]}
+      - validity: {start: "2026-01-01", end: "2027-01-01"}
+        value: {amount: "88.75", currency: CAD}
+        enactedAt: "2025-12-15T15:00:00Z"
+        legalSource: {uri: "https://lois.example.org/fr/reglement/EX-1/article-2", otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-2"]}
+  - code: permit-card-fee-amount
+    values:
+      - validity: {start: "2025-01-01", end: "2026-01-01"}
+        value: {amount: "4.00", currency: CAD}
+        enactedAt: "2024-12-16T15:00:00Z"
+        legalSource: {uri: "https://lois.example.org/fr/reglement/EX-1/article-3", otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-3"]}
+      - validity: {start: "2026-01-01", end: "2027-01-01"}
+        value: {amount: "4.10", currency: CAD}
+        enactedAt: "2025-12-15T15:00:00Z"
+        legalSource: {uri: "https://lois.example.org/fr/reglement/EX-1/article-3", otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-3"]}
+  - code: duplicate-permit-fee-amount
+    values:
+      - validity: {start: "2025-01-01", end: "2026-01-01"}
+        value: {amount: "2.00", currency: CAD}
+        enactedAt: "2024-12-16T15:00:00Z"
+        legalSource: {uri: "https://lois.example.org/fr/reglement/EX-1/article-4", otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-4"]}
+      - validity: {start: "2026-01-01", end: "2027-01-01"}
+        value: {amount: "2.00", currency: CAD}
+        enactedAt: "2025-12-15T15:00:00Z"
+        legalSource: {uri: "https://lois.example.org/fr/reglement/EX-1/article-4", otherLanguageUris: ["https://lois.example.org/en/regulation/EX-1/section-4"]}
+indexationSteps:
+  - parameterCode: permit-fee-amount
+    validFrom: "2026-01-01"
+    indexationRule: laf-83-3
+    publishedRate: "2.05"
+    rateSource: "https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics"
+    appliedRate: "2.05"
+    previousAmount: {amount: "87.00", currency: CAD}
+    rawResult: "88.7835"
+    deferred: false
+    result: {amount: "88.75", currency: CAD}
+  - parameterCode: permit-card-fee-amount
+    validFrom: "2026-01-01"
+    indexationRule: laf-83-3
+    publishedRate: "2.05"
+    rateSource: "https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics"
+    appliedRate: "2.05"
+    accumulatedRate: "2.05"
+    previousAmount: {amount: "4.00", currency: CAD}
+    rawResult: "4.082"
+    deferred: false
+    result: {amount: "4.10", currency: CAD}
+  - parameterCode: duplicate-permit-fee-amount
+    validFrom: "2026-01-01"
+    indexationRule: laf-83-3
+    publishedRate: "2.05"
+    rateSource: "https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics"
+    appliedRate: "2.05"
+    accumulatedRate: "2.05"
+    previousAmount: {amount: "2.00", currency: CAD}
+    rawResult: "2.041"
+    deferred: true
+    result: {amount: "2.00", currency: CAD}

@@ -1,0 +1,82 @@
+= Reconciliation
+include::_fpsot-terms.adoc[]
+
+A provider rarely sends one bank transfer for each payment.
+It nets many payments, refunds and its own fees into one payout.
+Some providers also deduct a fee for each payment.
+A body that matches only totals cannot say which payment a missing dollar belongs to.
+This page therefore matches each line of each payout to one record, to the cent.
+The ledger of the body is out of scope, and only the export of matched entries is in scope.
+
+== Payouts
+
+[[FEE-090]]
+*FEE-090.* Each payout MUST be a record of the class `Payout` of `model/fees.yaml`, with its lines.
+Its gross amount MUST equal the sum of the amounts of its lines.
+Its fees MUST equal the sum of the fees of its lines.
+Its net amount MUST equal the gross less the fees.
+A line that takes money out, such as a refund, MUST carry a negative amount.
+
+GOV.UK Pay reports a fee and a net amount for each payment, and the net amount can be negative.
+The payout of the examples nets a payment of $390.00, a refund of $40.00 and a fee of $5.85.
+
+[[FEE-091]]
+*FEE-091.* The engine MUST match each line of a payout to exactly one attempt, refund or dispute.
+The kind, the provider id and the amount of the line MUST agree with that record.
+A line that matches no record MUST stay `unmatched`, and the payout then has the status `exceptions`.
+A payout MUST have the status `reconciled` only when every line matched.
+Each attempt that a payout carries MUST then show that payout in its settlement, under FEE-044.
+
+A person must explain each exception.
+The engine never closes one by itself.
+
+[[FEE-092]]
+*FEE-092.* Each attempt, refund and dispute MUST keep the id that its provider gave it.
+Each order MUST keep its payment reference.
+For a bank transfer, the engine SHOULD also keep the end-to-end id and the structured remittance reference.
+It keeps them when the bank gives them.
+An engine MUST NOT reuse an id or a reference for another record.
+
+GovStack asks for unique ids that never roll over, for each internal and each external record.
+A reused reference would match a payout line to the wrong payer.
+
+[[FEE-093]]
+*FEE-093.* The engine MUST compare amounts exactly, in the minor unit of the currency, under DAT-053 and DAT-055.
+A difference MUST stay an exception.
+An engine MUST NOT write a difference off as rounding.
+
+A gap of one cent can be a fee that the provider changed without notice.
+
+== Bank statements and the ledger
+
+[[FEE-094]]
+*FEE-094.* An engine MAY import bank statements to match payouts and bank transfers.
+When it imports ISO 20022 messages, it SHOULD read the end-of-day statement camt.053.
+It SHOULD also read camt.054, which notifies each credit or debit.
+
+The page xref:alignment.adoc[Alignment with other standards] maps those messages to the records of this page.
+Payments Canada reports a guide to camt.053 for its high-value system Lynx.
+The research did not read it, so it is _to be verified_.
+
+[[FEE-095]]
+*FEE-095.* A body MAY export matched entries to its ledger.
+An export MUST hold only lines that matched, each with the ids of its payout and of its record.
+It MUST NOT post an unmatched line as a matched one.
+
+The ledger, its accounts and its rules stay with the finance system of the body.
+
+== References
+
+=== Informative
+
+* link:https://docs.payments.service.gov.uk/reporting/[Reconcile and report on payments], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/reporting/[Archived copy]
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, read 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Archived copy]
+* link:https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, catalog, _to be verified_ at the source. link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-21 |First version.
+|===

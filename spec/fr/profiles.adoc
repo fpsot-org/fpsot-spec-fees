@@ -1,0 +1,118 @@
+= Profils juridictionnels
+include::_fpsot-terms.adoc[]
+
+Les frais que la recherche a comparés partagent leur mécanique et divergent sur chaque valeur juridique.
+La Loi sur les frais de service rajuste chaque année la plupart des frais fédéraux selon l’indice des prix d’avril.
+Elle écarte une variation inférieure à 1 % et la reporte à l’année suivante.
+Le Québec indexe ses frais chaque 1^er^ janvier selon son propre indice, et arrondit le résultat par tranches.
+De 2023 à 2026, une loi québécoise plafonne ce taux à 3 %.
+En France, un décret crée une rémunération pour service rendu, et la loi de finances suivante doit le ratifier.
+
+Aucune règle unique ne pourrait les servir tous.
+Cette page garde donc chaque valeur et chaque règle juridique dans un profil juridictionnel, à part des règles de base.
+Un profil énonce la pratique de la {abbr-fpsot-first}, et il ne constitue pas un avis juridique.
+
+== Fichiers de profil
+
+[[FEE-010]]
+*FEE-010.* Chaque {term-deploying-body} DOIT nommer les profils dont la loi s’applique à ses frais.
+Chaque profil DOIT être un fichier de la classe `FeeProfile` de `model/fees.yaml`, dans le dossier `profiles/`.
+Chaque profil DOIT énumérer ses sources.
+Pour chaque source, il DOIT indiquer si la recherche l’a lue, ou la marquer `to-be-verified`.
+Une source lue dans une copie archivée compte comme lue, et le profil donne cette copie.
+
+[cols="2,3,4",options="header"]
+|===
+|Profil |S’applique à |Contenu de cette version
+|`core` |Tous les frais |Les valeurs par défaut de FEE-014 et les motifs de remboursement que tout moteur connaît.
+|`ca-federal` |Frais des organismes fédéraux du Canada |Le rajustement annuel selon l’indice des prix, la remise pour une norme de rendement non respectée, le remboursement d’une fin non réalisée, les seuils de faible importance, les intérêts, les frais d’un effet non honoré et l’exemption de la taxe sur les produits et services.
+|`ca-qc` |Frais des organismes publics du Québec |L’indexation de chaque 1^er^ janvier, son plafond jusqu’en 2026, le report des tarifs inférieurs à 5 $ et les tranches d’arrondissement.
+|===
+
+Cette version ne contient aucun profil français.
+La recherche n’a lu aucun code français à la source, donc `jurisdictions/fr.yaml` décrit la France sans profil normatif.
+
+Le profil `ca-federal` suit la Loi sur les frais de service.
+Il suit aussi la Loi sur la gestion des finances publiques et ses règlements, que la recherche a lus.
+Selon l’article 7 de la première, l’organisme qui rate une norme de rendement remet une partie des frais.
+Il doit le faire avant le 1^er^ juillet de l’exercice suivant.
+Selon l’article 17, une variation de l’indice inférieure à 1 % est reportée.
+La directive du {abbr-tbs-first} sur l’imposition de frais a refusé les lecteurs automatisés, donc ses règles sont _à vérifier_.
+
+Le profil `ca-qc` suit le chapitre VIII.1 de la Loi sur l’administration financière.
+Il suit aussi le règlement sur l’arrondissement et la loi qui plafonne l’indexation.
+La recherche a lu les trois dans des copies archivées de LégisQuébec.
+Un tarif inférieur à 5 $ attend que la somme des taux reportés l’augmente de 0,05 $.
+Le 2026-11-21, la recherche n’a trouvé aucune loi qui prolonge le plafond au-delà de 2026.
+
+== Sources et dates
+
+[[FEE-011]]
+*FEE-011.* Chaque règle et chaque valeur d’un profil DOIT citer une des sources de ce profil.
+Chaque valeur DOIT porter les dates auxquelles elle s’applique.
+Chaque profil DOIT avoir son propre numéro de version selon Semantic Versioning 2.0.0, distinct de la version de cette spécification.
+Une version qui retire ou assouplit une valeur du même profil DOIT prendre un nouveau numéro majeur.
+
+Le droit des frais change chaque année, et le plafond québécois prend fin le 31 décembre 2026.
+Un nouveau taux est alors une version de profil, pas un changement des règles.
+La spécification sur les décisions date ses paramètres de la même façon, selon DEC-037.
+
+== Aucune loi dans les règles de base
+
+[[FEE-012]]
+*FEE-012.* Un moteur DOIT prendre chaque taux, seuil, délai et règle d’arrondi dans un profil ou un barème.
+Il DOIT aussi y prendre chaque motif de remboursement et chaque traitement fiscal.
+Il NE DOIT PAS en coder un en dur.
+Un indicateur d’un élément de frais, comme `low-materiality`, DOIT seulement choisir des règles de son profil.
+Il NE DOIT PAS changer une valeur.
+Un profil NE DOIT PAS assouplir un DOIT des règles de base.
+
+Un barème contient les frais d’un organisme, et un profil contient le droit que plusieurs organismes partagent.
+Le même moteur sert alors un bureau fédéral et un organisme québécois, chacun avec son profil.
+
+== Valeurs manquantes
+
+[[FEE-013]]
+*FEE-013.* Une règle peut avoir besoin d’une valeur qui manque pour la date d’effet.
+Ni le profil, ni le barème, ni `core` ne la donne alors.
+Le fournisseur de règles DOIT alors rendre le type de résultat `not-applicable` de DEC-024.
+Son code de motif DOIT nommer la valeur manquante.
+Le moteur NE DOIT PAS créer de demande de paiement à partir de ce résultat.
+Il NE DOIT PAS supposer une valeur.
+
+Une valeur par défaut silencieuse ferait d’une lacune du profil des frais que personne n’a fixés.
+Pour cette raison, le barème des embarcations de plaisance des exemples termine sa valeur le 1^er^ avril 2026.
+La recherche n’a pas lu la valeur que le rajustement annuel fixe à cette date.
+
+== Valeurs par défaut
+
+[[FEE-014]]
+*FEE-014.* Tous les frais DOIVENT aussi suivre le profil `core`, qui fixe ces valeurs par défaut.
+
+* Les paiements par carte passent par une redirection complète vers la page du fournisseur, selon FEE-047.
+* Le moteur cachette chaque reçu au moins selon le profil `seal-log` de la spécification sur les documents signés, selon FEE-082.
+* Quand aucune loi ne fixe l’arrondi, les montants s’arrondissent au cent, et un résultat à mi-chemin monte.
+Le barème énonce cette règle, comme le demande DAT-054.
+* Les motifs de remboursement `overpayment`, `duplicate-payment`, `administrative-error`, `purpose-not-fulfilled` et `remission` existent dans tous les profils.
+
+Un profil juridictionnel PEUT remplacer un motif de remboursement de `core` qui a le même code.
+Le profil `ca-federal` remplace `purpose-not-fulfilled` pour le rattacher à sa loi.
+Selon cette loi, l’organisme garde la part des frais qui correspond aux services déjà rendus.
+
+== Références
+
+=== Références informatives
+
+* link:https://laws-lois.justice.gc.ca/fra/lois/S-8.4/TexteComplet.html[Loi sur les frais de service], L.C. 2017, ch. 20, art. 451, site Web de la législation (Justice), à jour au 2026-10-29. link:https://web.archive.org/web/20260731030959/https://laws-lois.justice.gc.ca/fra/lois/s-8.4/TexteComplet.html[Copie archivée]
+* link:https://laws-lois.justice.gc.ca/fra/lois/F-11/page-4.html[Loi sur la gestion des finances publiques, articles 16.1 à 23], L.R.C. 1985, ch. F-11, site Web de la législation (Justice). link:https://web.archive.org/web/20260807024451/https://laws-lois.justice.gc.ca/fra/lois/F-11/page-4.html[Copie archivée]
+* link:https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001[Loi sur l'administration financière], RLRQ, c. A-6.001, chapitre VIII.1, LégisQuébec, à jour au 2025-12-11, copie archivée.
+* link:https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1[Règlement sur l'arrondissement des tarifs indexés], RLRQ, c. A-6.001, r. 0.1, LégisQuébec, à jour au 2025-10-24, copie archivée.
+* link:https://web.archive.org/web/20240809061656/https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-7.1[Loi limitant l'indexation de plusieurs tarifs gouvernementaux], RLRQ, c. I-7.1, LégisQuébec, à jour au 2024-05-01, copie archivée.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-21 |Première version.
+|===

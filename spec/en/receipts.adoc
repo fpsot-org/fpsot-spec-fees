@@ -1,0 +1,93 @@
+= Receipts
+include::_fpsot-terms.adoc[]
+
+No payment standard that the research read sets the content of a receipt.
+GovStack asks for receipts but leaves their content open, and GOV.UK Pay sends its own email.
+A receipt of a public fee must still let the payer, an auditor and a court check what happened.
+This page therefore builds the receipt from the records of the other pages.
+The signed records specification then seals it.
+
+Federal regulations on public money ask for a receipt on request, or when the minister directs.
+The engine still issues one for each order, since the receipt is also the record that an audit reads.
+
+== Issue
+
+[[FEE-080]]
+*FEE-080.* An engine MUST issue a receipt of the class `Receipt` of `model/fees.yaml` when an order reaches `paid`.
+It MUST issue a new receipt after each refund that succeeds and after each remission.
+A later receipt MUST name the receipt that it follows.
+The kind of a receipt is `payment`, `refund`, `remission` or `no-payment-due`.
+
+A receipt never changes, so a refund gives a new receipt.
+The last receipt of an order then shows the whole story of that order.
+
+== Content
+
+[[FEE-081]]
+*FEE-081.* Each receipt MUST hold these parts.
+
+* The order, the payee, the payer by id and the payment reference.
+* Each line of the quotes, with its fee item, its legal source and its amounts.
+Each line also names its decision record and its rule version, under DEC-030 and DEC-040.
+* How each tax applies to each line.
+* Each successful attempt, with its amount, its method category, its provider id and its instant.
+* Each successful refund so far, with its amount and its reason.
+* Each remission so far, with its amount, its decision record and its legal basis.
+* The total due, the total paid and the total refunded.
+
+The rule version and the legal source on each line let a payer ask why a fee applied.
+The provider id lets the body find the payment in a dispute or a reconciliation.
+
+== Seal
+
+[[FEE-082]]
+*FEE-082.* The {term-deploying-body} MUST seal each receipt under the signed records specification, in a format of LOG-010.
+The id of the receipt MUST be the id of its seal manifest, under LOG-019.
+The seal profile MUST be `seal-log` or higher, under LOG-002.
+A receipt MUST NOT change once sealed, under LOG-082.
+A correction MUST be a new receipt that names the one that it corrects.
+
+The log then proves when each receipt existed, and that nobody changed it later.
+The payer can check a receipt with published material only, under LOG-053.
+
+== Display
+
+[[FEE-083]]
+*FEE-083.* A receipt MUST hold codes, amounts, ids and instants, and no rendered text.
+A view of a receipt MUST show the label of each code in the language of the reader, under DAT-073.
+A receipt MUST NOT show a card beyond its brand and its last four digits, under FEE-046.
+
+One sealed receipt then serves a payer in English and another in French.
+The printed form MAY carry the look-up code and the QR code of LOG-056.
+
+[[FEE-084]]
+*FEE-084.* An engine SHOULD issue a receipt of the kind `no-payment-due` for an order whose amount due is zero.
+That receipt shows each exemption that applied, with its legal source.
+
+The pleasure craft license of the examples costs nothing for an owner who declared a right under section 35.
+The receipt still shows the fee of $24 and the exemption, so the owner can see why.
+
+== Taxes
+
+[[FEE-085]]
+*FEE-085.* When a line charges a tax, the receipt MUST give the registration number of the payee for that tax.
+When no line charges it, each line still shows its treatment and the legal source of that treatment.
+
+Tax law may ask more of an invoice.
+Those rules are _to be verified_ for the goods and services tax and the Québec sales tax.
+The research did not read those rules.
+
+== References
+
+=== Informative
+
+* link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-128/FullText.html[Receipt and Deposit of Public Money Regulations, 1997], SOR/98-128, Justice Laws Website. link:https://web.archive.org/web/20260808125028/https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-128/FullText.html[Archived copy]
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, read 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-21 |First version.
+|===

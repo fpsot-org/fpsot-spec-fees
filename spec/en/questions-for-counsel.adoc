@@ -1,0 +1,99 @@
+= Questions for counsel
+include::_fpsot-terms.adoc[]
+
+This page is informative.
+It sets no rule, and it is not legal advice.
+It lists the legal questions that this specification raises but cannot answer.
+A lawyer must answer each one before {abbr-fpsot-first} or a body that charges fees relies on it.
+
+LégisQuébec and Légifrance refuse automated readers.
+The research read the Québec texts in archived copies, and read no French code.
+The directive of the {abbr-tbs-first} on charging also refused automated readers.
+A point marked _to be verified_ rests on a secondary source or a government page, not on the law itself.
+
+== Fees and their basis
+
+. *Low-materiality fees.* Sections 3 to 18 of the Service Fees Act do not apply to a fee of low materiality.
+Must a quote or a receipt show that a fee is of low materiality?
+The schedule of the examples marks such a fee with a flag only.
+
+. *The cost ceiling.* Section 19 of the Financial Administration Act caps a fee at the cost of the service.
+Must a schedule keep the cost basis beside each amount, or does the annual fees report suffice?
+
+. *A declared right.* Section 112 of the Small Vessel Regulations waives the license fee for some owners.
+Those owners declare a right under section 35.
+The regulation speaks of an owner who can exercise the right.
+A news release of Transport Canada speaks of using the craft to exercise it.
+Which wording governs, and may the body ask for anything beyond the declaration?
+
+. *Ratification in France.* A charge for a service that a decree creates lapses unless the next finance act ratifies it.
+Must a French schedule record whether the finance act ratified the charge, and refuse to quote once it lapses?
+The text of article 4 of the organic law on finance acts after its 2021 amendment is _to be verified_.
+
+== Indexation and rounding
+
+[start=5]
+. *Federal rounding.* Section 17 of the Service Fees Act lets a body round an adjusted fee down.
+It does so under Treasury Board policy.
+Which policy sets the step, and does it bind every body?
+The directive on charging is _to be verified_.
+
+. *The Québec deferral.* Section 2 of the rounding regulation defers a fee below $5.
+The fee waits until the deferred rates raise it by $0.05.
+Does the test apply to the increase before rounding, as the examples assume, or after it?
+For a fee of $2.00 in 2026, the raw increase is $0.041, but rounding would give $2.05.
+
+. *The cap after 2026.* The law that caps indexation at 3% applies from 2023 to 2026.
+Unless a new law extends it, do capped fees take the full rate of section 83.3 on 1 January 2027?
+Its Schedule I and its amendments after May 2024 are _to be verified_.
+
+. *Fees outside chapter VIII.1.* Section 83.11 of the Loi sur l'administration financière excludes some fees.
+Those are the fees that a law, a contract or the Régie de l'énergie fixes.
+How does a body show that a fee falls in one of those classes?
+
+== Refunds and remissions
+
+[start=9]
+. *A deadline for refunds.* The federal regulations on repaying receipts set no time limit.
+Does a general limitation period bound a claim for a federal refund?
+What is the rule in Québec and in France, where the research found none?
+
+. *Federal remissions.* The remission policy of Environment and Climate Change Canada rests on section 4.2.4 of the directive on charging.
+It says that a remission earns no interest, goes back by the method of payment and is never 0%.
+Do those terms bind every federal body, or only that department?
+
+. *Remission in Québec.* The research found no general remission provision in the Loi sur l'administration financière.
+Which law lets a Québec body remit a fee, such as the Loi sur l'administration fiscale or a sector law?
+
+. *France.* Is a remise gracieuse of article L. 247 of the Livre des procédures fiscales the analog of a remission for a charge for a service?
+Can a body refund an unused tax stamp within 18 months, as a government page reports?
+Both points are _to be verified_.
+
+== Receipts, taxes and cards
+
+[start=13]
+. *Tax content of a receipt.* What must a receipt show for a fee that bears the goods and services tax?
+What must it show for the Québec sales tax?
+How does the Québec sales tax apply to Québec fees at all?
+
+. *Receipts for every order.* Federal regulations ask for a receipt on request, or when the minister directs.
+Does a sealed receipt for every order raise a duty of retention or of privacy?
+A receipt on request might not.
+
+. *A page that only redirects.* FAQ 1588 says that the script criterion does not apply to a redirect.
+That criterion belongs to the Self-Assessment Questionnaire A.
+Does the page that starts the redirect still need any control?
+Reports describe a revision of FAQ 1331.
+Under it, who must accept the answer: the acquirer, the card brand or both?
+
+. *Disputes and refunds.* A payer may ask for a refund and open a dispute for the same payment.
+Which law governs the choice of the body?
+May the body wait for the outcome of the dispute, as FEE-068 asks?
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-21 |First version.
+|===

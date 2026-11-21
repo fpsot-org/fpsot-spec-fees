@@ -1,0 +1,73 @@
+= Interfaces, adaptateurs et conformité
+include::_fpsot-terms.adoc[]
+
+Un organisme peut changer de fournisseur de paiement, et un fournisseur peut changer son interface.
+Le moteur garde alors ses données, et seul l’adaptateur change.
+Cette page fixe l’interface du moteur, le contrat d’un adaptateur et les données d’essai qui prouvent les deux.
+
+== Interfaces
+
+[[FEE-100]]
+*FEE-100.* Une interface DOIT créer les demandes, les tentatives et les remboursements par `POST` avec un `Idempotency-Key`, selon API-060.
+Elle NE DOIT PAS offrir d’opération qui modifie ou supprime une tentative, un remboursement, une remise ou un reçu.
+Pour annuler une demande ou une tentative, un client DOIT créer une annulation comme nouvelle ressource, selon API-014.
+L’interface DOIT consulter le moteur d’autorisation à chaque requête, selon IAM-050.
+Le fournisseur de l’interface DOIT l’éprouver par rapport à sa description, selon TST-040.
+
+Une annulation sous forme de ressource garde son propre identifiant, son instant et son auteur.
+Un `DELETE` effacerait cette trace.
+
+== Adaptateurs
+
+[[FEE-101]]
+*FEE-101.* Chaque adaptateur DOIT offrir ces opérations au moteur, ou indiquer que son fournisseur n’en offre pas une.
+
+* Créer un paiement, et rendre l’adresse de la page du fournisseur.
+* Lire un paiement, et le saisir ou l’annuler.
+* Créer un remboursement, et le lire.
+* Lire les contestations d’un paiement.
+* Lire les versements, avec leurs lignes.
+* Vérifier un avis, selon FEE-070.
+
+Chaque adaptateur DOIT aussi publier sa correspondance des statuts, selon FEE-051.
+
+GOV.UK Pay, Stripe et PayFiP entrent tous dans ce contrat.
+Ils diffèrent par leur redirection, par le moment où un paiement devient définitif et par la compensation de leurs versements.
+La page xref:alignment.adoc[Correspondance avec d’autres normes] les présente comme exemples, et n’en exige aucun.
+
+== Données d’essai
+
+[[FEE-102]]
+*FEE-102.* Une suite de conformité de cette spécification DOIT contenir des barèmes et des enregistrements de décision.
+Elle DOIT aussi contenir les données des frais et des versements.
+Elle DOIT contenir des scénarios en anglais et en français, selon TST-020 à TST-036.
+Chaque scénario DOIT indiquer ses dates, et nommer ses éléments de frais et ses statuts.
+Un producteur DEVRAIT éprouver chaque événement par rapport au schéma de son type, selon TST-043.
+
+Le dossier `examples/` contient les premières données de ce genre.
+Le script `examples/test-examples.sh` vérifie que la vérification rejette des copies altérées.
+
+[[FEE-103]]
+*FEE-103.* Les données d’essai, les exemples et les essais DOIVENT employer uniquement des données synthétiques, selon TST-050.
+Ils NE DOIVENT PAS contenir de numéro de carte, pas même un numéro d’essai qu’un fournisseur publie.
+Les identifiants des fournisseurs, les références de paiement et les références bancaires DOIVENT être fictifs.
+
+Un numéro de carte d’essai dans un exemple apprend au lecteur qu’un numéro de carte peut figurer dans une donnée.
+Les exemples ne montrent une carte que par sa marque et quatre chiffres.
+
+[[FEE-104]]
+*FEE-104.* Un moteur PEUT offrir un adaptateur vers le bloc Payments de GovStack.
+Un tel adaptateur DOIT faire correspondre chaque exigence qu’il revendique à une règle de cette spécification.
+
+[[FEE-105]]
+*FEE-105.* Un moteur ou un adaptateur qui en remplace un autre DOIT réussir la même suite de conformité, selon TST-045.
+
+Un organisme peut alors changer de fournisseur de logiciel, ou de fournisseur de paiement, sans changer ses données.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-21 |Première version.
+|===

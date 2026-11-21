@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fpsot.org/schemas/fees/events/org.fpsot.fees.payout.reconciled.schema.json",
+  "$comment": "SPDX-License-Identifier: Community-Spec-1.0. FPSOT fees event data (FEE-075). The data holds identifiers, codes and instants only, never a party id, a payment reference, an amount or card data (FEE-076). A consumer reads the record by its id. The CloudEvents attributes follow API-101.",
+  "title": "org.fpsot.fees.payout.reconciled",
+  "description": "The engine matched the lines of a payout (FEE-091, FEE-075).",
+  "type": "object",
+  "required": [
+    "payoutId",
+    "provider",
+    "payoutDate",
+    "reconciliationStatus",
+    "lineCount",
+    "unmatchedLineCount"
+  ],
+  "properties": {
+    "payoutId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "The payout (FEE-090)."
+    },
+    "provider": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "The provider adapter (FEE-101)."
+    },
+    "payoutDate": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "The date of the payout (FEE-090)."
+    },
+    "reconciliationStatus": {
+      "type": "string",
+      "enum": [
+        "reconciled",
+        "exceptions"
+      ],
+      "description": "Whether every line matched (FEE-091)."
+    },
+    "lineCount": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The number of lines (FEE-091)."
+    },
+    "unmatchedLineCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "The number of lines that matched no record (FEE-091)."
+    }
+  },
+  "additionalProperties": false
+}

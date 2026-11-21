@@ -1,0 +1,124 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Jurisdiction profile of the FPSOT fees specification (FEE-010 to FEE-013), in the form of the
+# class FeeProfile of model/fees.yaml. Released apart from the core rules (FEE-011).
+# Fees of federal bodies of Canada. The Service Fees Act, the Financial Administration Act and its
+# regulations, the Low-materiality Fees Regulations and Schedule V of the Excise Tax Act were read
+# at the Justice Laws Website. The Directive on Charging and Special Financial Authorities of the
+# Treasury Board refused automated readers, and its archived copy holds only the refusal, so it is
+# marked to-be-verified. The remission policy of Environment and Climate Change Canada was read as
+# an example of a departmental policy under that directive.
+# The Service Fees Act lets the authority round down an indexed fee under Treasury Board policy
+# (s. 17(4)). That policy was not read, so the CPI rule names no rounding rule.
+# The $24 pleasure craft license fee, its exemption and its April indexation (REG-026) are data of
+# the fee schedule in examples/schedules/, not of this profile. Not legal advice.
+code: ca-federal
+version: 0.1.0
+title: {en: Canada federal profile, fr: Profil fédéral canadien}
+jurisdiction: CA
+sources:
+  - id: service-fees-act
+    title: "Service Fees Act, S.C. 2017, c. 20, s. 451, consolidated text current to 2026-10-29"
+    url: "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html"
+    archive: "https://web.archive.org/web/20260731030650/https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html"
+    date: "2026-10-29"
+    verification: read
+  - id: financial-administration-act
+    title: "Financial Administration Act, R.S.C. 1985, c. F-11, sections 16.1 to 23"
+    url: "https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html"
+    archive: "https://web.archive.org/web/20260721172843/https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html"
+    verification: read
+  - id: repayment-of-receipts-regulations
+    title: "Repayment of Receipts Regulations, 1997, SOR/98-127"
+    url: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-127/FullText.html"
+    archive: "https://web.archive.org/web/20260807113837/https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-127/FullText.html"
+    verification: read
+  - id: interest-and-administrative-charges-regulations
+    title: "Interest and Administrative Charges Regulations, SOR/96-188, last amended 2020-07-06"
+    url: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-188/FullText.html"
+    archive: "https://web.archive.org/web/20260615114756/https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-188/FullText.html"
+    date: "2020-07-06"
+    verification: read
+  - id: low-materiality-fees-regulations
+    title: "Low-materiality Fees Regulations, SOR/2019-109, last amended 2024-06-26 by SOR/2024-154"
+    url: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2019-109/FullText.html"
+    archive: "https://web.archive.org/web/20260731030650/https://laws-lois.justice.gc.ca/eng/regulations/SOR-2019-109/FullText.html"
+    date: "2024-06-26"
+    verification: read
+  - id: excise-tax-act-schedule-v
+    title: "Excise Tax Act, R.S.C. 1985, c. E-15, Schedule V, Part VI, section 20"
+    url: "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html"
+    archive: "https://web.archive.org/web/20261009054903/https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html"
+    verification: read
+  - id: charging-directive
+    title: "Directive on Charging and Special Financial Authorities, Treasury Board of Canada Secretariat"
+    url: "https://www.tbs-sct.canada.ca/pol/doc-eng.aspx?id=32502"
+    verification: to-be-verified
+  - id: eccc-remission-policy
+    title: "Departmental Remissions Policy for Service Fees, Environment and Climate Change Canada, effective 2021-04-01"
+    url: "https://www.canada.ca/en/environment-climate-change/corporate/transparency/priorities-management/policies-guidelines/departmental-remissions-policy-service-fees.html"
+    archive: "https://web.archive.org/web/20260516232029/https://www.canada.ca/en/environment-climate-change/corporate/transparency/priorities-management/policies-guidelines/departmental-remissions-policy-service-fees.html"
+    date: "2021-04-01"
+    verification: read
+refundReasons:
+  # Money paid for a purpose that is not fulfilled goes back, less the part for services already
+  # rendered (FAA s. 20(2); SOR/98-127 s. 2). This replaces the core reason of the same code.
+  - {code: purpose-not-fulfilled, deductServicesRendered: true, sourceId: financial-administration-act}
+remissionRules:
+  # A missed performance standard: remit the portion that the authority considers appropriate,
+  # before 1 July of the next fiscal year (SFA s. 7). No interest, and the same method of payment,
+  # per the ECCC policy; whether the directive sets this for every body is to be verified.
+  - code: performance-standard-missed
+    trigger: performance-standard-missed
+    deadline: before-july-1-next-fiscal-year
+    interestPayable: false
+    sameMethod: true
+    sourceIds: [service-fees-act, charging-directive, eccc-remission-policy]
+  # A remission order of the Governor in Council (FAA s. 23), on equity or public interest grounds.
+  - code: remission-order
+    trigger: remission-order
+    sourceIds: [financial-administration-act]
+indexationRules:
+  # Annual adjustment by the April All-items CPI for Canada, on an anniversary date that the
+  # authority selects; no adjustment below 1%, and smaller changes carry forward (SFA s. 17).
+  # The day of the year varies by fee, so the rule fixes none.
+  - code: service-fees-act-cpi
+    index: cpi-canada-all-items-april
+    threshold: "1"
+    carryForward: true
+    sourceIds: [service-fees-act]
+taxTreatments:
+  # Supplies of a licence, permit or similar right and of the processing of an application for
+  # it, by a government (Schedule V, Part VI, s. 20(c)). Hunting and fishing rights and some other
+  # rights stay taxable (s. 20(j) to (l)).
+  - {code: gst-government-license-exempt, taxCode: gst, treatment: exempt, sourceId: excise-tax-act-schedule-v}
+parameters:
+  # A fee below $51 is low-materiality, and ss. 3 to 18 of the SFA do not apply to it.
+  - code: low-materiality-amount-below
+    value: {amount: "51.00", currency: CAD}
+    validity: {start: "2019-05-01"}
+    sourceId: low-materiality-fees-regulations
+  # A fee from $51 to below $151 is low-materiality when its yearly revenue stays at or below
+  # $500,000 in the three most recent reports, with the variants of s. 2(1)(b).
+  - code: low-materiality-band-below
+    value: {amount: "151.00", currency: CAD}
+    validity: {start: "2019-05-01"}
+    sourceId: low-materiality-fees-regulations
+  - code: low-materiality-revenue-limit
+    value: {amount: "500000.00", currency: CAD}
+    validity: {start: "2019-05-01"}
+    sourceId: low-materiality-fees-regulations
+  # Interest on an overdue amount: the average bank rate plus 3%, compounded monthly (s. 5(1)).
+  - code: overdue-interest
+    value: {reference: average-bank-rate, addedPercent: "3", compounding: monthly}
+    validity: {start: "2020-07-06"}
+    sourceId: interest-and-administrative-charges-regulations
+  # The charge for each dishonoured instrument, and the added charge when the Crown reimburses the
+  # financial institution (s. 10).
+  - code: dishonoured-instrument-charge
+    value: {amount: "15.00", currency: CAD}
+    validity: {start: "2020-07-06"}
+    sourceId: interest-and-administrative-charges-regulations
+  - code: dishonoured-instrument-reimbursement-charge
+    value: {amount: "10.00", currency: CAD}
+    validity: {start: "2020-07-06"}
+    sourceId: interest-and-administrative-charges-regulations

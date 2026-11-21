@@ -1,0 +1,866 @@
+{
+  "quotes": [
+    {
+      "id": "019c4e00-0001-7000-8000-000000000002",
+      "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+      "feeSchedule": {
+        "code": "example-federal-permit-fees",
+        "version": "1.0.0",
+        "digest": "785961e6d7ed58789e891a19c337782ead3d4993ca7c97569a25c570545952b8"
+      },
+      "effectiveDate": "2026-03-02",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-application-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"
+            ]
+          }
+        },
+        {
+          "lineNumber": 2,
+          "feeItem": "permit-amendment-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"
+            ]
+          }
+        }
+      ],
+      "total": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "validUntil": "2026-03-31T03:59:59Z",
+      "createdAt": "2026-03-02T13:59:01Z",
+      "updatedAt": "2026-03-02T13:59:01Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "019c4e00-0002-7000-8000-000000000002",
+      "quoteIds": [
+        "019c4e00-0001-7000-8000-000000000002"
+      ],
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000002",
+      "filingIds": [
+        "019c4e00-0011-7000-8000-000000000002"
+      ],
+      "paymentReference": "EX-2026-000123",
+      "amountDue": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "status": "paid",
+      "createdAt": "2026-03-02T13:59:30Z",
+      "updatedAt": "2026-03-02T14:06:33Z"
+    }
+  ],
+  "attempts": [
+    {
+      "id": "019c4e00-0003-7000-8000-000000000001",
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "provider": "example-pay",
+      "providerPaymentId": "ex-pay-7f3a01",
+      "amount": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "methodCategory": "card",
+      "integration": "hosted-redirect",
+      "status": "failed",
+      "finished": true,
+      "failureCode": "method-rejected",
+      "providerStatus": "declined",
+      "statusHistory": [
+        {
+          "status": "created",
+          "at": "2026-03-02T14:00:05Z",
+          "source": "provider-response"
+        },
+        {
+          "status": "started",
+          "at": "2026-03-02T14:01:02Z",
+          "source": "provider-read",
+          "notificationId": "019c4e00-0004-7000-8000-000000000001"
+        },
+        {
+          "status": "failed",
+          "at": "2026-03-02T14:03:12Z",
+          "source": "provider-read",
+          "notificationId": "019c4e00-0004-7000-8000-000000000002"
+        }
+      ],
+      "settlement": {
+        "status": "not-settled"
+      },
+      "createdAt": "2026-03-02T14:00:05Z",
+      "updatedAt": "2026-03-02T14:03:12Z"
+    },
+    {
+      "id": "019c4e00-0003-7000-8000-000000000002",
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "provider": "example-pay",
+      "providerPaymentId": "ex-pay-7f3a02",
+      "amount": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "methodCategory": "card",
+      "integration": "hosted-redirect",
+      "status": "success",
+      "finished": true,
+      "providerStatus": "captured",
+      "statusHistory": [
+        {
+          "status": "created",
+          "at": "2026-03-02T14:05:00Z",
+          "source": "provider-response"
+        },
+        {
+          "status": "started",
+          "at": "2026-03-02T14:05:40Z",
+          "source": "provider-read"
+        },
+        {
+          "status": "submitted",
+          "at": "2026-03-02T14:06:20Z",
+          "source": "provider-read"
+        },
+        {
+          "status": "success",
+          "at": "2026-03-02T14:06:33Z",
+          "source": "provider-read",
+          "notificationId": "019c4e00-0004-7000-8000-000000000003"
+        }
+      ],
+      "settlement": {
+        "status": "settled",
+        "settledDate": "2026-03-13",
+        "payoutId": "019c4e00-0008-7000-8000-000000000001"
+      },
+      "cardDisplay": {
+        "brand": "visa",
+        "lastFour": "0005"
+      },
+      "createdAt": "2026-03-02T14:05:00Z",
+      "updatedAt": "2026-03-13T09:00:00Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "019c4e00-0004-7000-8000-000000000001",
+      "provider": "example-pay",
+      "providerEventId": "evt-000101",
+      "receivedAt": "2026-03-02T14:01:01Z",
+      "signatureVerified": true,
+      "objectType": "payment",
+      "providerObjectId": "ex-pay-7f3a01",
+      "readAt": "2026-03-02T14:01:02Z",
+      "outcome": "applied"
+    },
+    {
+      "id": "019c4e00-0004-7000-8000-000000000002",
+      "provider": "example-pay",
+      "providerEventId": "evt-000102",
+      "receivedAt": "2026-03-02T14:03:11Z",
+      "signatureVerified": true,
+      "objectType": "payment",
+      "providerObjectId": "ex-pay-7f3a01",
+      "readAt": "2026-03-02T14:03:12Z",
+      "outcome": "applied"
+    },
+    {
+      "id": "019c4e00-0004-7000-8000-000000000003",
+      "provider": "example-pay",
+      "providerEventId": "evt-000105",
+      "receivedAt": "2026-03-02T14:06:32Z",
+      "signatureVerified": true,
+      "objectType": "payment",
+      "providerObjectId": "ex-pay-7f3a02",
+      "readAt": "2026-03-02T14:06:33Z",
+      "outcome": "applied"
+    },
+    {
+      "id": "019c4e00-0004-7000-8000-000000000004",
+      "provider": "example-pay",
+      "providerEventId": "evt-000105",
+      "receivedAt": "2026-03-02T14:06:50Z",
+      "signatureVerified": true,
+      "objectType": "payment",
+      "providerObjectId": "ex-pay-7f3a02",
+      "outcome": "duplicate"
+    },
+    {
+      "id": "019c4e00-0004-7000-8000-000000000005",
+      "provider": "example-pay",
+      "providerEventId": "evt-000104",
+      "receivedAt": "2026-03-02T14:07:15Z",
+      "signatureVerified": true,
+      "objectType": "payment",
+      "providerObjectId": "ex-pay-7f3a02",
+      "readAt": "2026-03-02T14:07:16Z",
+      "outcome": "no-change"
+    },
+    {
+      "id": "019c4e00-0004-7000-8000-000000000006",
+      "provider": "example-pay",
+      "providerEventId": "evt-999999",
+      "receivedAt": "2026-03-02T14:08:00Z",
+      "signatureVerified": false,
+      "objectType": "payment",
+      "providerObjectId": "ex-pay-7f3a02",
+      "outcome": "rejected"
+    }
+  ],
+  "refunds": [
+    {
+      "id": "019c4e00-0005-7000-8000-000000000001",
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "attemptId": "019c4e00-0003-7000-8000-000000000002",
+      "providerRefundId": "ex-ref-5501",
+      "amount": {
+        "amount": "40.00",
+        "currency": "CAD"
+      },
+      "refundableBefore": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "reason": "purpose-not-fulfilled",
+      "servicesRenderedDeduction": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "status": "success",
+      "createdAt": "2026-03-09T15:00:00Z",
+      "updatedAt": "2026-03-09T15:02:00Z"
+    },
+    {
+      "id": "019c4e00-0005-7000-8000-000000000002",
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "attemptId": "019c4e00-0003-7000-8000-000000000002",
+      "providerRefundId": "ex-ref-5502",
+      "amount": {
+        "amount": "87.50",
+        "currency": "CAD"
+      },
+      "refundableBefore": {
+        "amount": "350.00",
+        "currency": "CAD"
+      },
+      "reason": "remission",
+      "remissionId": "019c4e00-0006-7000-8000-000000000001",
+      "status": "success",
+      "createdAt": "2026-05-15T13:05:00Z",
+      "updatedAt": "2026-05-15T13:09:00Z"
+    }
+  ],
+  "remissions": [
+    {
+      "id": "019c4e00-0006-7000-8000-000000000001",
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "decisionRecordId": "019c4e00-0009-7000-8000-000000000003",
+      "amount": {
+        "amount": "87.50",
+        "currency": "CAD"
+      },
+      "legalBasis": {
+        "uri": "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/section-7.html",
+        "otherLanguageUris": [
+          "https://laws-lois.justice.gc.ca/fra/lois/S-8.4/article-7.html"
+        ]
+      },
+      "execution": "refund",
+      "refundIds": [
+        "019c4e00-0005-7000-8000-000000000002"
+      ],
+      "createdAt": "2026-05-15T13:04:00Z",
+      "updatedAt": "2026-05-15T13:09:00Z"
+    }
+  ],
+  "receipts": [
+    {
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "payee": {
+        "code": "example-federal-permit-office"
+      },
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000002",
+      "paymentReference": "EX-2026-000123",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-application-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+          "ruleSet": {
+            "code": "example-permit-fee",
+            "version": "1.0.0",
+            "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+            "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+          }
+        },
+        {
+          "lineNumber": 2,
+          "feeItem": "permit-amendment-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+          "ruleSet": {
+            "code": "example-permit-fee",
+            "version": "1.0.0",
+            "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+            "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+          }
+        }
+      ],
+      "totalDue": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "payments": [
+        {
+          "attemptId": "019c4e00-0003-7000-8000-000000000002",
+          "amount": {
+            "amount": "390.00",
+            "currency": "CAD"
+          },
+          "methodCategory": "card",
+          "cardDisplay": {
+            "brand": "visa",
+            "lastFour": "0005"
+          },
+          "providerPaymentId": "ex-pay-7f3a02",
+          "succeededAt": "2026-03-02T14:06:33Z"
+        }
+      ],
+      "totalPaid": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "sealProfile": "seal-log",
+      "id": "019c4e00-0007-7000-8000-000000000001",
+      "kind": "payment",
+      "issuedAt": "2026-03-02T14:06:40Z",
+      "totalRefunded": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "createdAt": "2026-03-02T14:06:40Z",
+      "updatedAt": "2026-03-02T14:06:40Z"
+    },
+    {
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "payee": {
+        "code": "example-federal-permit-office"
+      },
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000002",
+      "paymentReference": "EX-2026-000123",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-application-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+          "ruleSet": {
+            "code": "example-permit-fee",
+            "version": "1.0.0",
+            "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+            "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+          }
+        },
+        {
+          "lineNumber": 2,
+          "feeItem": "permit-amendment-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+          "ruleSet": {
+            "code": "example-permit-fee",
+            "version": "1.0.0",
+            "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+            "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+          }
+        }
+      ],
+      "totalDue": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "payments": [
+        {
+          "attemptId": "019c4e00-0003-7000-8000-000000000002",
+          "amount": {
+            "amount": "390.00",
+            "currency": "CAD"
+          },
+          "methodCategory": "card",
+          "cardDisplay": {
+            "brand": "visa",
+            "lastFour": "0005"
+          },
+          "providerPaymentId": "ex-pay-7f3a02",
+          "succeededAt": "2026-03-02T14:06:33Z"
+        }
+      ],
+      "totalPaid": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "sealProfile": "seal-log",
+      "id": "019c4e00-0007-7000-8000-000000000002",
+      "kind": "refund",
+      "previousReceiptId": "019c4e00-0007-7000-8000-000000000001",
+      "issuedAt": "2026-03-09T15:02:10Z",
+      "refunds": [
+        {
+          "refundId": "019c4e00-0005-7000-8000-000000000001",
+          "amount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "reason": "purpose-not-fulfilled"
+        }
+      ],
+      "totalRefunded": {
+        "amount": "40.00",
+        "currency": "CAD"
+      },
+      "createdAt": "2026-03-09T15:02:10Z",
+      "updatedAt": "2026-03-09T15:02:10Z"
+    },
+    {
+      "orderId": "019c4e00-0002-7000-8000-000000000002",
+      "payee": {
+        "code": "example-federal-permit-office"
+      },
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000002",
+      "paymentReference": "EX-2026-000123",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-application-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+          "ruleSet": {
+            "code": "example-permit-fee",
+            "version": "1.0.0",
+            "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+            "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+          }
+        },
+        {
+          "lineNumber": 2,
+          "feeItem": "permit-amendment-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000002",
+          "ruleSet": {
+            "code": "example-permit-fee",
+            "version": "1.0.0",
+            "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+            "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+          }
+        }
+      ],
+      "totalDue": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "payments": [
+        {
+          "attemptId": "019c4e00-0003-7000-8000-000000000002",
+          "amount": {
+            "amount": "390.00",
+            "currency": "CAD"
+          },
+          "methodCategory": "card",
+          "cardDisplay": {
+            "brand": "visa",
+            "lastFour": "0005"
+          },
+          "providerPaymentId": "ex-pay-7f3a02",
+          "succeededAt": "2026-03-02T14:06:33Z"
+        }
+      ],
+      "totalPaid": {
+        "amount": "390.00",
+        "currency": "CAD"
+      },
+      "sealProfile": "seal-log",
+      "id": "019c4e00-0007-7000-8000-000000000003",
+      "kind": "remission",
+      "previousReceiptId": "019c4e00-0007-7000-8000-000000000002",
+      "issuedAt": "2026-05-15T13:09:10Z",
+      "refunds": [
+        {
+          "refundId": "019c4e00-0005-7000-8000-000000000001",
+          "amount": {
+            "amount": "40.00",
+            "currency": "CAD"
+          },
+          "reason": "purpose-not-fulfilled"
+        },
+        {
+          "refundId": "019c4e00-0005-7000-8000-000000000002",
+          "amount": {
+            "amount": "87.50",
+            "currency": "CAD"
+          },
+          "reason": "remission"
+        }
+      ],
+      "remissions": [
+        {
+          "remissionId": "019c4e00-0006-7000-8000-000000000001",
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000003",
+          "amount": {
+            "amount": "87.50",
+            "currency": "CAD"
+          },
+          "legalBasis": {
+            "uri": "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/section-7.html",
+            "otherLanguageUris": [
+              "https://laws-lois.justice.gc.ca/fra/lois/S-8.4/article-7.html"
+            ]
+          }
+        }
+      ],
+      "totalRefunded": {
+        "amount": "127.50",
+        "currency": "CAD"
+      },
+      "createdAt": "2026-05-15T13:09:10Z",
+      "updatedAt": "2026-05-15T13:09:10Z"
+    }
+  ],
+  "payouts": [
+    {
+      "id": "019c4e00-0008-7000-8000-000000000001",
+      "provider": "example-pay",
+      "providerPayoutId": "ex-po-2026-0313",
+      "payoutDate": "2026-03-13",
+      "bankStatementReference": "EX-STMT-20260313-0001",
+      "gross": {
+        "amount": "350.00",
+        "currency": "CAD"
+      },
+      "fees": {
+        "amount": "5.85",
+        "currency": "CAD"
+      },
+      "net": {
+        "amount": "344.15",
+        "currency": "CAD"
+      },
+      "lines": [
+        {
+          "lineNumber": 1,
+          "kind": "payment",
+          "providerReference": "ex-pay-7f3a02",
+          "amount": {
+            "amount": "390.00",
+            "currency": "CAD"
+          },
+          "fee": {
+            "amount": "5.85",
+            "currency": "CAD"
+          },
+          "matchStatus": "matched",
+          "matchedType": "PaymentAttempt",
+          "matchedId": "019c4e00-0003-7000-8000-000000000002"
+        },
+        {
+          "lineNumber": 2,
+          "kind": "refund",
+          "providerReference": "ex-ref-5501",
+          "amount": {
+            "amount": "-40.00",
+            "currency": "CAD"
+          },
+          "fee": {
+            "amount": "0.00",
+            "currency": "CAD"
+          },
+          "matchStatus": "matched",
+          "matchedType": "Refund",
+          "matchedId": "019c4e00-0005-7000-8000-000000000001"
+        }
+      ],
+      "reconciliationStatus": "reconciled",
+      "createdAt": "2026-03-13T09:00:00Z",
+      "updatedAt": "2026-03-13T09:00:00Z"
+    }
+  ]
+}

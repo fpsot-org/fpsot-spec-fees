@@ -1,0 +1,22 @@
+# Comparison data. The format is defined by fpsot-spec-doc (model/jurisdiction.yaml).
+# LégisQuébec refuses automated readers, so the research read archived copies of its pages: the
+# Loi sur l'administration financière consolidated to 2025-12-11 and the rounding regulation
+# consolidated to 2025-10-24. This file is informational and not legal advice.
+code: CA-QC
+name: {en: Québec, fr: Québec}
+rows:
+  - id: FEE-020
+    text: {en: "A body publishes in the Gazette officielle the result of the indexation of each fee that was published there when fixed, and informs the public of the others.", fr: "Un organisme publie à la Gazette officielle le résultat de l’indexation de chaque tarif qui y a été publié lors de sa fixation, et informe le public des autres."}
+    status: same
+    source: {title: "Loi sur l'administration financière, RLRQ, c. A-6.001, article 83.6, archived copy of LégisQuébec", date: "2025-12-11", url: "https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001", archive: "https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001"}
+    last_checked: "2026-11-21"
+  - id: FEE-024
+    text: {en: "Every fee is indexed each 1 January by the Québec consumer price index without alcohol, tobacco and recreational cannabis, over the 12 months to 30 September. The rate is 2.05% for 2026, and a law caps it at 3% from 2023 to 2026. The result rounds to 0.05, 0.10, 0.25 or 1.00 by band, and a fee below $5 waits until the deferred rates raise it by $0.05.", fr: "Chaque tarif est indexé chaque 1er janvier selon l’indice des prix à la consommation du Québec sans les boissons alcoolisées, le tabac et le cannabis récréatif, sur les 12 mois terminés le 30 septembre. Le taux est de 2,05 % pour 2026, et une loi le plafonne à 3 % de 2023 à 2026. Le résultat s’arrondit à 0,05, 0,10, 0,25 ou 1,00 selon la tranche, et un tarif inférieur à 5 $ attend que les taux reportés l’augmentent de 0,05 $."}
+    status: same
+    source: {title: "Règlement sur l'arrondissement des tarifs indexés, RLRQ, c. A-6.001, r. 0.1, archived copy of LégisQuébec", date: "2025-10-24", url: "https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1", archive: "https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1"}
+    last_checked: "2026-11-21"
+  - id: FEE-064
+    text: {en: "Chapter VIII.1 of the Loi sur l'administration financière holds no general remission of fees. Which law allows one is to be verified.", fr: "Le chapitre VIII.1 de la Loi sur l’administration financière ne prévoit aucune remise générale des tarifs. La loi qui en permet une est à vérifier."}
+    status: not-covered
+    source: {title: "Loi sur l'administration financière, RLRQ, c. A-6.001, chapter VIII.1, archived copy of LégisQuébec", date: "2025-12-11", url: "https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001", archive: "https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001"}
+    last_checked: "2026-11-21"

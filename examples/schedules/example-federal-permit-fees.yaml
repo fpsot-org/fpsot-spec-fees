@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Fee schedule (FEE-020), in the form of the class FeeSchedule of model/fees.yaml, which extends the
+# ParameterSet of the decisions specification (DEC-037). A fictional federal permit office under
+# the ca-federal profile: an application fee of $350, which has a performance standard and a
+# remission under the Service Fees Act, and an amendment fee of $40, which is below $51 and so
+# low-materiality. The regulations, the remission policy and every address are fictional.
+code: example-federal-permit-fees
+version: 1.0.0
+title: {en: Example federal permit fees, fr: Frais d’exemple des permis fédéraux}
+profile: ca-federal
+roundingRule: cent-half-up
+roundingStage: per-line
+feeItems:
+  - code: permit-application-fee
+    title: {en: Permit application, fr: Demande de permis}
+    basis: flat
+    amountParameter: permit-application-fee-amount
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"]
+    taxTreatment: gst-government-license-exempt
+    indexationRule: service-fees-act-cpi
+  - code: permit-amendment-fee
+    title: {en: Permit amendment, fr: Modification de permis}
+    basis: flat
+    amountParameter: permit-amendment-fee-amount
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"]
+    taxTreatment: gst-government-license-exempt
+    flags: [low-materiality]
+parameters:
+  - code: permit-application-fee-amount
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "350.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html"
+          otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"]
+  - code: permit-amendment-fee-amount
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "40.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html"
+          otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"]
+  # The share of the application fee that the office remits when it misses the performance
+  # standard in a fiscal year, in percent, under its remission policy.
+  - code: permit-application-remission-rate
+    values:
+      - validity: {start: "2025-04-01"}
+        value: "25"
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://www.example.org/permits/remission-policy#section-4"

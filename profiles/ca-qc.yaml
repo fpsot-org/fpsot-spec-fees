@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Jurisdiction profile of the FPSOT fees specification (FEE-010 to FEE-013), in the form of the
+# class FeeProfile of model/fees.yaml. Released apart from the core rules (FEE-011).
+# Fees of Québec public bodies under chapter VIII.1 of the Loi sur l'administration financière.
+# LégisQuébec refuses automated readers. The research read the archived copies of the act
+# (consolidated to 2025-12-11), of the rounding regulation (consolidated to 2025-10-24) and of the
+# cap law (consolidated to 2024-05-01). Later amendments to the cap law are to be verified, and so
+# is any law that extends the cap past 2026-12-31: none was found on 2026-11-21.
+# A fee that a law, a contract or the Régie de l'énergie fixes is not indexed under this chapter
+# (LAF s. 83.11), and a fee fixed or raised in the year before is not indexed (s. 83.4). A fee
+# item marks such cases with a flag; the engine never guesses them.
+# The GST exemption of Schedule V, Part VI of the Excise Tax Act reaches a provincial government as
+# well. The QST treatment of Québec fees was not found in a text that the research read, so the
+# profile holds no QST treatment, and a line shows no QST until it does. Not legal advice.
+code: ca-qc
+version: 0.1.0
+title: {en: Québec profile, fr: Profil québécois}
+jurisdiction: CA-QC
+sources:
+  - id: financial-administration-act-qc
+    title: "Loi sur l'administration financière, RLRQ, chapitre A-6.001, articles 83.1 à 83.11, à jour au 2025-12-11"
+    url: "https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001"
+    archive: "https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001"
+    date: "2025-12-11"
+    verification: read
+  - id: rounding-regulation
+    title: "Règlement sur l'arrondissement des tarifs indexés, RLRQ, chapitre A-6.001, r. 0.1, à jour au 2025-10-24"
+    url: "https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1"
+    archive: "https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1"
+    date: "2025-10-24"
+    verification: read
+  - id: cap-law
+    title: "Loi limitant l'indexation de plusieurs tarifs gouvernementaux, RLRQ, chapitre I-7.1, à jour au 2024-05-01"
+    url: "https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-7.1"
+    archive: "https://web.archive.org/web/20240809061656/https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-7.1"
+    date: "2024-05-01"
+    verification: read
+  - id: quebec-fee-indexation-page
+    title: "Tarification des services publics, Québec.ca, ministère des Finances"
+    url: "https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics"
+    archive: "https://web.archive.org/web/20260512134329/https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics"
+    verification: read
+  - id: excise-tax-act-schedule-v
+    title: "Excise Tax Act, R.S.C. 1985, c. E-15, Schedule V, Part VI, section 20"
+    url: "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html"
+    archive: "https://web.archive.org/web/20261009054903/https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html"
+    verification: read
+indexationRules:
+  # Every fee is indexed on 1 January by the yearly change in the Québec consumer price index
+  # without alcoholic beverages, tobacco products and recreational cannabis, over the 12 months to
+  # 30 September of the year before; the rate is never below zero (LAF ss. 83.3 and 83.5).
+  # A fee below $5 waits until the sum of the deferred rates raises it by $0.05 (r. 0.1, s. 2).
+  # From 2023-01-01 to 2026-12-31, the rate is the lower of that rate and 3% (I-7.1, s. 1), except
+  # for the fees of the regulations in its Schedule I (s. 2).
+  - code: laf-83-3
+    index: cpi-quebec-excluding-alcohol-tobacco-cannabis
+    applicationDay: "--01-01"
+    carryForward: false
+    deferralBelow: {amount: "5.00", currency: CAD}
+    deferralStep: {amount: "0.05", currency: CAD}
+    roundingRule: quebec-indexed-fees
+    caps:
+      - {rate: "3", validity: {start: "2023-01-01", end: "2027-01-01"}, sourceId: cap-law}
+    sourceIds: [financial-administration-act-qc, rounding-regulation, cap-law]
+roundingRules:
+  # The result of the indexation goes to the nearest multiple of 0.05 below $10, of 0.10 from $10
+  # to below $25, of 0.25 from $25 to below $100, and of 1.00 from $100; a result halfway goes up
+  # (r. 0.1, s. 1).
+  - code: quebec-indexed-fees
+    method: nearest-half-up
+    bands:
+      - {from: "0", below: "10", step: "0.05"}
+      - {from: "10", below: "25", step: "0.10"}
+      - {from: "25", below: "100", step: "0.25"}
+      - {from: "100", step: "1.00"}
+    sourceId: rounding-regulation
+taxTreatments:
+  - {code: gst-government-license-exempt, taxCode: gst, treatment: exempt, sourceId: excise-tax-act-schedule-v}
+parameters:
+  # The rate that the ministère des Finances published for each year (LAF s. 83.3).
+  - code: laf-83-3-rate
+    value: "2.85"
+    validity: {start: "2025-01-01", end: "2026-01-01"}
+    sourceId: quebec-fee-indexation-page
+  - code: laf-83-3-rate
+    value: "2.05"
+    validity: {start: "2026-01-01", end: "2027-01-01"}
+    sourceId: quebec-fee-indexation-page

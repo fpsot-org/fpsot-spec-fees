@@ -1,0 +1,162 @@
+{
+  "quotes": [
+    {
+      "id": "019c4e00-0001-7000-8000-000000000001",
+      "decisionRecordId": "019c4e00-0009-7000-8000-000000000001",
+      "feeSchedule": {
+        "code": "pleasure-craft-license-fees",
+        "version": "1.0.0",
+        "digest": "fa7d3a81decf0711e818d1677a9f1a6b84006c22b5ee5c30d652ab4b7aeb7529"
+      },
+      "effectiveDate": "2026-03-10",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "pleasure-craft-license-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "24.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-12-31",
+          "grossAmount": {
+            "amount": "24.00",
+            "currency": "CAD"
+          },
+          "exemption": "section-35-right",
+          "amount": {
+            "amount": "0.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html",
+            "otherLanguageUris": [
+              "https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"
+            ]
+          }
+        }
+      ],
+      "total": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "validUntil": "2026-04-01T03:59:59Z",
+      "createdAt": "2026-03-10T15:00:01Z",
+      "updatedAt": "2026-03-10T15:00:01Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "019c4e00-0002-7000-8000-000000000001",
+      "quoteIds": [
+        "019c4e00-0001-7000-8000-000000000001"
+      ],
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000001",
+      "filingIds": [
+        "019c4e00-0011-7000-8000-000000000001"
+      ],
+      "paymentReference": "EX-2026-000101",
+      "amountDue": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "status": "no-payment-due",
+      "createdAt": "2026-03-10T15:00:02Z",
+      "updatedAt": "2026-03-10T15:00:02Z"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "019c4e00-0007-7000-8000-000000000004",
+      "kind": "no-payment-due",
+      "orderId": "019c4e00-0002-7000-8000-000000000001",
+      "issuedAt": "2026-03-10T15:00:03Z",
+      "payee": {
+        "code": "example-federal-licensing-office"
+      },
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000001",
+      "paymentReference": "EX-2026-000101",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "pleasure-craft-license-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "24.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-12-31",
+          "grossAmount": {
+            "amount": "24.00",
+            "currency": "CAD"
+          },
+          "exemption": "section-35-right",
+          "amount": {
+            "amount": "0.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html",
+            "otherLanguageUris": [
+              "https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000001",
+          "ruleSet": {
+            "code": "pleasure-craft-license-fee",
+            "version": "1.0.0",
+            "digest": "f5ef6f0783796835242084a46e199c6c0ec14bfe44bc7e748811e0735272cf47",
+            "buildCoordinates": "org.example.fees:pleasure-craft-license-fee-rules:1.0.0"
+          }
+        }
+      ],
+      "totalDue": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "totalPaid": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "totalRefunded": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "sealProfile": "seal-log",
+      "createdAt": "2026-03-10T15:00:03Z",
+      "updatedAt": "2026-03-10T15:00:03Z"
+    }
+  ]
+}

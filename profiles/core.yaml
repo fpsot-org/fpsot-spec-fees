@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Core profile of the FPSOT fees specification (FEE-010, FEE-014), in the form of the class
+# FeeProfile of model/fees.yaml. Released apart from the core rules (FEE-011).
+# It holds no value of a law. It sets the defaults that apply when no other profile sets a value:
+# a full redirect to the page of the provider for card payments, seal-log as the lowest seal
+# profile of a receipt, rounding to the cent with halves going up, and the refund reasons that
+# every engine knows. A jurisdiction profile adds reasons and may tie a reason to its law.
+code: core
+version: 0.1.0
+title: {en: Core profile, fr: Profil de base}
+defaults:
+  cardIntegration: hosted-redirect
+  receiptSealProfile: seal-log
+  roundingRule: cent-half-up
+refundReasons:
+  - {code: overpayment, deductServicesRendered: false}
+  - {code: duplicate-payment, deductServicesRendered: false}
+  - {code: administrative-error, deductServicesRendered: false}
+  - {code: purpose-not-fulfilled, deductServicesRendered: false}
+  - {code: remission, deductServicesRendered: false}
+roundingRules:
+  - code: cent-half-up
+    method: nearest-half-up
+    bands:
+      - {from: "0", step: "0.01"}

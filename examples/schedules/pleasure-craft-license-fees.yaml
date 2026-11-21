@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Fee schedule (FEE-020), in the form of the class FeeSchedule of model/fees.yaml, which extends the
+# ParameterSet of the decisions specification (DEC-037). The pleasure craft license fee of $24 and
+# its exemption, under section 112 of the Small Vessel Regulations as SOR/2025-272 replaced it.
+# The owner who declares on the application that they can exercise a right that section 35 of the
+# Constitution Act, 1982 recognizes and affirms pays no fee (s. 112(2)). The declaration is a fact
+# of the decision, not a status that anyone verified (FEE-028).
+# The registry specification reports that section 113 adjusts the fee each April 1 by the consumer
+# price index (REG-026). The adjusted amounts were not read, so the value ends on 2026-04-01: a
+# quote for a later date finds no value and refuses (FEE-013). The enactment instant stands for
+# the registration date of SOR/2025-272, 2025-12-12. Not legal advice.
+code: pleasure-craft-license-fees
+version: 1.0.0
+title: {en: Pleasure craft license fees, fr: Droits des permis d’embarcation de plaisance}
+profile: ca-federal
+roundingRule: cent-half-up
+roundingStage: per-line
+feeItems:
+  - code: pleasure-craft-license-fee
+    title: {en: Pleasure craft license, fr: Permis d’embarcation de plaisance}
+    basis: flat
+    amountParameter: pleasure-craft-license-fee-amount
+    legalSource:
+      uri: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html"
+      otherLanguageUris: ["https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"]
+    taxTreatment: gst-government-license-exempt
+    exemptions:
+      - code: section-35-right
+        factCode: declares-section-35-right
+        legalSource:
+          uri: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html"
+          otherLanguageUris: ["https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"]
+parameters:
+  - code: pleasure-craft-license-fee-amount
+    values:
+      - validity: {start: "2025-12-31", end: "2026-04-01"}
+        value: {amount: "24.00", currency: CAD}
+        enactedAt: "2025-12-12T12:00:00Z"
+        legalSource:
+          uri: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html"
+          otherLanguageUris: ["https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"]

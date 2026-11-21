@@ -1,0 +1,96 @@
+= Reçus
+include::_fpsot-terms.adoc[]
+
+Aucune norme de paiement que la recherche a lue ne fixe le contenu d’un reçu.
+GovStack exige des reçus sans en fixer le contenu, et GOV.UK Pay envoie son propre courriel.
+Le reçu de frais publics doit tout de même permettre de vérifier les faits.
+La personne qui paie, un vérificateur et un tribunal doivent pouvoir le faire.
+Cette page construit donc le reçu à partir des données des autres pages.
+La spécification sur les documents signés le cachette ensuite.
+
+Les règlements fédéraux sur les fonds publics exigent un reçu sur demande, ou quand le ministre l’ordonne.
+Le moteur en délivre tout de même un pour chaque demande de paiement.
+Le reçu est aussi la donnée que lit un audit.
+
+== Délivrance
+
+[[FEE-080]]
+*FEE-080.* Un moteur DOIT délivrer un reçu de la classe `Receipt` de `model/fees.yaml` quand une demande atteint `paid`.
+Il DOIT délivrer un nouveau reçu après chaque remboursement réussi et après chaque remise.
+Un reçu ultérieur DOIT nommer le reçu qu’il suit.
+Le genre d’un reçu est `payment`, `refund`, `remission` ou `no-payment-due`.
+
+Un reçu ne change jamais, donc un remboursement donne un nouveau reçu.
+Le dernier reçu d’une demande montre alors toute son histoire.
+
+== Contenu
+
+[[FEE-081]]
+*FEE-081.* Chaque reçu DOIT contenir ces éléments.
+
+* La demande de paiement, l’organisme bénéficiaire, la personne qui paie par son identifiant et la référence de paiement.
+* Chaque ligne des devis, avec son élément de frais, sa source juridique et ses montants.
+Chaque ligne nomme aussi son enregistrement de décision et sa version de règles, selon DEC-030 et DEC-040.
+* La façon dont chaque taxe s’applique à chaque ligne.
+* Chaque tentative réussie, avec son montant, sa catégorie de mode de paiement, son identifiant chez le fournisseur et son instant.
+* Chaque remboursement réussi jusque-là, avec son montant et son motif.
+* Chaque remise jusque-là, avec son montant, son enregistrement de décision et sa base juridique.
+* Le total dû, le total payé et le total remboursé.
+
+La version de règles et la source juridique de chaque ligne permettent de demander pourquoi des frais s’appliquent.
+L’identifiant chez le fournisseur permet à l’organisme de retrouver le paiement lors d’une contestation ou d’un rapprochement.
+
+== Cachet
+
+[[FEE-082]]
+*FEE-082.* L’{term-deploying-body} DOIT cacheter chaque reçu selon la spécification sur les documents signés, dans un format de LOG-010.
+L’identifiant du reçu DOIT être celui de son manifeste de cachet, selon LOG-019.
+Le profil de cachet DOIT être `seal-log` ou supérieur, selon LOG-002.
+Un reçu NE DOIT PAS changer une fois cacheté, selon LOG-082.
+Une correction DOIT être un nouveau reçu qui nomme celui qu’il corrige.
+
+Le journal prouve alors quand chaque reçu existait, et que personne ne l’a changé ensuite.
+La personne qui paie peut vérifier un reçu avec du matériel publié seulement, selon LOG-053.
+
+== Affichage
+
+[[FEE-083]]
+*FEE-083.* Un reçu DOIT contenir des codes, des montants, des identifiants et des instants, et aucun texte rédigé.
+Une vue d’un reçu DOIT montrer le libellé de chaque code dans la langue du lecteur, selon DAT-073.
+Un reçu NE DOIT PAS montrer d’une carte plus que sa marque et ses quatre derniers chiffres, selon FEE-046.
+
+Un même reçu cacheté sert alors une personne en français et une autre en anglais.
+La version imprimée PEUT porter le code de consultation et le code QR de LOG-056.
+
+[[FEE-084]]
+*FEE-084.* Un moteur DEVRAIT délivrer un reçu du genre `no-payment-due` pour une demande dont le montant dû est nul.
+Ce reçu montre chaque exemption appliquée, avec sa source juridique.
+
+Dans les exemples, le permis d’embarcation de plaisance ne coûte rien au propriétaire qui a déclaré un droit.
+Ce droit est visé à l’article 35.
+Le reçu montre tout de même les frais de 24 $ et l’exemption, et le propriétaire voit pourquoi.
+
+== Taxes
+
+[[FEE-085]]
+*FEE-085.* Quand une ligne porte une taxe, le reçu DOIT donner le numéro d’inscription de l’organisme pour cette taxe.
+Quand aucune ligne ne la porte, chaque ligne montre tout de même son traitement et la source de celui-ci.
+
+Le droit fiscal peut exiger davantage d’une facture.
+Ces règles sont _à vérifier_ pour la taxe sur les produits et services et la taxe de vente du Québec.
+La recherche ne les a pas lues.
+
+== Références
+
+=== Références informatives
+
+* link:https://laws-lois.justice.gc.ca/fra/reglements/DORS-98-128/TexteComplet.html[Règlement de 1997 sur la réception et le dépôt des fonds publics], DORS/98-128, site Web de la législation (Justice). link:https://web.archive.org/web/20251011033637/https://laws-lois.justice.gc.ca/fra/reglements/DORS-98-128/TexteComplet.html[Copie archivée]
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, lu le 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-21 |Première version.
+|===

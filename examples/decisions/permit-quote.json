@@ -1,0 +1,109 @@
+{
+  "id": "019c4e00-0009-7000-8000-000000000002",
+  "decisionType": "example-permit-fee",
+  "decisionTypeVersion": "1.0.0",
+  "profiles": [
+    {
+      "code": "core",
+      "version": "0.1.0"
+    },
+    {
+      "code": "ca-federal",
+      "version": "0.1.0"
+    }
+  ],
+  "impactLevel": "level-1",
+  "objects": [
+    {
+      "type": "Party",
+      "id": "019c4e00-0010-7000-8000-000000000002",
+      "qualifier": "subject"
+    },
+    {
+      "type": "Filing",
+      "id": "019c4e00-0011-7000-8000-000000000002",
+      "qualifier": "case"
+    }
+  ],
+  "legalAuthorities": [
+    {
+      "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html",
+      "otherLanguageUris": [
+        "https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"
+      ]
+    },
+    {
+      "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html",
+      "otherLanguageUris": [
+        "https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"
+      ]
+    }
+  ],
+  "ruleSet": {
+    "code": "example-permit-fee",
+    "version": "1.0.0",
+    "digest": "da1d9049d74e0f176b879a709b9a777bed2146822cdd3068fb53921ff7252089",
+    "buildCoordinates": "org.example.fees:example-permit-fee-rules:1.0.0"
+  },
+  "parameterSets": [
+    {
+      "code": "example-federal-permit-fees",
+      "version": "1.0.0",
+      "digest": "785961e6d7ed58789e891a19c337782ead3d4993ca7c97569a25c570545952b8"
+    }
+  ],
+  "effectiveDate": "2026-03-02",
+  "recordTime": "2026-03-02T13:59:00Z",
+  "startedAt": "2026-03-02T13:59:01Z",
+  "completedAt": "2026-03-02T13:59:01Z",
+  "inputs": [
+    {
+      "name": "application-kind",
+      "value": "new-permit",
+      "source": "applicant-declaration",
+      "asOfDate": "2026-03-02",
+      "collectionMethod": "online-form"
+    },
+    {
+      "name": "amendments-requested",
+      "value": 1,
+      "source": "applicant-declaration",
+      "asOfDate": "2026-03-02",
+      "collectionMethod": "online-form"
+    }
+  ],
+  "resultKind": "decided",
+  "outcome": "fee-payable",
+  "amount": {
+    "amount": "390.00",
+    "currency": "CAD"
+  },
+  "reasonScheme": "https://vocab.example.org/fee-reasons/versions/1.0.0",
+  "reasons": [
+    {
+      "code": "permit-application-fee-applies",
+      "rank": 1,
+      "principal": true,
+      "clause": {
+        "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html",
+        "otherLanguageUris": [
+          "https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"
+        ]
+      }
+    },
+    {
+      "code": "permit-amendment-fee-applies",
+      "rank": 2,
+      "principal": true,
+      "clause": {
+        "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html",
+        "otherLanguageUris": [
+          "https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"
+        ]
+      }
+    }
+  ],
+  "automationDegree": "fully-automated",
+  "createdAt": "2026-03-02T13:59:01Z",
+  "updatedAt": "2026-03-02T13:59:01Z"
+}
