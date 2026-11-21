@@ -23,7 +23,8 @@ Un `DELETE` effacerait cette trace.
 *FEE-101.* Chaque adaptateur DOIT offrir ces opérations au moteur, ou indiquer que son fournisseur n’en offre pas une.
 
 * Créer un paiement, et rendre l’adresse de la page du fournisseur.
-* Lire un paiement, et le saisir ou l’annuler.
+* Lire un paiement, et le capturer ou l’annuler.
+* Retirer chaque champ de carte d’une lecture ou d’un avis, selon FEE-052.
 * Créer un remboursement, et le lire.
 * Lire les contestations d’un paiement.
 * Lire les versements, avec leurs lignes.

@@ -24,14 +24,19 @@ Elle NE DOIT PAS contenir de renseignement personnel, selon DAT-062.
 
 [[FEE-041]]
 *FEE-041.* Chaque tentative de paiement DOIT être une donnée de la classe `PaymentAttempt`, qui nomme sa demande.
-Son montant DOIT égaler le montant dû de la demande.
-Une demande NE DOIT PAS avoir deux tentatives non terminées en même temps.
-Une demande NE DOIT PAS avoir plus d’une tentative au statut `success`.
-Si un deuxième paiement réussit malgré tout, le moteur DOIT le rembourser pour le motif `duplicate-payment`.
+Son montant DOIT égaler le montant dû de la demande au moment où le moteur la crée.
+Une demande NE DOIT PAS avoir deux tentatives non terminées en même temps, selon FEE-053.
+Une demande NE DEVRAIT PAS avoir plus d’une tentative au statut `success`.
+Si un deuxième paiement réussit malgré tout, le moteur DOIT en rembourser le montant entier pour le motif `duplicate-payment`.
 
 Une demande avec plusieurs tentatives suit l’intention de paiement de Stripe.
 GOV.UK Pay crée plutôt un nouveau paiement pour chaque essai.
 La demande garde le lien que cherchent la personne qui paie, le personnel et les vérificateurs.
+
+Un deuxième paiement peut tout de même réussir.
+C’est le cas quand la personne envoie aussi un virement avec la référence de paiement.
+Le moteur consigne alors ce virement comme une tentative, à partir de sa lecture du crédit, et le rembourse.
+Le fichier `examples/quebec-permit/fees.json` contient ce cas.
 
 == Statuts
 
@@ -45,7 +50,7 @@ Son champ `finished` DOIT correspondre au tableau.
 |`created` |false |Le moteur a créé le paiement chez le fournisseur, et la personne n’a pas encore atteint sa page.
 |`started` |false |La personne a atteint la page du fournisseur.
 |`submitted` |false |La personne a envoyé ses données, et le fournisseur les traite encore ou attend une confirmation.
-|`capturable` |false |Le fournisseur a autorisé le paiement, et le moteur peut le saisir.
+|`capturable` |false |Le fournisseur a autorisé le paiement, et le moteur peut le capturer.
 |`success` |true |Le fournisseur a pris le paiement.
 |`failed` |true |Le mode de paiement a été refusé, le paiement a expiré ou la personne a annulé, et aucun argent n’a circulé.
 |`cancelled` |true |Le service a annulé le paiement, et aucun argent n’a circulé.
@@ -78,24 +83,34 @@ GOV.UK Pay garde lui aussi la réception des fonds de chaque paiement dans un r�
 Selon FEE-091, le moteur fixe ensuite cette réception à partir d’un versement du fournisseur.
 
 [[FEE-045]]
-*FEE-045.* Le statut d’une demande DOIT découler de son montant et de ses tentatives.
+*FEE-045.* Le statut d’une demande DOIT découler de son montant, de ses tentatives, de ses remboursements et de ses contestations.
 Il est `no-payment-due` quand le montant dû est nul, et `paid` quand une tentative a réussi.
+Il est `refunded` quand des remboursements réussis ont rendu en entier chaque paiement réussi.
+Il est `reversed` quand l’organisme a perdu une contestation sur une de ses tentatives.
 Sinon, il est `awaiting-payment`, ou `canceled` quand l’organisme a annulé la demande avant tout paiement.
+
 Un registre tient le statut de paiement d’une déclaration selon REG-024.
 Il DOIT faire correspondre ces valeurs à la liste de son module.
+Il NE DOIT PAS faire correspondre `refunded` ni `reversed` à la valeur qui signifie payé.
 
+Les deux dernières valeurs indiquent au registre que l’organisme ne détient plus l’argent.
+La déclaration attend alors une personne, au lieu d’avancer comme si la personne avait payé.
 Le module des embarcations de plaisance de la spécification sur les registres énumère `not-required`, `pending`, `paid` et `exempt`.
 Un devis exempté donne une demande sans paiement dû, et la déclaration montre `exempt`.
+Dans ce module, `refunded` et `reversed` correspondent à `pending`.
+Les événements de FEE-075 nomment la tentative de chaque remboursement et de chaque contestation, et la tentative nomme sa demande.
 
 == Données de carte
 
 [[FEE-046]]
-*FEE-046.* Un logiciel conforme à cette spécification NE DOIT PAS recevoir, stocker, journaliser ni transmettre de données de carte.
+*FEE-046.* Un logiciel conforme à cette spécification NE DOIT PAS garder, journaliser ni transmettre de données de carte.
 Ce sont le numéro de carte, le code de sécurité, la date d’expiration, les données de piste et le NIP.
 Une interface, une donnée, un journal, un événement ou un reçu NE DOIT PAS en contenir.
 Une donnée PEUT montrer une carte par sa marque et ses quatre derniers chiffres, tels que le fournisseur les rend.
 Une donnée DOIT donner le mode de paiement seulement par sa catégorie, comme `card` ou `direct-debit`.
 
+Un fournisseur peut tout de même rendre des données de carte dans une lecture ou un avis.
+FEE-052 fixe ce que l’adaptateur en fait.
 Des données de carte dans un système d’un organisme public placent ce système sous la norme PCI DSS.
 Sans elles, la portée reste chez le fournisseur.
 Les journaux suivent OBS-090 et OBS-091, et un événement ne contient ni montant ni carte, selon FEE-076.
@@ -111,14 +126,19 @@ En février 2025, le PCI Security Standards Council a précisé que son nouveau 
 [[FEE-048]]
 *FEE-048.* Un organisme PEUT intégrer le formulaire de paiement de son fournisseur dans sa propre page, comme dans un cadre.
 Il DOIT d’abord consigner comment sa page respecte le critère sur les scripts du questionnaire d’autoévaluation A de janvier 2025.
-La consignation DOIT nommer le fournisseur, la méthode, la personne qui l’a vérifiée et sa date.
+La consignation DOIT être une donnée de la classe `EmbeddedFormRecord` de `model/fees.yaml`.
+
+La consignation DOIT nommer le fournisseur, la méthode, la personne qui l’a vérifiée et la date de cette vérification.
 La méthode est soit des contrôles sur les scripts de la page, soit une confirmation du fournisseur.
 La consignation DOIT aussi nommer l’acquéreur ou la marque de carte qui a accepté cette méthode.
+Elle DOIT aussi donner le texte sur lequel repose la méthode et la période où la consignation vaut.
+Chaque tentative avec un formulaire intégré DOIT nommer la consignation qui la couvrait ce jour-là.
 
 La méthode suit la FAQ 1588 du PCI Security Standards Council, que résume son avis du 28 février 2025.
 Le texte du questionnaire et de la FAQ est _à vérifier_ à la source.
-Des sources rapportent qu’une révision de 2026 de la FAQ 1331 demande aux marchands de consulter leur acquéreur.
+Des sources rapportent qu’une révision de 2026 de la FAQ 1331 renvoie les marchands à leur acquéreur ou aux marques.
 Cette révision est aussi _à vérifier_.
+Il en va de même du fondement de la partie de la consignation qui nomme un acquéreur ou une marque.
 
 == Lectures chez le fournisseur
 
@@ -130,12 +150,13 @@ Une personne peut ouvrir l’adresse de retour à la main, ou un navigateur peut
 Le retour prouve seulement qu’un navigateur est arrivé.
 
 [[FEE-050]]
-*FEE-050.* Chaque requête qui crée une demande, une tentative ou un remboursement DOIT porter un en-tête `Idempotency-Key`.
+*FEE-050.* Chaque requête qui crée une demande de paiement, une tentative ou un remboursement DOIT porter un en-tête `Idempotency-Key`.
 Elle suit API-060 à API-063.
 Quand le fournisseur accepte une clé, le moteur DOIT envoyer sa propre clé pour chaque tentative et chaque remboursement.
 Le moteur NE DOIT PAS envoyer la même clé pour deux tentatives différentes.
 
-Une nouvelle tentative après un délai dépassé retrouve alors la première, au lieu de faire payer la personne deux fois.
+Une requête répétée après un délai dépassé retrouve alors la première tentative.
+La personne ne paie donc pas deux fois.
 GOV.UK Pay et Stripe acceptent tous deux une telle clé.
 
 [[FEE-051]]
@@ -145,6 +166,36 @@ Chaque adaptateur DOIT publier comment il fait correspondre les statuts de son f
 
 Le statut brut permet de vérifier la correspondance longtemps après un changement d’interface chez le fournisseur.
 La page xref:alignment.adoc[Correspondance avec d’autres normes] donne les correspondances pour GOV.UK Pay, GovStack, ISO 20022 et Stripe.
+Chez Stripe, une tentative correspond à un débit d’une intention de paiement, jamais à l’intention de paiement.
+L’intention de paiement garde son identifiant d’un essai à l’autre.
+
+[[FEE-052]]
+*FEE-052.* Un adaptateur DOIT retirer chaque champ de carte de chaque lecture chez le fournisseur et de chaque avis.
+Il DOIT le faire avant d’enregistrer, de journaliser ou de transmettre quoi que ce soit au moteur.
+Les champs de carte sont les données de carte de FEE-046 et le nom du titulaire.
+Les premiers chiffres de la carte et l’adresse de facturation sont aussi des champs de carte.
+L’adaptateur PEUT garder la marque et les quatre derniers chiffres pour l’affichage.
+
+GOV.UK Pay rend le détail de carte d’un paiement, avec sa date d’expiration et ses premiers chiffres.
+Ce détail contient aussi le nom du titulaire et l’adresse de facturation.
+Stripe rend le mois et l’année d’expiration d’une carte, et les coordonnées de facturation de la personne.
+Les lectures et les avis font donc entrer des champs de carte dans l’adaptateur.
+Celui-ci ne doit pas les laisser aller plus loin.
+
+Le nom, les premiers chiffres et l’adresse sont des renseignements personnels.
+OBS-090 les tient hors des données qui ne les déclarent pas.
+
+[[FEE-053]]
+*FEE-053.* Avant de créer une tentative pour une demande, le moteur DOIT annuler chaque tentative non terminée de cette demande.
+Il le fait chez le fournisseur.
+Il DOIT ensuite relire cette tentative chez le fournisseur, selon FEE-049.
+Il DOIT créer la nouvelle tentative seulement quand cette lecture montre l’ancienne tentative terminée.
+Le fournisseur peut être incapable d’annuler une tentative, comme un virement en attente.
+Cette tentative bloque alors une nouvelle tentative seulement jusqu’à ce qu’elle se termine.
+
+Une personne qui revient après un délai dépassé peut encore avoir un paiement en cours chez le fournisseur.
+Sans l’annulation et la lecture, les deux paiements pourraient réussir.
+La lecture peut aussi montrer que l’ancienne tentative a réussi, et la demande n’a alors besoin d’aucune nouvelle tentative.
 
 == Références
 

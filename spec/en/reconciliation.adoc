@@ -26,8 +26,11 @@ The kind, the provider id and the amount of the line MUST agree with that record
 A line that matches no record MUST stay `unmatched`, and the payout then has the status `exceptions`.
 A payout MUST have the status `reconciled` only when every line matched.
 Each attempt that a payout carries MUST then show that payout in its settlement, under FEE-044.
+A line of a dispute MUST carry the amount that FEE-069 sets for its kind.
 
 A person must explain each exception.
+A provider that reverses a refund after its success sends a line that matches no refund.
+That line stays an exception, under FEE-060.
 The engine never closes one by itself.
 
 [[FEE-092]]

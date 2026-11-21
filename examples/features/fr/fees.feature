@@ -82,3 +82,13 @@ Fonctionnalité: Devis, paiements, remboursements, remises et versements de frai
       Quand le moteur de frais rapproche ses lignes
       Alors la ligne "ex-pay-7f3a02" correspond à la tentative et la ligne "ex-ref-5501" correspond au remboursement
       Et le versement a le statut "reconciled"
+
+  Règle: Un deuxième paiement réussi est remboursé en entier comme paiement en double
+
+    @fees-010
+    Scénario: Un virement que la personne a aussi envoyé est remboursé
+      Étant donné la demande "EX-2026-000456" payée "88.75" le "2026-02-10" par un formulaire intégré selon la consignation du "2026-01-15"
+      Quand la banque montre un virement de "88.75" avec la même référence le "2026-02-12"
+      Alors le moteur de frais consigne une deuxième tentative au statut "success"
+      Et il rembourse "88.75" sur cette tentative pour le motif "duplicate-payment"
+      Et la demande garde le statut "paid"

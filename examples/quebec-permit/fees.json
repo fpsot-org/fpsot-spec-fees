@@ -1,0 +1,409 @@
+{
+  "quotes": [
+    {
+      "id": "019c4e00-0001-7000-8000-000000000101",
+      "decisionRecordId": "019c4e00-0009-7000-8000-000000000101",
+      "feeSchedule": {
+        "code": "example-quebec-permit-fees",
+        "version": "1.1.0",
+        "digest": "14ccdf25406e75787b5510ed8b9576bcad713f30c44b6fae5c1ce205e1b31c64"
+      },
+      "effectiveDate": "2026-02-10",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2026-01-01",
+          "grossAmount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://lois.example.org/fr/reglement/EX-1/article-2",
+            "otherLanguageUris": [
+              "https://lois.example.org/en/regulation/EX-1/section-2"
+            ]
+          }
+        }
+      ],
+      "total": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "validUntil": "2026-03-12T03:59:59Z",
+      "createdAt": "2026-02-10T15:00:01Z",
+      "updatedAt": "2026-02-10T15:00:01Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "019c4e00-0002-7000-8000-000000000101",
+      "quoteIds": [
+        "019c4e00-0001-7000-8000-000000000101"
+      ],
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000101",
+      "filingIds": [
+        "019c4e00-0011-7000-8000-000000000101"
+      ],
+      "paymentReference": "EX-2026-000456",
+      "amountDue": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "status": "paid",
+      "createdAt": "2026-02-10T15:00:30Z",
+      "updatedAt": "2026-02-13T09:00:00Z"
+    }
+  ],
+  "embeddedFormRecords": [
+    {
+      "id": "019c4e00-0014-7000-8000-000000000101",
+      "provider": "example-pay",
+      "method": "provider-confirmation",
+      "checkedByPartyId": "019c4e00-0010-7000-8000-000000000901",
+      "checkedOn": "2026-01-15",
+      "acceptedByKind": "acquirer",
+      "acceptedBy": "example-acquirer",
+      "basis": "https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants",
+      "validity": {
+        "start": "2026-01-20",
+        "end": "2027-01-20"
+      },
+      "createdAt": "2026-01-15T16:00:00Z",
+      "updatedAt": "2026-01-15T16:00:00Z"
+    }
+  ],
+  "attempts": [
+    {
+      "id": "019c4e00-0003-7000-8000-000000000101",
+      "orderId": "019c4e00-0002-7000-8000-000000000101",
+      "provider": "example-pay",
+      "providerPaymentId": "ex-pay-9c1b01",
+      "amount": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "methodCategory": "card",
+      "integration": "embedded-hosted-form",
+      "embeddedFormRecordId": "019c4e00-0014-7000-8000-000000000101",
+      "status": "success",
+      "finished": true,
+      "providerStatus": "captured",
+      "statusHistory": [
+        {
+          "status": "created",
+          "at": "2026-02-10T15:01:00Z",
+          "source": "provider-response"
+        },
+        {
+          "status": "submitted",
+          "at": "2026-02-10T15:02:10Z",
+          "source": "provider-read"
+        },
+        {
+          "status": "success",
+          "at": "2026-02-10T15:02:20Z",
+          "source": "provider-read"
+        }
+      ],
+      "settlement": {
+        "status": "not-settled"
+      },
+      "cardDisplay": {
+        "brand": "mastercard",
+        "lastFour": "0017"
+      },
+      "createdAt": "2026-02-10T15:01:00Z",
+      "updatedAt": "2026-02-10T15:02:20Z"
+    },
+    {
+      "id": "019c4e00-0003-7000-8000-000000000102",
+      "orderId": "019c4e00-0002-7000-8000-000000000101",
+      "provider": "example-bank",
+      "providerPaymentId": "ex-bank-cr-3301",
+      "amount": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "methodCategory": "bank-transfer",
+      "integration": "payer-initiated-transfer",
+      "status": "success",
+      "finished": true,
+      "providerStatus": "booked",
+      "statusHistory": [
+        {
+          "status": "success",
+          "at": "2026-02-12T10:00:00Z",
+          "source": "provider-read"
+        }
+      ],
+      "settlement": {
+        "status": "not-settled"
+      },
+      "createdAt": "2026-02-12T10:00:00Z",
+      "updatedAt": "2026-02-12T10:00:00Z"
+    }
+  ],
+  "refunds": [
+    {
+      "id": "019c4e00-0005-7000-8000-000000000101",
+      "orderId": "019c4e00-0002-7000-8000-000000000101",
+      "attemptId": "019c4e00-0003-7000-8000-000000000102",
+      "providerRefundId": "ex-bank-rf-3301",
+      "amount": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "refundableBefore": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "reason": "duplicate-payment",
+      "status": "success",
+      "statusHistory": [
+        {
+          "status": "submitted",
+          "at": "2026-02-12T11:00:00Z",
+          "source": "provider-response"
+        },
+        {
+          "status": "success",
+          "at": "2026-02-13T09:00:00Z",
+          "source": "provider-read"
+        }
+      ],
+      "createdAt": "2026-02-12T11:00:00Z",
+      "updatedAt": "2026-02-13T09:00:00Z"
+    }
+  ],
+  "receipts": [
+    {
+      "orderId": "019c4e00-0002-7000-8000-000000000101",
+      "payee": {
+        "code": "example-quebec-permit-body"
+      },
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000101",
+      "paymentReference": "EX-2026-000456",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2026-01-01",
+          "grossAmount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://lois.example.org/fr/reglement/EX-1/article-2",
+            "otherLanguageUris": [
+              "https://lois.example.org/en/regulation/EX-1/section-2"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000101",
+          "ruleSet": {
+            "code": "example-quebec-permit-fee",
+            "version": "1.0.0",
+            "digest": "4f0c1e7a9b2d3c5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6",
+            "buildCoordinates": "org.example.fees:example-quebec-permit-fee-rules:1.0.0"
+          }
+        }
+      ],
+      "totalDue": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "id": "019c4e00-0007-7000-8000-000000000101",
+      "kind": "payment",
+      "issuedAt": "2026-02-10T15:02:30Z",
+      "payments": [
+        {
+          "attemptId": "019c4e00-0003-7000-8000-000000000101",
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "methodCategory": "card",
+          "cardDisplay": {
+            "brand": "mastercard",
+            "lastFour": "0017"
+          },
+          "providerPaymentId": "ex-pay-9c1b01",
+          "succeededAt": "2026-02-10T15:02:20Z"
+        }
+      ],
+      "totalPaid": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "totalRefunded": {
+        "amount": "0.00",
+        "currency": "CAD"
+      },
+      "sealProfile": "seal-log",
+      "createdAt": "2026-02-10T15:02:30Z",
+      "updatedAt": "2026-02-10T15:02:30Z"
+    },
+    {
+      "orderId": "019c4e00-0002-7000-8000-000000000101",
+      "payee": {
+        "code": "example-quebec-permit-body"
+      },
+      "payerPartyId": "019c4e00-0010-7000-8000-000000000101",
+      "paymentReference": "EX-2026-000456",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "permit-fee",
+          "quantity": 1,
+          "unitAmount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2026-01-01",
+          "grossAmount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://lois.example.org/fr/reglement/EX-1/article-2",
+            "otherLanguageUris": [
+              "https://lois.example.org/en/regulation/EX-1/section-2"
+            ]
+          },
+          "decisionRecordId": "019c4e00-0009-7000-8000-000000000101",
+          "ruleSet": {
+            "code": "example-quebec-permit-fee",
+            "version": "1.0.0",
+            "digest": "4f0c1e7a9b2d3c5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6",
+            "buildCoordinates": "org.example.fees:example-quebec-permit-fee-rules:1.0.0"
+          }
+        }
+      ],
+      "totalDue": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "id": "019c4e00-0007-7000-8000-000000000102",
+      "kind": "refund",
+      "previousReceiptId": "019c4e00-0007-7000-8000-000000000101",
+      "issuedAt": "2026-02-13T09:00:10Z",
+      "payments": [
+        {
+          "attemptId": "019c4e00-0003-7000-8000-000000000101",
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "methodCategory": "card",
+          "cardDisplay": {
+            "brand": "mastercard",
+            "lastFour": "0017"
+          },
+          "providerPaymentId": "ex-pay-9c1b01",
+          "succeededAt": "2026-02-10T15:02:20Z"
+        },
+        {
+          "attemptId": "019c4e00-0003-7000-8000-000000000102",
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "methodCategory": "bank-transfer",
+          "providerPaymentId": "ex-bank-cr-3301",
+          "succeededAt": "2026-02-12T10:00:00Z"
+        }
+      ],
+      "totalPaid": {
+        "amount": "177.50",
+        "currency": "CAD"
+      },
+      "refunds": [
+        {
+          "refundId": "019c4e00-0005-7000-8000-000000000101",
+          "amount": {
+            "amount": "88.75",
+            "currency": "CAD"
+          },
+          "reason": "duplicate-payment"
+        }
+      ],
+      "totalRefunded": {
+        "amount": "88.75",
+        "currency": "CAD"
+      },
+      "sealProfile": "seal-log",
+      "createdAt": "2026-02-13T09:00:10Z",
+      "updatedAt": "2026-02-13T09:00:10Z"
+    }
+  ]
+}

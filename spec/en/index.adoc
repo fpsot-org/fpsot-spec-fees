@@ -54,14 +54,15 @@ A party can claim more than one.
 [cols="1,2,3",options="header"]
 |===
 |Class |Who claims it |Rules
-|`engine` |A fee engine, which quotes, takes payments, refunds, remits and issues receipts |The rules of every page, except those that bind only an adapter, a profile or an operator
-|`adapter` |A provider adapter, which links an engine to one payment provider |FEE-043, FEE-044, FEE-046, FEE-049 to FEE-051, FEE-060, FEE-061, FEE-067, FEE-070 to FEE-074 and FEE-101
+|`engine` |A fee engine, which quotes, takes payments, refunds, remits and issues receipts |The rules of every page, except those that bind only an adapter, a profile or an operator, and also FEE-061, FEE-090 and FEE-091
+|`adapter` |A provider adapter, which links an engine to one payment provider |FEE-043, FEE-044, FEE-046, FEE-049 to FEE-052, FEE-060, FEE-061, FEE-067, FEE-070 to FEE-074 and FEE-101
 |`profile` |The author of a jurisdiction profile or of a fee schedule |FEE-010 to FEE-013, FEE-020 to FEE-025, FEE-028, FEE-029 and FEE-062
 |`operator` |A {term-deploying-body} that runs payments for its fees |FEE-003, FEE-046 to FEE-048, FEE-066, FEE-074, FEE-082, FEE-090, FEE-091 and FEE-095
 |===
 
 A buyer can then ask each supplier for the class it delivers.
 A provider adapter that never quotes a fee still has to keep card data out.
+FEE-061, FEE-090 and FEE-091 bind the engine too, since the engine refuses a refund and matches each payout line.
 
 == Legal status
 
@@ -76,6 +77,7 @@ Jurisdiction facts sit in the profile files and the comparison data, never in a 
 Legal questions sit on the page xref:questions-for-counsel.adoc[Questions for counsel].
 A legal text that the research did not read at its source carries the mark _to be verified_.
 LégisQuébec and Légifrance refuse automated readers, so the research read the Québec texts in archived copies.
+It marks a text _to be verified_ when its archived copy may not hold the text in force.
 
 == Owners of the parts
 
@@ -157,14 +159,18 @@ The folder `examples/` holds synthetic fees under the profiles `ca-federal` and 
 Every person, number, provider and regulation in it is fictional, except the texts of law that the profiles cite.
 
 * `schedules/` holds three fee schedules.
-The pleasure craft license fee of $24 has its exemption.
-It rests on a right under section 35 of the Constitution Act, 1982.
+The schedule exempts the pleasure craft license from its fee of $24, for an owner who declares a right.
+That right is one under section 35 of the Constitution Act, 1982.
 A fictional federal permit office has fees with a remission.
+It also has fees with tiered, banded and percentage bases.
 A fictional Québec body shows its values for 2026, after indexation, with the steps behind them.
-* `decisions/` holds three decision records: the exempt quote, the quote of the permit and the remission.
+* `decisions/` holds five decision records.
+They are the exempt quote, two quotes of the permit office, the remission and a Québec quote.
 * `pleasure-craft/fees.json` holds the exempt quote, its order with no payment due and its receipt.
-* `permit/fees.json` holds a quote and its order, an attempt that failed and one that succeeded, and the notifications behind them.
+* `permit/fees.json` holds two quotes and an order, an attempt that failed and one that succeeded, and the notifications behind them.
 It also holds a partial refund, a remission paid by refund, three receipts and a payout.
+* `quebec-permit/fees.json` holds an order paid through an embedded form, with its record under FEE-048.
+The payer then also sent a bank transfer, which the engine refunds as a duplicate payment.
 * `permit/events/` holds four events.
 * `features/` holds the scenarios in English and in French.
 

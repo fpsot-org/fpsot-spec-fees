@@ -7,7 +7,7 @@
 - [Overview](spec/en/index.adoc): scope, conformance classes, legal status, owners of the parts and conformance; FEE-001 to FEE-006.
 - [Jurisdiction profiles](spec/en/profiles.adoc): FEE-010 to FEE-014.
 - [Schedules and quotes](spec/en/schedules-and-quotes.adoc): FEE-020 to FEE-030.
-- [Orders and payments](spec/en/orders-and-payments.adoc): FEE-040 to FEE-051.
+- [Orders and payments](spec/en/orders-and-payments.adoc): FEE-040 to FEE-053.
 - [Refunds, remissions and disputes](spec/en/refunds-and-remissions.adoc): FEE-060 to FEE-069.
 - [Provider notifications and events](spec/en/notifications.adoc): FEE-070 to FEE-076.
 - [Receipts](spec/en/receipts.adoc): FEE-080 to FEE-085.
@@ -21,7 +21,7 @@
 - [LinkML model](model/fees.yaml)
 - [Profiles](profiles/)
 - [Event schemas](registry/events/)
-- [Fee schedules](examples/schedules/), [decision records](examples/decisions/) and [fee records](examples/permit/fees.json)
+- [Fee schedules](examples/schedules/), [decision records](examples/decisions/) and fee records ([permit](examples/permit/fees.json), [Québec permit](examples/quebec-permit/fees.json))
 - [Scenario](examples/features/en/fees.feature)
 - [How-to guide: put a fee under the specification](docs/modules/en/pages/index.adoc)
 

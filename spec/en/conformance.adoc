@@ -24,6 +24,7 @@ A `DELETE` would erase that trace.
 
 * Create a payment, and return the address of the page of the provider.
 * Read a payment, and capture or cancel it.
+* Drop every card field of a read or a notification, under FEE-052.
 * Create a refund, and read it.
 * Read the disputes of a payment.
 * Read the payouts, with their lines.

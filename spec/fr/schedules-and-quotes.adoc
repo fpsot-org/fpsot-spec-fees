@@ -13,8 +13,8 @@ Ce sont les éléments de frais, les étapes d’indexation, l’arrondissement,
 *FEE-020.* Chaque barème de frais DOIT être un fichier de la classe `FeeSchedule` de `model/fees.yaml`.
 Cette classe prolonge la classe `ParameterSet` de DEC-037, donc chaque montant reste une valeur de paramètre datée.
 Le barème DOIT nommer son profil.
-Chaque élément de frais DOIT avoir un code, un nom bilingue, une base et un paramètre de montant.
-Il DOIT aussi avoir une source juridique et un traitement fiscal.
+Chaque élément de frais DOIT avoir un code, un nom bilingue et une base.
+Il DOIT aussi avoir une source juridique, un traitement fiscal, et un paramètre de montant ou des tranches.
 Un barème qui change DOIT prendre une nouvelle version.
 
 Chaque enregistrement de décision nomme la version du barème et son condensé, selon DEC-037.
@@ -37,10 +37,15 @@ Un élément de frais dont la base n’est pas `flat` DOIT nommer l’unité de 
 * `banded` : toute la quantité paie le montant de la tranche où elle tombe.
 * `percentage` : un taux sur une valeur indiquée.
 
-Un élément de frais par tranches DOIT énumérer ses tranches.
+Un élément de frais par tranches DOIT énumérer ses tranches, chacune avec son propre paramètre de montant.
 Chaque tranche donne sa première quantité et la première quantité qui la suit.
+La dernière tranche n’a pas de fin.
+Une ligne en pourcentage DOIT donner le taux en vigueur et la valeur de base à laquelle il s’applique.
 
 La différence entre `tiered` et `banded` change le montant à chaque limite d’une tranche.
+Le barème fédéral des exemples a les deux, avec un supplément de 10 % sur une valeur de base.
+Quatre heures d’inspection, à 120,00 $ pour les trois premières et à 90,00 $ ensuite, coûtent 450,00 $.
+Douze échantillons, à 25,00 $ chacun à partir de dix échantillons, coûtent 300,00 $.
 Un barème qui nomme sa base permet de vérifier le montant sans lire de code.
 
 == Indexation
@@ -61,24 +66,40 @@ L’étape DOIT nommer la règle d’indexation du profil, le taux publié et l�
 Elle DOIT aussi donner le taux après tout plafond et le montant avant l’étape.
 Elle DOIT donner le résultat avant arrondi, l’éventuel report du profil et le résultat.
 Une règle qui reporte des variations DOIT indiquer le taux cumulé.
+Ce taux DOIT être le taux appliqué, plus le taux cumulé d’une étape précédente que la règle a reportée.
 
 Chacun peut alors refaire le calcul à partir du fichier seul.
+Selon l’article 17 de la Loi sur les frais de service, une variation inférieure à 1 % est reportée.
+La règle reporte alors une étape à 0,6 %, et une étape suivante à 0,7 % applique 1,3 %.
+
 Pour 2026, le taux québécois publié est de 2,05 %, sous le plafond de 3 %.
 Un tarif de 87,00 $ donne alors 88,7835, que le règlement arrondit à 88,75 $.
 Un tarif de 2,00 $ augmenterait de moins de 0,05 $.
 Il reste donc à 2,00 $, et le taux de 2,05 % est reporté.
 
+La loi québécoise de plafonnement exclut les tarifs des règlements de son annexe I.
+Un élément de frais d’un tel règlement porte un indicateur qui lève le plafond, selon FEE-012.
+La recherche n’a lu qu’une copie archivée de 2024 de cette loi.
+La loi et sa liste sont donc _à vérifier_.
+
 [[FEE-025]]
-*FEE-025.* Chaque barème DOIT nommer la règle d’arrondi de son profil que suivent ses devis.
-Il DOIT aussi indiquer l’étape où le moteur arrondit un devis : `per-line` ou `per-total`.
+*FEE-025.* Chaque barème DOIT nommer la règle d’arrondi de son profil que suivent ses devis et leurs taxes.
+Cette règle DOIT arrondir au cent, sauf si une loi citée par le profil fixe un autre arrondi des devis.
+Le barème DOIT aussi indiquer l’étape où le moteur arrondit un devis : `per-line` ou `per-total`.
 Chaque règle d’arrondi DOIT indiquer sa méthode et son pas pour chaque tranche de résultats, selon DAT-054.
 Elle DOIT aussi indiquer où va un résultat à mi-chemin.
-Quand une loi fixe l’arrondi, le profil DOIT la citer, et la règle DOIT la suivre.
-Une valeur indexée s’arrondit selon la règle que nomme sa règle d’indexation.
+Elle DOIT indiquer si elle arrondit les devis, les valeurs indexées ou les deux.
 
-Le règlement québécois arrondit à 0,05 sous 10 $ et à 0,10 sous 25 $.
+Quand une loi fixe l’arrondi, le profil DOIT la citer, et la règle DOIT la suivre.
+Une valeur indexée DOIT s’arrondir selon la règle que nomme sa règle d’indexation.
+Quand cette règle n’en nomme aucune, la valeur indexée DOIT s’arrondir selon la règle de `core`.
+
+Le règlement québécois n’arrondit que les tarifs indexés selon les articles 83.3 et 83.4 de la Loi sur l’administration financière.
+Il arrondit à 0,05 sous 10 $ et à 0,10 sous 25 $.
 Il arrondit à 0,25 sous 100 $, et au dollar au-delà.
 Un résultat à mi-chemin monte.
+Ses tranches n’arrondissent donc que les valeurs indexées, et un devis québécois et ses taxes s’arrondissent au cent.
+
 La Loi sur les frais de service permet à un organisme fédéral d’arrondir à la baisse des frais rajustés.
 Il le fait selon une politique du Conseil du Trésor.
 Cette politique est _à vérifier_.
@@ -115,17 +136,21 @@ Un fait que déclare la personne DOIT garder la source `applicant-declaration`, 
 Une dispense discrétionnaire DOIT mener au type de résultat `referred`, selon DEC-026.
 Une personne la décide alors, selon DEC-061 à DEC-063.
 
-L’article 112 du Règlement sur les petits bâtiments fixe à 24 $ les frais d’un permis d’embarcation de plaisance.
-Le propriétaire qui déclare un droit dans sa demande ne paie rien.
+L’article 112 du Règlement sur les petits bâtiments fixe à 24 $ le droit d’un permis d’embarcation de plaisance.
+Le propriétaire qui déclare un droit au moment de demander le permis ne paie rien.
 Ce droit est un droit visé à l’article 35 de la Loi constitutionnelle de 1982.
 Le moteur consigne cette déclaration comme un fait, et le devis applique l’exemption.
 Le fichier `examples/decisions/pleasure-craft-quote.json` montre cet enregistrement.
+
+Le DORS/2025-272 a remplacé cet article, et la recherche n’en a pas lu le texte en entier.
+Le montant et l’exemption sont donc _à vérifier_.
 
 [[FEE-029]]
 *FEE-029.* Chaque ligne DOIT indiquer comment s’applique chaque taxe que nomme son profil, avec sa source juridique.
 Le traitement est `taxable` avec un taux et un montant, `exempt`, `zero-rated` ou `outside-scope`.
 Une taxe qui n’est pas `taxable` DOIT avoir un montant nul.
-Une taxe s’arrondit selon FEE-025.
+Une taxe DOIT s’arrondir selon la règle du barème, selon FEE-025.
+Cette règle arrondit au cent, sauf si une loi citée prévoit autre chose.
 
 La taxe sur les produits et services ne s’applique pas au permis que fournit un gouvernement.
 L’annexe V de la Loi sur la taxe d’accise les exonère.
@@ -141,17 +166,29 @@ Une pénalité ou des intérêts pour un paiement en retard DOIVENT former une l
 Cette décision suit une règle du profil.
 Un moteur NE DOIT PAS ajouter un tel montant à une demande hors d’une décision.
 
+Chaque taux qu’applique une telle règle, comme un taux d’intérêt, DOIT être une valeur datée du profil.
+Cette valeur suit les conditions de FEE-023.
+Un moteur NE DOIT PAS calculer ce taux à l’exécution à partir d’un taux de référence.
+
 Le profil `ca-federal` contient la règle d’intérêt du Règlement sur les intérêts et les frais administratifs.
 L’intérêt y est le taux d’escompte moyen majoré de 3 %, composé mensuellement.
+Le taux d’escompte moyen d’un mois est la moyenne pondérée des taux d’escompte du mois précédent.
+Le taux d’escompte est resté à 2,50 % du 30 octobre 2025 au 28 octobre 2026.
+Le profil publie donc 5,50 % pour chaque mois de décembre 2025 à octobre 2026.
+
+Le taux d’escompte a changé le 29 octobre 2026.
+La valeur de novembre 2026 attend donc la prochaine version du profil.
+D’ici là, une décision d’intérêt pour ce mois rend `not-applicable`, selon FEE-013.
 Personne ne peut expliquer ni rejouer une pénalité qu’aucune décision ne consigne.
 
 == Références
 
 === Références informatives
 
-* link:https://gazette.gc.ca/rp-pr/p2/2025/2025-12-31/html/sor-dors272-fra.html[Règlement modifiant le Règlement sur les petits bâtiments, DORS/2025-272], Gazette du Canada, Partie II, 2025-12-31. link:https://web.archive.org/web/20260308235025/https://gazette.gc.ca/rp-pr/p2/2025/2025-12-31/html/sor-dors272-fra.html[Copie archivée]
+* link:https://gazette.gc.ca/rp-pr/p2/2025/2025-12-31/html/sor-dors272-fra.html[Règlement modifiant le Règlement sur les petits bâtiments, DORS/2025-272], Gazette du Canada, Partie II, 2025-12-31, texte non lu en entier, _à vérifier_. link:https://web.archive.org/web/20260308235025/https://gazette.gc.ca/rp-pr/p2/2025/2025-12-31/html/sor-dors272-fra.html[Copie archivée]
 * link:https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html[Loi sur la taxe d’accise, annexe V, partie VI], L.R.C. 1985, ch. E-15, site Web de la législation (Justice). link:https://web.archive.org/web/20260615014025/https://laws-lois.justice.gc.ca/fra/lois/e-15/page-120.html[Copie archivée]
 * link:https://laws-lois.justice.gc.ca/fra/reglements/DORS-96-188/TexteComplet.html[Règlement sur les intérêts et les frais administratifs], DORS/96-188, site Web de la législation (Justice). link:https://web.archive.org/web/20260805101636/https://laws-lois.justice.gc.ca/fra/reglements/DORS-96-188/TexteComplet.html[Copie archivée]
+* link:https://www.bankofcanada.ca/valet/observations/V39078/json?start_date=2025-10-01[Bank Rate, série V39078], Banque du Canada, valeurs quotidiennes, lu le 2026-11-21. link:https://web.archive.org/web/20261121183309/https://www.bankofcanada.ca/valet/observations/V39078/json?start_date=2025-10-01[Copie archivée]
 * link:https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1[Règlement sur l'arrondissement des tarifs indexés], RLRQ, c. A-6.001, r. 0.1, LégisQuébec, à jour au 2025-10-24, copie archivée.
 * link:https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics[Tarification des services publics], Gouvernement du Québec, taux de 2024 à 2026. link:https://web.archive.org/web/20260512134329/https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics[Copie archivée]
 

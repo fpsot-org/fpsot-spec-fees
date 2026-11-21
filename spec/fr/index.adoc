@@ -57,14 +57,15 @@ Une partie peut en déclarer plus d’une.
 [cols="1,2,3",options="header"]
 |===
 |Classe |Qui la déclare |Règles
-|`engine` |Un moteur de frais, qui établit les devis, reçoit les paiements, rembourse, remet et délivre les reçus |Les règles de chaque page, sauf celles qui ne visent qu’un adaptateur, un profil ou un exploitant
-|`adapter` |Un adaptateur de fournisseur, qui relie un moteur à un fournisseur de paiement |FEE-043, FEE-044, FEE-046, FEE-049 à FEE-051, FEE-060, FEE-061, FEE-067, FEE-070 à FEE-074 et FEE-101
+|`engine` |Un moteur de frais, qui établit les devis, reçoit les paiements, rembourse, remet et délivre les reçus |Les règles de chaque page, sauf celles qui ne visent qu’un adaptateur, un profil ou un exploitant, et aussi FEE-061, FEE-090 et FEE-091
+|`adapter` |Un adaptateur de fournisseur, qui relie un moteur à un fournisseur de paiement |FEE-043, FEE-044, FEE-046, FEE-049 à FEE-052, FEE-060, FEE-061, FEE-067, FEE-070 à FEE-074 et FEE-101
 |`profile` |L’auteur d’un profil juridictionnel ou d’un barème de frais |FEE-010 à FEE-013, FEE-020 à FEE-025, FEE-028, FEE-029 et FEE-062
 |`operator` |Un {term-deploying-body} qui reçoit les paiements de ses frais |FEE-003, FEE-046 à FEE-048, FEE-066, FEE-074, FEE-082, FEE-090, FEE-091 et FEE-095
 |===
 
 Un acheteur peut alors demander à chaque fournisseur la classe qu’il livre.
 Un adaptateur qui n’établit jamais de devis doit tout de même garder les données de carte à l’écart.
+FEE-061, FEE-090 et FEE-091 visent aussi le moteur, puisque le moteur refuse un remboursement et rapproche chaque ligne de versement.
 
 == Statut juridique
 
@@ -81,6 +82,7 @@ Les faits propres à une collectivité publique figurent dans les profils et les
 Les questions juridiques se trouvent à la page xref:questions-for-counsel.adoc[Questions pour les juristes].
 Un texte juridique que la recherche n’a pas lu à la source porte la mention _à vérifier_.
 LégisQuébec et Légifrance refusent les lecteurs automatisés, donc la recherche a lu les textes québécois dans des copies archivées.
+Elle marque un texte _à vérifier_ quand sa copie archivée pourrait ne pas contenir le texte en vigueur.
 
 == Responsables des éléments
 
@@ -168,14 +170,18 @@ Le dossier `examples/` contient des frais synthétiques selon les profils `ca-fe
 Chaque personne, numéro, fournisseur et règlement y est fictif, sauf les textes de loi que les profils citent.
 
 * `schedules/` contient trois barèmes de frais.
-Les frais de 24 $ du permis d’embarcation de plaisance ont leur exemption.
-Elle repose sur un droit visé à l’article 35 de la Loi constitutionnelle de 1982.
+Le barème prévoit l’exemption du droit de 24 $ du permis d’embarcation de plaisance, pour le propriétaire qui déclare un droit.
+Ce droit est un droit visé à l’article 35 de la Loi constitutionnelle de 1982.
 Un bureau fédéral fictif de permis a des frais avec une remise.
+Il a aussi des frais aux bases `tiered`, `banded` et `percentage`.
 Un organisme québécois fictif montre ses valeurs de 2026, après indexation, avec les étapes qui les ont fixées.
-* `decisions/` contient trois enregistrements de décision : le devis exempté, le devis du permis et la remise.
+* `decisions/` contient cinq enregistrements de décision.
+Ce sont le devis exempté, deux devis du bureau de permis, la remise et un devis québécois.
 * `pleasure-craft/fees.json` contient le devis exempté, sa demande sans paiement dû et son reçu.
-* `permit/fees.json` contient un devis et sa demande, une tentative refusée, une tentative réussie et les avis qui les ont suivies.
+* `permit/fees.json` contient deux devis et une demande, une tentative refusée, une tentative réussie et les avis qui les ont suivies.
 Il contient aussi un remboursement partiel, une remise versée par remboursement, trois reçus et un versement.
+* `quebec-permit/fees.json` contient une demande payée par un formulaire intégré, avec sa consignation selon FEE-048.
+La personne a ensuite aussi envoyé un virement, que le moteur rembourse comme paiement en double.
 * `permit/events/` contient quatre événements.
 * `features/` contient les scénarios en anglais et en français.
 

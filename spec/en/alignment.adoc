@@ -21,6 +21,7 @@ The codes of this specification use kebab-case, under NAM-060, so `needs_respons
 |`next_url` |The page address that an adapter returns |A full redirect, under FEE-047.
 |`refund_summary.amount_available` |`refundableBefore` of `Refund` |The echo that guards against two refunds at once, under FEE-061.
 |`settlement_summary` |`settlement` of `PaymentAttempt` |Apart from the status, under FEE-044.
+|`card_details` |`cardDisplay` of `PaymentAttempt` |Brand and last four digits only, since the adapter drops the other card fields under FEE-052.
 |`reference` |`paymentReference` of `FeeOrder` |Under FEE-040.
 |`fee` and `net_amount` |`fee` of `PayoutLine` |Under FEE-090.
 |`Pay-Signature` |The signature that an adapter verifies |Under FEE-070.
@@ -81,6 +82,22 @@ It reaches `success` when the provider or the statement shows the credit.
 link:https://docs.stripe.com/payments/paymentintents/lifecycle[Stripe] groups the tries of one payment in a payment intent, which returns to the first status after a decline.
 Its hosted checkout is a full redirect.
 Its link:https://docs.stripe.com/webhooks[notifications] carry a signature over a time stamp and the body, and arrive in no set order.
+
+An attempt of this specification maps to one charge of a payment intent, which is one try to pay.
+It never maps to the payment intent itself, since the payment intent keeps one id across all the tries.
+Mapping attempts to it would give two attempts the same provider id, which FEE-092 forbids.
+An adapter for Stripe reads both objects, and sets the status of the attempt from them as this table shows.
+
+[cols="2,2,3",options="header"]
+|===
+|Stripe |This specification |Note
+|A new charge, or a payment intent that waits for a payment method or a confirmation |`created` |Stripe has no status for `started`, and the adapter skips it, under FEE-043.
+|Payment intent `requires_action` or `processing`, or charge `pending` |`submitted` |The payer must finish a step, or the payment is still in progress.
+|Payment intent `requires_capture` |`capturable` |The engine may capture the payment or cancel it.
+|Charge `succeeded` |`success` |The payment intent then shows `succeeded`.
+|Charge `failed` |`failed` |With the failure code `method-rejected`, while the payment intent returns to its first status for the next try.
+|Payment intent `canceled` |`cancelled` or `failed` |`cancelled` when the body canceled it, otherwise `failed` with `expired` or `canceled-by-payer`.
+|===
 
 Moneris documents a hosted checkout that it says reduces the scope of card data rules.
 Its documentation is an application that the research could not read, so its details are _to be verified_.

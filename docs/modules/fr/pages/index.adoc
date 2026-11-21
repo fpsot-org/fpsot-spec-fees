@@ -34,12 +34,16 @@ Le fichier `examples/decisions/pleasure-craft-quote.json` montre l’exemption d
 Créez une demande de paiement pour les devis, et une tentative pour chaque essai, selon FEE-040 et FEE-041.
 Envoyez la personne vers la page du fournisseur par une redirection complète, selon FEE-047.
 Gardez les données de carte hors de chaque donnée, journal et événement, selon FEE-046.
+Retirez dans l’adaptateur chaque champ de carte des lectures et des avis du fournisseur, selon FEE-052.
+Annulez et relisez une tentative non terminée avant d’en commencer une nouvelle, selon FEE-053.
+
 Fixez un statut seulement après une lecture chez le fournisseur, selon FEE-049 et FEE-071.
 Vérifiez la signature de chaque avis, et acceptez le même avis deux fois, selon FEE-070 et FEE-072.
 
 == Rembourser, remettre et contester
 
 Remboursez une tentative réussie, dans les limites de son solde remboursable, selon FEE-060 et FEE-061.
+Vérifiez le solde et créez le remboursement en une seule étape atomique pour chaque tentative.
 Donnez à chaque remboursement un motif du profil, selon FEE-062.
 Ne remettez que par une décision, et exécutez la remise par remboursement ou par réduction du montant dû, selon FEE-064.
 Ne déclarez jamais un remboursement comme une remise, selon FEE-065.

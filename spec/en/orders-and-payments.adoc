@@ -24,14 +24,18 @@ It MUST NOT hold personal information, under DAT-062.
 
 [[FEE-041]]
 *FEE-041.* Each payment attempt MUST be a record of the class `PaymentAttempt`, which names its order.
-Its amount MUST equal the amount due of the order.
-An order MUST NOT have two attempts that are not finished at the same time.
-An order MUST NOT have more than one attempt with the status `success`.
-When a second payment succeeds all the same, the engine MUST refund it with the reason `duplicate-payment`.
+Its amount MUST equal the amount due of the order when the engine creates it.
+An order MUST NOT have two attempts that are not finished at the same time, under FEE-053.
+An order SHOULD NOT have more than one attempt with the status `success`.
+When a second payment succeeds all the same, the engine MUST refund its whole amount with the reason `duplicate-payment`.
 
 One order with many attempts follows the payment intent of Stripe.
 GOV.UK Pay instead creates a new payment for each try.
 The order keeps the link that a payer, a clerk and an auditor look for.
+
+A second success can still happen, such as when a payer also sends a bank transfer with the payment reference.
+The engine then records that transfer as an attempt, from its read of the credit, and refunds it.
+The file `examples/quebec-permit/fees.json` holds that case.
 
 == Statuses
 
@@ -78,24 +82,34 @@ GOV.UK Pay also keeps a settlement summary for each payment, apart from its stat
 Under FEE-091, the engine then settles each attempt from a payout.
 
 [[FEE-045]]
-*FEE-045.* The status of an order MUST follow from its amount and its attempts.
-It is `no-payment-due` when the amount due is zero, and `paid` when one attempt succeeded.
+*FEE-045.* The status of an order MUST follow from its amount, its attempts, its refunds and its disputes.
+It is `no-payment-due` when the amount due is zero, and `paid` when an attempt succeeded.
+It is `refunded` when successful refunds returned every successful payment in full.
+It is `reversed` when the body lost a dispute on one of its attempts.
 Otherwise it is `awaiting-payment`, or `canceled` when the body canceled the order before any payment.
+
 A register keeps the payment status of a filing under REG-024.
 It MUST map these values onto the list of its pack.
+It MUST NOT map `refunded` or `reversed` onto the value that means paid.
 
+The last two values tell a register that the body no longer holds the money.
+A filing then waits for a person, instead of moving on as if the payer had paid.
 The pleasure craft pack of the registry specification lists `not-required`, `pending`, `paid` and `exempt`.
 An exempt quote gives an order with no payment due, and the filing shows `exempt`.
+In that pack, `refunded` and `reversed` map to `pending`.
+The events of FEE-075 name the attempt of each refund and dispute, and the attempt names its order.
 
 == Card data
 
 [[FEE-046]]
-*FEE-046.* Software that meets this specification MUST NOT receive, store, log or send card data.
+*FEE-046.* Software that meets this specification MUST NOT keep, log or pass on card data.
 Card data is the card number, the security code, the expiry date, the track data and the PIN.
 An interface, a record, a log, an event or a receipt MUST NOT hold any of them.
 A record MAY show a card by its brand and its last four digits, as the provider returns them.
 A record MUST give the method only as a category, such as `card` or `direct-debit`.
 
+A provider may still return card data in a read or a notification.
+FEE-052 sets what the adapter does with it.
 Card data in a system of a public body brings that system under the Payment Card Industry Data Security Standard.
 With none of it, the scope stays at the provider.
 The logs follow OBS-090 and OBS-091, and an event holds no amount and no card, under FEE-076.
@@ -111,14 +125,19 @@ In February 2025, the PCI Security Standards Council said that its new script cr
 [[FEE-048]]
 *FEE-048.* A body MAY embed the payment form of its provider in its own page, such as in a frame.
 It MUST first record how its page meets the script criterion of the Self-Assessment Questionnaire A of January 2025.
-The record MUST name the provider, the method, the person who checked it and its date.
+The record MUST be of the class `EmbeddedFormRecord` of `model/fees.yaml`.
+
+The record MUST name the provider, the method, the person who checked it and the date of the check.
 The method is either controls on the scripts of the page or a confirmation from the provider.
 The record MUST also name the acquirer or the card brand that accepted that method.
+It MUST also give the text that the method rests on and the period for which the record holds.
+Each attempt with an embedded form MUST name the record that covered it on its day.
 
 The method follows FAQ 1588 of the PCI Security Standards Council, as its notice of 28 February 2025 summarizes it.
 The text of the questionnaire and of the FAQ is _to be verified_ at the source.
-Reports say that a 2026 revision of FAQ 1331 asks merchants to consult their acquirer.
+Reports say that a 2026 revision of FAQ 1331 asks merchants to consult their acquirer or the card brands.
 That revision is _to be verified_ too.
+So is the basis of the part of the record that names an acquirer or a brand.
 
 == Provider reads
 
@@ -144,6 +163,35 @@ Each adapter MUST publish how it maps the statuses of its provider onto the eigh
 
 The raw status lets an auditor check the mapping long after the provider changed its interface.
 The page xref:alignment.adoc[Alignment with other standards] gives the mappings for GOV.UK Pay, GovStack, ISO 20022 and Stripe.
+On Stripe, an attempt maps to one charge of a payment intent, never to the payment intent.
+The payment intent keeps its id across tries.
+
+[[FEE-052]]
+*FEE-052.* An adapter MUST drop every card field from each provider read and each notification.
+It MUST do so before it stores, logs or passes on anything to the engine.
+The card fields are the card data of FEE-046 and the name of the cardholder.
+The first digits of the card and the billing address are card fields too.
+The adapter MAY keep the brand and the last four digits for display.
+
+GOV.UK Pay returns the card details of a payment, with its expiry date and its first digits.
+Those details also hold the name of the cardholder and the billing address.
+Stripe returns the expiry month and year of a card, and the billing details of the payer.
+Reads and notifications thus bring card fields into the adapter, which must not let them go further.
+
+The name, the first digits and the address are personal information.
+OBS-090 keeps them out of records that do not declare them.
+
+[[FEE-053]]
+*FEE-053.* Before it creates a new attempt for an order, the engine MUST cancel each unfinished attempt of that order.
+It does so at the provider.
+It MUST then read that attempt at the provider again, under FEE-049.
+It MUST create the new attempt only once that read shows the old attempt finished.
+The provider may be unable to cancel an attempt, such as a pending bank transfer.
+That attempt then blocks a new attempt only until it finishes.
+
+A payer who comes back after a timeout may still have a payment in progress at the provider.
+Without the cancellation and the read, both payments could succeed.
+The read can also show that the old attempt succeeded, and the order then needs no new attempt.
 
 == References
 

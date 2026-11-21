@@ -22,20 +22,45 @@ Un paiement en trop ou une erreur administrative mène à un remboursement, pas 
 *FEE-060.* Chaque remboursement DOIT être une donnée de la classe `Refund` de `model/fees.yaml`.
 Il DOIT nommer sa demande de paiement et une tentative de cette demande au statut `success`.
 Son statut DOIT être `submitted`, `success` ou `error`, et les deux derniers sont définitifs.
+Son statut DOIT changer seulement comme le permet ce tableau.
+Son historique DOIT garder chaque statut, avec son instant et ce que le moteur a lu pour le fixer.
+
 Un moteur NE DOIT PAS traiter `submitted` comme l’issue d’un remboursement.
+Un fournisseur peut contrepasser un remboursement après l’avoir montré en `success`, et le remboursement garde alors `success`.
+Le moteur DOIT garder cette contrepassation comme une exception du rapprochement, selon FEE-091.
+Si l’organisme doit encore l’argent, il DOIT faire un nouveau remboursement qui nomme celui qui a été contrepassé.
+
+[cols="1,3",options="header"]
+|===
+|De |Vers
+|Le départ |`submitted`, `success` ou `error`
+|`submitted` |`success` ou `error`
+|`success` |Aucun autre statut
+|`error` |Aucun autre statut
+|===
 
 GOV.UK Pay prévient que certains fournisseurs gardent un remboursement `submitted` un certain temps.
 Un remboursement qui finit en `error` n’a déplacé aucun argent, et l’organisme peut réessayer avec un nouveau remboursement.
+Chez Stripe, un remboursement réussi peut encore échouer plus tard, par exemple quand la banque de la personne le renvoie.
+La recherche n’a pas lu à la source les statuts de remboursement de Stripe, donc ils sont _à vérifier_.
+Une nouvelle donnée garde les deux faits.
+Le premier remboursement a bien réussi, et la personne n’a toujours pas l’argent.
 
 [[FEE-061]]
-*FEE-061.* Les remboursements d’une tentative NE DOIVENT PAS dépasser au total son montant.
-Un remboursement en `error` ne compte pas.
-Chaque demande de remboursement DOIT indiquer le solde remboursable que le client a vu.
-Le moteur DOIT refuser la demande quand ce solde diffère du sien.
-Une interface PEUT répondre au même besoin par une requête conditionnelle sur la tentative, selon API-008 et API-009.
+*FEE-061.* Les remboursements d’une tentative NE DOIVENT PAS dépasser au total son solde remboursable.
+Ce solde est le montant de la tentative, moins ses contestations perdues.
+On en retire aussi les remboursements de la tentative qui n’ont pas fini en `error`.
+Un remboursement qu’un remboursement ultérieur remplace selon FEE-060 ne compte plus.
 
-Deux membres du personnel peuvent rembourser le même paiement au même moment.
-GOV.UK Pay s’en protège par le même rappel du solde.
+Chaque requête de remboursement DOIT indiquer, dans `refundableBefore`, le solde remboursable que le client a vu.
+Le moteur DOIT refuser la requête quand ce solde diffère du sien.
+Pour chaque tentative, le moteur DOIT vérifier le solde et créer le remboursement en une seule étape atomique.
+
+Deux membres du personnel peuvent rembourser le même paiement au même moment, et les deux peuvent indiquer le même solde.
+Avec une seule étape atomique, seule la première requête passe, et la seconde trouve un nouveau solde.
+GOV.UK Pay se protège du même risque par la même reprise du solde.
+Une requête conditionnelle ne sert pas ici, puisque API-009 vise `PUT`, `PATCH` et `DELETE`, et qu’un remboursement est un `POST`.
+L’étiquette d’entité de la tentative ne change pas non plus avec un remboursement.
 
 [[FEE-062]]
 *FEE-062.* Chaque remboursement DOIT donner un motif de remboursement de son profil ou de `core`.
@@ -64,6 +89,13 @@ Chaque remise DOIT être une donnée de la classe `Remission`, qui nomme cet enr
 Quand la personne a payé, la remise DOIT mener à des remboursements dont la somme égale le montant remis.
 Quand la personne n’a pas payé, la remise DOIT plutôt réduire le montant dû de sa demande.
 
+Une remise PEUT réduire le montant dû seulement tant que la demande n’a aucune tentative non terminée.
+Sinon, le moteur DOIT d’abord annuler cette tentative selon FEE-053, ou exécuter la remise par remboursement.
+Quand une contestation est ouverte sur une tentative de la demande, le moteur DOIT consigner la remise avec cette contestation.
+Il DOIT retenir les remboursements de la remise jusqu’à la fermeture de la contestation, selon FEE-068.
+Quand l’organisme perd la contestation, les remboursements DOIVENT exclure ce que la contestation a rendu, jusqu’au montant remis.
+La remise DOIT consigner cette part comme sa déduction pour contestation.
+
 La décision contient les faits, par exemple si l’organisme a respecté sa norme de rendement durant un exercice.
 Le remboursement ne fait que déplacer l’argent.
 
@@ -89,10 +121,23 @@ Chaque enregistrement donne alors les motifs pour une seule personne, selon DEC-
 [[FEE-067]]
 *FEE-067.* Chaque contestation DOIT être une donnée de la classe `Dispute`, qui nomme sa tentative.
 Son statut DOIT être `needs-response`, `under-review`, `won` ou `lost`, et les deux derniers sont définitifs.
+Son statut DOIT changer seulement comme le permet ce tableau.
+Son historique DOIT garder chaque statut, avec son instant et ce que le moteur a lu pour le fixer.
 Une contestation au statut `needs-response` DOIT donner le dernier jour pour envoyer la preuve.
+
+[cols="1,3",options="header"]
+|===
+|De |Vers
+|Le départ |`needs-response`, `under-review`, `won` ou `lost`
+|`needs-response` |`under-review`, `won` ou `lost`
+|`under-review` |`won` ou `lost`
+|`won` |Aucun autre statut
+|`lost` |Aucun autre statut
+|===
 
 Les quatre statuts viennent de GOV.UK Pay.
 Une contestation ne change jamais le statut de sa tentative, qui reste `success`.
+Une contestation perdue fait passer la demande au statut `reversed`, selon FEE-045.
 
 [[FEE-068]]
 *FEE-068.* Un moteur NE DOIT PAS créer de remboursement sur une tentative pendant qu’une contestation de cette tentative est ouverte.
@@ -103,7 +148,9 @@ GOV.UK Pay prévoit un motif de contestation pour un remboursement que la person
 
 [[FEE-069]]
 *FEE-069.* Une contestation perdue DOIT figurer au rapprochement comme une ligne de versement du genre `dispute-reversal`.
-Ses frais DOIVENT figurer comme une ligne du genre `dispute-fee`.
+Le montant de cette ligne DOIT être l’opposé du montant de la contestation.
+Les frais d’une contestation DOIVENT figurer comme une ligne du genre `dispute-fee`, quel que soit le statut de la contestation.
+Le montant de cette ligne DOIT être l’opposé des frais.
 Un moteur NE DOIT PAS consigner une contestation perdue comme un remboursement.
 
 Un fournisseur peut exiger des frais pour une contestation, et certains les exigent que l’organisme gagne ou perde.

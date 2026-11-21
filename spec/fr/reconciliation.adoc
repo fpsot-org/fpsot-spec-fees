@@ -26,8 +26,11 @@ Le genre, l’identifiant chez le fournisseur et le montant de la ligne DOIVENT 
 Une ligne qui ne se rattache à aucune donnée DOIT rester `unmatched`, et le versement a alors le statut `exceptions`.
 Un versement DOIT avoir le statut `reconciled` seulement si toutes ses lignes sont rattachées.
 Chaque tentative que porte un versement DOIT alors montrer ce versement dans sa réception des fonds, selon FEE-044.
+Une ligne d’une contestation DOIT porter le montant que FEE-069 fixe pour son genre.
 
 Une personne doit expliquer chaque exception.
+Un fournisseur qui contrepasse un remboursement réussi envoie une ligne qui ne se rattache à aucun remboursement.
+Cette ligne reste une exception, selon FEE-060.
 Le moteur n’en ferme jamais une de lui-même.
 
 [[FEE-092]]

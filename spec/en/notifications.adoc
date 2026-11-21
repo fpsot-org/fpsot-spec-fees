@@ -32,12 +32,16 @@ The file `examples/permit/fees.json` holds that case, with the outcome `no-chang
 [[FEE-072]]
 *FEE-072.* An adapter MUST answer a notification with a `2xx` status code once it stores it.
 It MUST answer before the engine acts on it.
+It MUST store the parsed record of the class `ProviderNotification`, not the raw body.
+It MAY keep the body in `redactedBody`, only after it removed every field of FEE-052 from it.
 The engine may already have handled the event id of a notification.
 It MUST then record the notification with the outcome `duplicate`, and change nothing.
 
 Providers retry each notification until they get a `2xx` answer.
 A slow answer then brings the same notification back.
 The engine must accept it twice, as API-104 asks of every consumer.
+A raw body can hold the card fields that FEE-052 drops.
+The adapter therefore checks the signature over the body in memory, and keeps only what it parsed.
 
 [[FEE-073]]
 *FEE-073.* An engine SHOULD read each unfinished attempt at the provider, at an interval that the operator sets.
@@ -74,12 +78,17 @@ The types and the schemas of their data are in `registry/events/`, under API-103
 A remission is a decision, so its event is the event of the decisions specification under DEC-071.
 
 [[FEE-076]]
-*FEE-076.* An event of a fee engine MUST NOT hold a party id, a payment reference or an amount.
-It MUST NOT hold card data either.
-It holds only ids of records, codes and instants.
-A consumer that needs more MUST read the record, which the interface guards under IAM-050.
+*FEE-076.* An event of a fee engine MUST NOT hold any of these values.
 
-Stripe calls such events thin.
+* A party id.
+* A payment reference.
+* An amount.
+* Card data, or a card field of FEE-052.
+
+A consumer that needs one of them MUST read the record, which the interface guards under IAM-050.
+
+An event may still carry a date, a count or a flag, as its schema shows.
+Stripe calls events that carry little more than ids _thin events_.
 A payment reference or an amount can lead to a person.
 An event also travels further than the record it names.
 

@@ -21,20 +21,44 @@ An overpayment or an administrative error leads to a refund, not a remission.
 *FEE-060.* Each refund MUST be a record of the class `Refund` of `model/fees.yaml`.
 It MUST name its order and one attempt of that order with the status `success`.
 Its status MUST be `submitted`, `success` or `error`, and the last two are final.
+Its status MUST move only as this table allows.
+Its history MUST keep each status, with its instant and what the engine read to set it.
+
 An engine MUST NOT treat `submitted` as the outcome of a refund.
+A provider may reverse a refund after it showed `success`, and the refund then keeps `success`.
+The engine MUST keep that reversal as an exception of reconciliation, under FEE-091.
+When the body still owes the money, it MUST make a new refund that names the reversed one.
+
+[cols="1,3",options="header"]
+|===
+|From |To
+|The start |`submitted`, `success` or `error`
+|`submitted` |`success` or `error`
+|`success` |No other status
+|`error` |No other status
+|===
 
 GOV.UK Pay warns that some providers keep a refund `submitted` for a while.
 A refund that ends in `error` moved no money, and the body may try again with a new refund.
+On Stripe, a refund that succeeded can still fail later, such as when the bank of the payer returns it.
+The research did not read the refund statuses of Stripe at the source, so they are _to be verified_.
+A new record keeps both facts, since the first refund did succeed and the payer still has no money.
 
 [[FEE-061]]
-*FEE-061.* The refunds of an attempt MUST NOT add up to more than its amount.
-A refund in `error` does not count.
-Each request for a refund MUST state the refundable balance that the client saw.
-The engine MUST refuse the request when that balance differs from its own.
-An interface MAY meet the same need with a conditional request on the attempt, under API-008 and API-009.
+*FEE-061.* The refunds of an attempt MUST NOT add up to more than its refundable balance.
+That balance is the amount of the attempt, less its lost disputes.
+It is also less the refunds of the attempt that did not end in `error`.
+A refund that a later refund replaces under FEE-060 no longer counts.
 
-Two clerks may refund the same payment at the same time.
-GOV.UK Pay guards against that with the same echo of the balance.
+Each request for a refund MUST state, in `refundableBefore`, the refundable balance that the client saw.
+The engine MUST refuse the request when that balance differs from its own.
+For each attempt, the engine MUST check the balance and create the refund in one atomic step.
+
+Two clerks may refund the same payment at the same time, and both may state the same balance.
+With one atomic step, only the first request passes, and the second finds a new balance.
+GOV.UK Pay guards against the same risk with the same echo of the balance.
+A conditional request does not serve here, since API-009 covers `PUT`, `PATCH` and `DELETE`, and a refund is a `POST`.
+The entity tag of the attempt does not change with a refund either.
 
 [[FEE-062]]
 *FEE-062.* Each refund MUST give a refund reason of its profile or of `core`.
@@ -62,6 +86,13 @@ Each remission MUST be a record of the class `Remission`, which names that decis
 When the payer has paid, the remission MUST lead to refunds that add up to the amount remitted.
 When the payer has not paid, it MUST reduce the amount due of its order instead.
 
+A remission MAY reduce the amount due only while the order has no attempt that is not finished.
+Otherwise the engine MUST first cancel that attempt under FEE-053, or carry the remission out by refund.
+When a dispute is open on an attempt of the order, the engine MUST record the remission with that dispute.
+It MUST hold the refunds of the remission until the dispute closes, under FEE-068.
+When the body loses the dispute, the refunds MUST leave out what the dispute returned, up to the amount remitted.
+The remission MUST record that part as its dispute offset.
+
 The decision holds the facts, such as whether the body met its performance standard in a fiscal year.
 The refund only moves the money.
 
@@ -87,10 +118,23 @@ Each record then gives the reasons for one payer, under DEC-052.
 [[FEE-067]]
 *FEE-067.* Each dispute MUST be a record of the class `Dispute`, which names its attempt.
 Its status MUST be `needs-response`, `under-review`, `won` or `lost`, and the last two are final.
+Its status MUST move only as this table allows.
+Its history MUST keep each status, with its instant and what the engine read to set it.
 A dispute in `needs-response` MUST give the last day to send evidence.
+
+[cols="1,3",options="header"]
+|===
+|From |To
+|The start |`needs-response`, `under-review`, `won` or `lost`
+|`needs-response` |`under-review`, `won` or `lost`
+|`under-review` |`won` or `lost`
+|`won` |No other status
+|`lost` |No other status
+|===
 
 The four statuses come from GOV.UK Pay.
 A dispute never changes the status of its attempt, which stays `success`.
+A lost dispute changes the status of the order to `reversed`, under FEE-045.
 
 [[FEE-068]]
 *FEE-068.* An engine MUST NOT create a refund on an attempt while a dispute on that attempt is open.
@@ -101,7 +145,9 @@ GOV.UK Pay lists a dispute reason for a refund that the payer expected and did n
 
 [[FEE-069]]
 *FEE-069.* A lost dispute MUST appear in reconciliation as a payout line of the kind `dispute-reversal`.
-Its fee MUST appear as a line of the kind `dispute-fee`.
+The amount of that line MUST be the negative of the amount of the dispute.
+The fee of a dispute MUST appear as a line of the kind `dispute-fee`, whatever the status of the dispute.
+The amount of that line MUST be the negative of the fee.
 An engine MUST NOT record a lost dispute as a refund.
 
 A provider may charge a fee for a dispute, and some charge it whether the body wins or loses.

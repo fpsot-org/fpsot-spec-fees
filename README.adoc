@@ -18,7 +18,7 @@ Each requirement has an ID from `FEE-001` to `FEE-105`.
 * Take every legal rule and value from a jurisdiction profile with its sources, and refuse when a value is missing (FEE-010 to FEE-014). The profiles are data files in `profiles/`.
 * Keep each fee in a fee schedule of dated values, with the indexation step behind each indexed value and the rounding rule (FEE-020 to FEE-025).
 * Price each fee as a decision, with a quote that holds its lines, exemptions and taxes (FEE-026 to FEE-030).
-* Keep the order apart from its payment attempts, move statuses one way after a read at the provider, and keep card data out (FEE-040 to FEE-051).
+* Keep the order apart from its payment attempts, move statuses one way after a read at the provider, and keep card data out (FEE-040 to FEE-053).
 * Keep refunds, remissions and disputes apart, and make each remission a decision (FEE-060 to FEE-069).
 * Verify provider notifications, read the provider before any change, and send events with no personal value (FEE-070 to FEE-076). The event schemas are in `registry/events/`.
 * Issue a sealed receipt for each paid order and after each refund or remission (FEE-080 to FEE-085).

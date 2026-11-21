@@ -6,7 +6,7 @@
       "feeSchedule": {
         "code": "example-federal-permit-fees",
         "version": "1.0.0",
-        "digest": "785961e6d7ed58789e891a19c337782ead3d4993ca7c97569a25c570545952b8"
+        "digest": "34fe13ceda51820fad84b6fad44a11bc3e842d5814638991135798862e2155e3"
       },
       "effectiveDate": "2026-03-02",
       "lines": [
@@ -98,6 +98,142 @@
       "validUntil": "2026-03-31T03:59:59Z",
       "createdAt": "2026-03-02T13:59:01Z",
       "updatedAt": "2026-03-02T13:59:01Z"
+    },
+    {
+      "id": "019c4e00-0001-7000-8000-000000000003",
+      "decisionRecordId": "019c4e00-0009-7000-8000-000000000004",
+      "feeSchedule": {
+        "code": "example-federal-permit-fees",
+        "version": "1.0.0",
+        "digest": "34fe13ceda51820fad84b6fad44a11bc3e842d5814638991135798862e2155e3"
+      },
+      "effectiveDate": "2026-03-20",
+      "lines": [
+        {
+          "lineNumber": 1,
+          "feeItem": "inspection-fee",
+          "quantity": 4,
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "450.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "450.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-5.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-5.html"
+            ]
+          }
+        },
+        {
+          "lineNumber": 2,
+          "feeItem": "sampling-fee",
+          "quantity": 12,
+          "unitAmount": {
+            "amount": "25.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "300.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "300.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-6.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-6.html"
+            ]
+          }
+        },
+        {
+          "lineNumber": 3,
+          "feeItem": "late-renewal-surcharge",
+          "quantity": 1,
+          "rate": "10",
+          "baseValue": {
+            "amount": "350.00",
+            "currency": "CAD"
+          },
+          "valueValidFrom": "2025-04-01",
+          "grossAmount": {
+            "amount": "35.00",
+            "currency": "CAD"
+          },
+          "amount": {
+            "amount": "35.00",
+            "currency": "CAD"
+          },
+          "taxes": [
+            {
+              "taxCode": "gst",
+              "treatment": "exempt",
+              "amount": {
+                "amount": "0.00",
+                "currency": "CAD"
+              },
+              "legalSource": {
+                "uri": "https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html",
+                "otherLanguageUris": [
+                  "https://laws-lois.justice.gc.ca/fra/lois/E-15/page-120.html"
+                ]
+              }
+            }
+          ],
+          "legalSource": {
+            "uri": "https://laws.example.org/eng/regulations/EX-2025-1/section-7.html",
+            "otherLanguageUris": [
+              "https://laws.example.org/fra/reglements/EX-2025-1/article-7.html"
+            ]
+          }
+        }
+      ],
+      "total": {
+        "amount": "785.00",
+        "currency": "CAD"
+      },
+      "validUntil": "2026-04-19T03:59:59Z",
+      "createdAt": "2026-03-20T10:00:01Z",
+      "updatedAt": "2026-03-20T10:00:01Z"
     }
   ],
   "orders": [
@@ -297,6 +433,18 @@
         "currency": "CAD"
       },
       "status": "success",
+      "statusHistory": [
+        {
+          "status": "submitted",
+          "at": "2026-03-09T15:00:00Z",
+          "source": "provider-response"
+        },
+        {
+          "status": "success",
+          "at": "2026-03-09T15:02:00Z",
+          "source": "provider-read"
+        }
+      ],
       "createdAt": "2026-03-09T15:00:00Z",
       "updatedAt": "2026-03-09T15:02:00Z"
     },
@@ -316,6 +464,18 @@
       "reason": "remission",
       "remissionId": "019c4e00-0006-7000-8000-000000000001",
       "status": "success",
+      "statusHistory": [
+        {
+          "status": "submitted",
+          "at": "2026-05-15T13:05:00Z",
+          "source": "provider-response"
+        },
+        {
+          "status": "success",
+          "at": "2026-05-15T13:09:00Z",
+          "source": "provider-read"
+        }
+      ],
       "createdAt": "2026-05-15T13:05:00Z",
       "updatedAt": "2026-05-15T13:09:00Z"
     }

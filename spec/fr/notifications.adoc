@@ -27,18 +27,22 @@ Un avis NE DOIT PAS changer un statut à lui seul.
 Le moteur DOIT consigner l’instant de la lecture et son résultat, `applied` ou `no-change`.
 
 La lecture rend l’ordre d’arrivée sans importance.
-Un avis tardif de `submitted` trouve une tentative en `success`, et la lecture montre de nouveau `success`.
+Un avis `submitted` arrivé en retard trouve la tentative déjà en `success`, et la lecture montre de nouveau `success`.
 Le fichier `examples/permit/fees.json` contient ce cas, avec le résultat `no-change`.
 
 [[FEE-072]]
 *FEE-072.* Un adaptateur DOIT répondre à un avis par un code d’état `2xx` dès qu’il l’a enregistré.
 Il DOIT répondre avant que le moteur n’agisse.
+Il DOIT enregistrer la donnée analysée de la classe `ProviderNotification`, et non le corps brut.
+Il PEUT garder le corps dans `redactedBody`, seulement après en avoir retiré chaque champ de FEE-052.
 Le moteur peut avoir déjà traité l’identifiant d’événement d’un avis.
 Il DOIT alors consigner l’avis avec le résultat `duplicate`, et ne rien changer.
 
 Les fournisseurs renvoient chaque avis jusqu’à ce qu’ils reçoivent une réponse `2xx`.
 Une réponse lente ramène alors le même avis.
 Le moteur doit l’accepter deux fois, comme API-104 le demande à tout consommateur.
+Un corps brut peut contenir les champs de carte que FEE-052 retire.
+L’adaptateur vérifie donc la signature sur le corps en mémoire, et garde seulement ce qu’il a analysé.
 
 [[FEE-073]]
 *FEE-073.* Un moteur DEVRAIT lire chez le fournisseur chaque tentative non terminée, à un intervalle que l’exploitant fixe.
@@ -77,12 +81,17 @@ Les types et les schémas de leurs données se trouvent dans `registry/events/`,
 Une remise est une décision, donc son événement est celui de la spécification sur les décisions, selon DEC-071.
 
 [[FEE-076]]
-*FEE-076.* Un événement d’un moteur de frais NE DOIT PAS contenir d’identifiant de partie, de référence ni de montant.
-Il NE DOIT PAS non plus contenir de données de carte.
-Il ne contient que des identifiants de données, des codes et des instants.
-Un consommateur qui a besoin de plus DOIT lire la donnée, que l’interface protège selon IAM-050.
+*FEE-076.* Un événement d’un moteur de frais NE DOIT contenir aucune de ces valeurs.
 
-Stripe qualifie ces événements de minces.
+* Un identifiant de partie.
+* Une référence de paiement.
+* Un montant.
+* Des données de carte, ou un champ de carte de FEE-052.
+
+Un consommateur qui a besoin d’une de ces valeurs DOIT lire la donnée, que l’interface protège selon IAM-050.
+
+Un événement peut tout de même porter une date, un compte ou un indicateur, comme le montre son schéma.
+Stripe les appelle _thin events_, puisqu’ils ne portent guère plus que des identifiants.
 Une référence de paiement ou un montant peut mener à une personne.
 Un événement voyage aussi plus loin que la donnée qu’il nomme.
 

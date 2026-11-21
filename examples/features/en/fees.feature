@@ -82,3 +82,13 @@ Feature: Quotes, payments, refunds, remissions and payouts of public fees
       When the fee engine matches its lines
       Then the line "ex-pay-7f3a02" matches the attempt and the line "ex-ref-5501" matches the refund
       And the payout has the status "reconciled"
+
+  Rule: A second success is refunded in full as a duplicate payment
+
+    @fees-010
+    Scenario: A bank transfer that the payer also sent is refunded
+      Given the order "EX-2026-000456" paid "88.75" on "2026-02-10" through an embedded form under the record of "2026-01-15"
+      When the bank shows a transfer of "88.75" with the same reference on "2026-02-12"
+      Then the fee engine records a second attempt with the status "success"
+      And it refunds "88.75" on that attempt for the reason "duplicate-payment"
+      And the order keeps the status "paid"

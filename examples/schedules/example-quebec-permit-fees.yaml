@@ -7,12 +7,15 @@
 # rounds to the nearest 0.25: 88.75. The $4.00 fee is below $5, but 2.05% raises it by more than
 # $0.05, so it rises to 4.082, which rounds to the nearest 0.05: 4.10. The $2.00 fee would rise by
 # less than $0.05, so its indexation is deferred and the rate carries forward (r. 0.1, s. 2).
+# The bands of the rounding regulation apply to the indexed values only. A quote and its taxes
+# round to the cent under the rule of core, since no law that the profile cites sets another
+# (FEE-025).
 # The regulation and every address are fictional. Not legal advice.
 code: example-quebec-permit-fees
 version: 1.1.0
 title: {en: Example Québec permit fees, fr: Tarifs d’exemple des permis québécois}
 profile: ca-qc
-roundingRule: quebec-indexed-fees
+roundingRule: cent-half-up
 roundingStage: per-line
 feeItems:
   - code: permit-fee

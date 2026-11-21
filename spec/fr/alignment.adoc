@@ -19,8 +19,9 @@ Les codes de cette spécification emploient la casse kebab, selon NAM-060, donc 
 |`state.status` et `state.finished` |`status` et `finished` de `PaymentAttempt` |Les mêmes huit valeurs.
 |`state.code`, comme P0010 ou P0020 |`failureCode` |`method-rejected`, `expired`, `canceled-by-payer`, `canceled-by-service`, `provider-error`.
 |`next_url` |L’adresse de page que rend un adaptateur |Une redirection complète, selon FEE-047.
-|`refund_summary.amount_available` |`refundableBefore` de `Refund` |Le rappel qui empêche deux remboursements simultanés, selon FEE-061.
+|`refund_summary.amount_available` |`refundableBefore` de `Refund` |La reprise du solde qui empêche deux remboursements simultanés, selon FEE-061.
 |`settlement_summary` |`settlement` de `PaymentAttempt` |À part du statut, selon FEE-044.
+|`card_details` |`cardDisplay` de `PaymentAttempt` |La marque et les quatre derniers chiffres seulement, puisque l’adaptateur retire les autres champs de carte selon FEE-052.
 |`reference` |`paymentReference` de `FeeOrder` |Selon FEE-040.
 |`fee` et `net_amount` |`fee` de `PayoutLine` |Selon FEE-090.
 |`Pay-Signature` |La signature que vérifie un adaptateur |Selon FEE-070.
@@ -70,7 +71,7 @@ Ces messages comptent pour un moteur de frais, et leurs versions sont aussi _à 
 |camt.053 |Le relevé d’un compte en fin de journée, principale donnée d’entrée de FEE-094.
 |camt.054 |Un avis de chaque crédit ou débit en cours de journée.
 |pain.001 et pain.002 |Un virement que lance l’organisme, comme un remboursement par la banque, et son statut.
-|pain.013 et pain.014 |Une demande de paiement que l’organisme envoie, et son statut.
+|pain.013 et pain.014 |Une invitation à payer que l’organisme envoie, et son statut.
 |===
 
 Un virement peut rester `submitted` pendant des jours.
@@ -83,6 +84,22 @@ Après un refus, l’intention revient à son premier statut.
 Sa page de paiement hébergée est une redirection complète.
 Ses link:https://docs.stripe.com/webhooks[avis] portent une signature sur un horodatage et le corps, et arrivent sans ordre fixe.
 
+Une tentative de cette spécification correspond à un débit d’une intention de paiement, qui est un essai de payer.
+Elle ne correspond jamais à l’intention de paiement elle-même, puisque celle-ci garde un seul identifiant pour tous les essais.
+Y faire correspondre les tentatives donnerait le même identifiant de fournisseur à deux tentatives, ce que FEE-092 interdit.
+Un adaptateur pour Stripe lit les deux objets, et en tire le statut de la tentative selon ce tableau.
+
+[cols="2,2,3",options="header"]
+|===
+|Stripe |Cette spécification |Note
+|Un nouveau débit, ou une intention de paiement qui attend un mode de paiement ou une confirmation |`created` |Stripe n’a aucun statut pour `started`, et l’adaptateur le saute, selon FEE-043.
+|Intention de paiement `requires_action` ou `processing`, ou débit `pending` |`submitted` |La personne doit finir une étape, ou le paiement est encore en cours.
+|Intention de paiement `requires_capture` |`capturable` |Le moteur peut capturer le paiement ou l’annuler.
+|Débit `succeeded` |`success` |L’intention de paiement montre alors `succeeded`.
+|Débit `failed` |`failed` |Avec le code d’échec `method-rejected`, pendant que l’intention de paiement revient à son premier statut pour le prochain essai.
+|Intention de paiement `canceled` |`cancelled` ou `failed` |`cancelled` quand l’organisme l’a annulée, sinon `failed` avec `expired` ou `canceled-by-payer`.
+|===
+
 Moneris décrit une page de paiement hébergée qui, selon l’entreprise, réduit la portée des règles sur les données de carte.
 Sa documentation est une application que la recherche n’a pas pu lire, donc ses détails sont _à vérifier_.
 
@@ -93,7 +110,7 @@ Ses guides techniques sont remis sur demande, donc ses statuts sont _à vérifie
 == Idempotence
 
 Le link:https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/[projet sur l’en-tête Idempotency-Key] du {abbr-ietf-first} reste un projet.
-Il répond `409 Conflict` à une nouvelle tentative qui arrive pendant que la première requête s’exécute.
+Il répond `409 Conflict` à une requête répétée qui arrive pendant que la première requête s’exécute.
 Il répond `422 Unprocessable Content` à une clé qui revient avec un autre corps.
 API-060 à API-063 exigent déjà la clé, et cette spécification n’y ajoute rien.
 

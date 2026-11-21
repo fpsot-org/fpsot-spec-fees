@@ -68,17 +68,17 @@ Ce reçu montre chaque exemption appliquée, avec sa source juridique.
 
 Dans les exemples, le permis d’embarcation de plaisance ne coûte rien au propriétaire qui a déclaré un droit.
 Ce droit est visé à l’article 35.
-Le reçu montre tout de même les frais de 24 $ et l’exemption, et le propriétaire voit pourquoi.
+Le reçu montre tout de même le droit de 24 $ et l’exemption, et le propriétaire voit pourquoi.
 
 == Taxes
 
 [[FEE-085]]
-*FEE-085.* Quand une ligne porte une taxe, le reçu DOIT donner le numéro d’inscription de l’organisme pour cette taxe.
+*FEE-085.* Quand une ligne porte une taxe, le reçu DEVRAIT donner le numéro d’inscription de l’organisme pour cette taxe.
 Quand aucune ligne ne la porte, chaque ligne montre tout de même son traitement et la source de celui-ci.
 
-Le droit fiscal peut exiger davantage d’une facture.
-Ces règles sont _à vérifier_ pour la taxe sur les produits et services et la taxe de vente du Québec.
-La recherche ne les a pas lues.
+Le droit fiscal peut exiger cela et davantage d’une facture.
+La recherche n’a pas lu ces règles, donc l’obligation de montrer le numéro est _à vérifier_.
+Cela vaut pour la taxe sur les produits et services et pour la taxe de vente du Québec.
 
 == Références
 

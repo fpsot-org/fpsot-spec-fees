@@ -34,13 +34,18 @@ The file `examples/decisions/pleasure-craft-quote.json` shows how the exemption 
 Create an order for the quotes, and one payment attempt for each try, under FEE-040 and FEE-041.
 Send the payer to the page of the provider by a full redirect, under FEE-047.
 Keep card data out of every record, log and event, under FEE-046.
+Drop every card field from provider reads and notifications in the adapter, under FEE-052.
+Cancel and read again an unfinished attempt before you start a new one, under FEE-053.
+
 Set a status only after a read at the provider, under FEE-049 and FEE-071.
 Verify the signature of each notification, and accept the same one twice, under FEE-070 and FEE-072.
 
 == Refund, remit and dispute
 
 Refund against a successful attempt, within its refundable balance, under FEE-060 and FEE-061.
+Check the balance and create the refund in one atomic step for each attempt.
 Give each refund a reason of the profile, under FEE-062.
+
 Remit only by a decision, under FEE-064.
 Carry the remission out by refund, or reduce the amount due.
 Never report a refund as a remission, under FEE-065.

@@ -8,7 +8,9 @@
 # The registry specification reports that section 113 adjusts the fee each April 1 by the consumer
 # price index (REG-026). The adjusted amounts were not read, so the value ends on 2026-04-01: a
 # quote for a later date finds no value and refuses (FEE-013). The enactment instant stands for
-# the registration date of SOR/2025-272, 2025-12-12. Not legal advice.
+# the registration date of SOR/2025-272, 2025-12-12. The text of SOR/2025-272 was not read in
+# full: the amount of $24 and the exemption come from the consolidated section and from search
+# extracts of the Gazette, so both are to be verified. Not legal advice.
 code: pleasure-craft-license-fees
 version: 1.0.0
 title: {en: Pleasure craft license fees, fr: Droits des permis d’embarcation de plaisance}

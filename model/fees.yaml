@@ -13,11 +13,13 @@ description: >-
   Money comes from the data types specification (DAT-050 to DAT-055), and
   decision records, legal sources and parameter sets from the decisions
   specification (DEC-030 to DEC-047); this model redefines none of them.
-  No class holds card data: a card shows only as a brand and four digits
-  (FEE-046). Each element cites its requirement IDs. The model says nothing
+  No class holds card data, a cardholder name, the first digits of a card
+  or a billing address: a card shows only as a brand and four digits
+  (FEE-046, FEE-052). Each element cites its requirement IDs. The model says nothing
   about storage (DMO-003).
   The quote, the order, the attempt, the refund, the remission, the
-  dispute, the notification, the receipt and the payout are entities under
+  dispute, the notification, the receipt, the payout and the record of an
+  embedded payment form are entities under
   DMO-021, each with its id. A fee schedule and a profile are published
   versioned artifacts, identified by code and version, so they have no id.
 version: 0.1.0
@@ -72,6 +74,7 @@ classes:
       quotes: {range: FeeQuote, multivalued: true, inlined_as_list: true, description: "Fee quotes. FEE-027."}
       orders: {range: FeeOrder, multivalued: true, inlined_as_list: true, description: "Fee orders. FEE-040."}
       attempts: {range: PaymentAttempt, multivalued: true, inlined_as_list: true, description: "Payment attempts. FEE-041."}
+      embeddedFormRecords: {range: EmbeddedFormRecord, multivalued: true, inlined_as_list: true, description: "Records of how an operator meets the script criterion of SAQ A for an embedded form. FEE-048."}
       notifications: {range: ProviderNotification, multivalued: true, inlined_as_list: true, description: "Provider notifications. FEE-070."}
       refunds: {range: Refund, multivalued: true, inlined_as_list: true, description: "Refunds. FEE-060."}
       remissions: {range: Remission, multivalued: true, inlined_as_list: true, description: "Remissions. FEE-064."}
@@ -102,7 +105,7 @@ classes:
       code: {range: CodeValue, required: true, description: "The code of the fee. VOC-064, FEE-020."}
       title: {range: MultilingualText, inlined: true, required: true, description: "The name of the fee. DAT-005."}
       basis: {range: FeeBasis, required: true, description: "How the amount follows from the quantity. FEE-022."}
-      amountParameter: {range: CodeValue, required: true, description: "The code of the parameter of the schedule that holds the dated amounts or rates. DEC-037, FEE-020."}
+      amountParameter: {range: CodeValue, description: "The code of the parameter of the schedule that holds the dated amounts, or the dated rates of a percentage. Required unless the basis is tiered or banded, whose bands name their own parameters. DEC-037, FEE-020."}
       unit: {range: CodeValue, description: "The unit of the quantity, required when the basis is not flat. DAT-043, FEE-022."}
       tiers: {range: FeeTier, multivalued: true, inlined_as_list: true, description: "The bands, required when the basis is tiered or banded. FEE-022."}
       legalSource: {range: LegalSource, inlined: true, required: true, description: "The provision that sets the fee. DEC-031, FEE-020."}
@@ -134,7 +137,7 @@ classes:
       publishedRate: {range: DecimalString, required: true, description: "The rate as its publisher gives it, in percent, such as 2.05. DAT-041, FEE-024."}
       rateSource: {range: uri, required: true, description: "Where the rate is published. FEE-024."}
       appliedRate: {range: DecimalString, required: true, description: "The rate after any cap of the profile, in percent. FEE-024."}
-      accumulatedRate: {range: DecimalString, description: "The sum of the rates carried forward, in percent, when the profile defers small changes. FEE-024."}
+      accumulatedRate: {range: DecimalString, description: "The rate carried from the previous step when that step was deferred, plus the applied rate, in percent. Required when the rule carries changes forward or defers them. FEE-024."}
       previousAmount: {range: Money, inlined: true, required: true, description: "The value before the step. DAT-050."}
       rawResult: {range: DecimalString, required: true, description: "The result before rounding, with every decimal. DAT-041, DAT-055."}
       deferred: {range: boolean, required: true, description: "Whether the profile deferred the change, so that the value stays the previous amount. FEE-024."}
@@ -165,9 +168,11 @@ classes:
       lineNumber: {range: integer, required: true, minimum_value: 1, description: "The number of the line, from 1. FEE-027."}
       feeItem: {range: CodeValue, required: true, description: "The fee item of the schedule. FEE-020."}
       quantity: {range: integer, required: true, minimum_value: 1, description: "How many units. FEE-022."}
-      unitAmount: {range: Money, inlined: true, required: true, description: "The value of the parameter in force on the effective date. DEC-037, FEE-027."}
-      valueValidFrom: {range: CalendarDate, required: true, description: "The start of the validity of that value. DEC-037, FEE-027."}
-      grossAmount: {range: Money, inlined: true, required: true, description: "The amount before any exemption. DAT-050."}
+      unitAmount: {range: Money, inlined: true, description: "The value of the parameter in force on the effective date: the amount of a flat or per-unit item, or the amount per unit of the band of a banded item. Absent for tiered and percentage items. DEC-037, FEE-027."}
+      rate: {range: DecimalString, description: "The rate in force on the effective date, in percent, required for a percentage item. DAT-041, FEE-022."}
+      baseValue: {range: Money, inlined: true, description: "The value on which a percentage item applies its rate, required for a percentage item. DAT-050, FEE-022."}
+      valueValidFrom: {range: CalendarDate, required: true, description: "The start of the validity of that value; for a tiered item, the latest start among the values of its bands. DEC-037, FEE-027."}
+      grossAmount: {range: Money, inlined: true, required: true, description: "The amount before any exemption: the flat amount, the unit amount times the quantity, the sum over the bands of a tiered item, or the base value times the rate, rounded under the rule of the schedule. DAT-050, FEE-022."}
       exemption: {range: CodeValue, description: "The exemption of the fee item that the decision applied, if any. FEE-028."}
       amount: {range: Money, inlined: true, required: true, description: "The amount of the line after the exemption, before taxes. DAT-050."}
       taxes: {range: TaxLine, multivalued: true, inlined_as_list: true, required: true, description: "The treatment of each tax, taxable or not. FEE-029."}
@@ -200,7 +205,7 @@ classes:
       filingIds: {range: Uuid, multivalued: true, description: "The filings of the registry specification that the order pays for. REG-024."}
       paymentReference: {range: PaymentReference, required: true, description: "The reference that the payer sees. FEE-040, FEE-092."}
       amountDue: {range: Money, inlined: true, required: true, description: "The sum of the totals of the quotes, less any remission that reduced it. FEE-040, FEE-064."}
-      status: {range: OrderStatus, required: true, description: "Where the order stands, derived from its attempts. FEE-045."}
+      status: {range: OrderStatus, required: true, description: "Where the order stands, derived from its amount, its attempts, its refunds and its disputes. FEE-045."}
       createdAt: {range: Instant, required: true, description: "When the service stored the order. DMO-050."}
       updatedAt: {range: Instant, required: true, description: "When the order last changed. DMO-050."}
 
@@ -211,18 +216,39 @@ classes:
       orderId: {range: FeeOrder, required: true, description: "The order. FEE-041."}
       provider: {range: CodeValue, required: true, description: "The code of the provider adapter. FEE-101."}
       providerPaymentId: {range: ProviderReference, required: true, description: "The id of the payment at the provider. FEE-051, FEE-092."}
-      amount: {range: Money, inlined: true, required: true, description: "The amount asked. It equals the amount due of the order. DAT-050, FEE-041."}
+      amount: {range: Money, inlined: true, required: true, description: "The amount asked. It equals the amount due of the order when the attempt was created. DAT-050, FEE-041."}
       methodCategory: {range: PaymentMethodCategory, required: true, description: "The kind of payment method. FEE-046."}
       integration: {range: PaymentIntegration, required: true, description: "How the payer reached the page of the provider. FEE-047, FEE-048."}
+      embeddedFormRecordId: {range: EmbeddedFormRecord, description: "The record of how the operator meets the script criterion of SAQ A, required when the integration is embedded-hosted-form and forbidden otherwise. FEE-048."}
       status: {range: PaymentStatus, required: true, description: "The canonical status. FEE-042."}
       finished: {range: boolean, required: true, description: "Whether the status is final, from the table of FEE-042. FEE-042."}
       failureCode: {range: FailureCode, description: "Why a finished attempt failed, required for failed, cancelled and error. FEE-043."}
       providerStatus: {range: ProviderReference, required: true, description: "The status as the provider gave it at the last read. FEE-051."}
       statusHistory: {range: StatusChange, multivalued: true, inlined_as_list: true, required: true, description: "Each status that the attempt took, in order. FEE-043, FEE-071."}
       settlement: {range: Settlement, inlined: true, required: true, description: "Whether the provider sent the funds, apart from the status. FEE-044."}
-      cardDisplay: {range: CardDisplay, inlined: true, description: "The brand and the last four digits of the card, as the provider returns them. FEE-046."}
+      cardDisplay: {range: CardDisplay, inlined: true, description: "The brand and the last four digits of the card, as the provider returns them. The only card fields that the adapter keeps. FEE-046, FEE-052."}
       createdAt: {range: Instant, required: true, description: "When the service stored the attempt. DMO-050."}
       updatedAt: {range: Instant, required: true, description: "When the attempt last changed. DMO-050."}
+
+  EmbeddedFormRecord:
+    description: >-
+      The record that an operator keeps before it embeds the payment form of
+      its provider in its own page: how the page meets the script criterion
+      of SAQ A, who checked it and when, which acquirer or card brand
+      accepted that method, the text it rests on and the period for which it
+      holds. FEE-048.
+    attributes:
+      id: {identifier: true, range: Uuid, description: "The identifier of the record. DAT-063."}
+      provider: {range: CodeValue, required: true, description: "The provider adapter whose form the page embeds. FEE-048, FEE-101."}
+      method: {range: EmbeddedFormMethod, required: true, description: "How the page meets the script criterion. FEE-048."}
+      checkedByPartyId: {range: Uuid, required: true, description: "The person who checked the method, a Party of the data models specification, by id. DMO-040, FEE-048."}
+      checkedOn: {range: CalendarDate, required: true, description: "The date of the check. FEE-048."}
+      acceptedByKind: {range: AcceptingEntityKind, required: true, description: "Whether an acquirer or a card brand accepted the method. FEE-048."}
+      acceptedBy: {range: CodeValue, required: true, description: "The code of the acquirer or of the card brand that accepted the method. FEE-048."}
+      basis: {range: uri, required: true, description: "The published text on which the method rests, such as the notice of the PCI Security Standards Council on FAQ 1588. FEE-048."}
+      validity: {range: DateInterval, inlined: true, required: true, description: "The dates for which the record holds. An attempt outside them has no record. DAT-023, FEE-048."}
+      createdAt: {range: Instant, required: true, description: "When the service stored the record. DMO-050."}
+      updatedAt: {range: Instant, required: true, description: "When the record last changed. DMO-050."}
 
   StatusChange:
     description: "One status of an attempt, with what the engine read to set it. FEE-043, FEE-049, FEE-071."
@@ -245,8 +271,27 @@ classes:
       brand: {range: CodeValue, required: true, description: "The brand, as a code. FEE-046."}
       lastFour: {range: LastFourDigits, required: true, description: "The last four digits. FEE-046."}
 
+  RefundStatusChange:
+    description: "One status of a refund, with what the engine read to set it. FEE-060, FEE-071."
+    attributes:
+      status: {range: RefundStatus, required: true, description: "The status. FEE-060."}
+      at: {range: Instant, required: true, description: "When the engine set it. DAT-010."}
+      source: {range: StatusSource, required: true, description: "What the engine read. FEE-071."}
+      notificationId: {range: ProviderNotification, description: "The notification that made the engine read the refund, if any. FEE-071."}
+
+  DisputeStatusChange:
+    description: "One status of a dispute, with what the engine read to set it. FEE-067, FEE-071."
+    attributes:
+      status: {range: DisputeStatus, required: true, description: "The status. FEE-067."}
+      at: {range: Instant, required: true, description: "When the engine set it. DAT-010."}
+      source: {range: StatusSource, required: true, description: "What the engine read. FEE-071."}
+      notificationId: {range: ProviderNotification, description: "The notification that made the engine read the dispute, if any. FEE-071."}
+
   ProviderNotification:
-    description: "A notification that a provider sent, and what the engine did with it. FEE-070 to FEE-072."
+    description: >-
+      A notification that a provider sent, and what the engine did with it.
+      The engine stores this parsed record, not the raw body. FEE-070 to
+      FEE-072.
     attributes:
       id: {identifier: true, range: Uuid, description: "The identifier of the record. DAT-063."}
       provider: {range: CodeValue, required: true, description: "The provider adapter. FEE-101."}
@@ -257,6 +302,7 @@ classes:
       providerObjectId: {range: ProviderReference, required: true, description: "The id of that object at the provider. FEE-071."}
       readAt: {range: Instant, description: "When the engine read the object again at the provider, required when the signature verified. FEE-071."}
       outcome: {range: NotificationOutcome, required: true, description: "What the read changed. FEE-071, FEE-072."}
+      redactedBody: {range: string, description: "The body, kept only after the adapter removed every field of FEE-052 from it. Never the raw body. FEE-052, FEE-072."}
 
   # Refunds, remissions and disputes (FEE-060 to FEE-069)
 
@@ -268,13 +314,15 @@ classes:
       attemptId: {range: PaymentAttempt, required: true, description: "The successful attempt that the refund goes against. FEE-060."}
       providerRefundId: {range: ProviderReference, required: true, description: "The id of the refund at the provider. FEE-092."}
       amount: {range: Money, inlined: true, required: true, description: "The amount returned. DAT-050."}
-      refundableBefore: {range: Money, inlined: true, required: true, description: "The refundable balance that the request stated, which the engine compares before it acts. FEE-061."}
+      refundableBefore: {range: Money, inlined: true, required: true, description: "The refundable balance that the request stated: the amount of the attempt, less its refunds that did not end in error and that no later refund replaces, less its lost disputes. The engine compares it and creates the refund in one atomic step for each attempt. FEE-061."}
       reason: {range: CodeValue, required: true, description: "A refund reason of the profile. FEE-062."}
       servicesRenderedDeduction: {range: Money, inlined: true, description: "The part kept for services already rendered, required by a reason that the profile marks so. FEE-062."}
       remissionId: {range: Remission, description: "The remission that the refund carries out, required with the reason remission and forbidden with any other. FEE-065."}
       methodCategory: {range: PaymentMethodCategory, description: "The method of the refund, required when it differs from the method of the attempt. FEE-063."}
       methodChangeReason: {range: CodeValue, description: "Why the refund goes by another method, such as card-expired. Required with methodCategory. FEE-063."}
+      replacesRefundId: {range: Refund, description: "The refund of the same attempt that the provider reversed after its success, which this new refund replaces. FEE-060, FEE-091."}
       status: {range: RefundStatus, required: true, description: "The refund status. FEE-060."}
+      statusHistory: {range: RefundStatusChange, multivalued: true, inlined_as_list: true, required: true, description: "Each status that the refund took, in order. FEE-060, FEE-071."}
       createdAt: {range: Instant, required: true, description: "When the service stored the refund. DMO-050."}
       updatedAt: {range: Instant, required: true, description: "When the refund last changed. DMO-050."}
 
@@ -287,7 +335,9 @@ classes:
       amount: {range: Money, inlined: true, required: true, description: "The amount remitted. It equals the amount of the record. DAT-050, FEE-064."}
       legalBasis: {range: LegalSource, inlined: true, required: true, description: "The provision under which the body remits. DEC-031, FEE-064."}
       execution: {range: RemissionExecution, required: true, description: "How the remission reaches the payer. FEE-064."}
-      refundIds: {range: Refund, multivalued: true, description: "The refunds that carry it out, required when the execution is refund. FEE-064."}
+      refundIds: {range: Refund, multivalued: true, description: "The refunds that carry it out, required when the execution is refund, unless an open dispute holds them. FEE-064, FEE-068."}
+      heldByDisputeId: {range: Dispute, description: "The dispute that was open on an attempt of the order when the body remitted, and that holds the refunds until it closes. FEE-064, FEE-068."}
+      disputeOffset: {range: Money, inlined: true, description: "The part of the amount remitted that a lost dispute already returned to the payer, which the refunds leave out. FEE-064, FEE-068."}
       createdAt: {range: Instant, required: true, description: "When the service stored the remission. DMO-050."}
       updatedAt: {range: Instant, required: true, description: "When the remission last changed. DMO-050."}
 
@@ -298,6 +348,7 @@ classes:
       attemptId: {range: PaymentAttempt, required: true, description: "The attempt that the payer disputes. FEE-067."}
       providerDisputeId: {range: ProviderReference, required: true, description: "The id of the dispute at the provider. FEE-092."}
       status: {range: DisputeStatus, required: true, description: "The dispute status. FEE-067."}
+      statusHistory: {range: DisputeStatusChange, multivalued: true, inlined_as_list: true, required: true, description: "Each status that the dispute took, in order. FEE-067, FEE-071."}
       reason: {range: CodeValue, required: true, description: "The reason that the provider gives, as a code. FEE-067."}
       amount: {range: Money, inlined: true, required: true, description: "The amount disputed. DAT-050."}
       evidenceDueDate: {range: CalendarDate, description: "The last day to send evidence, while the status is needs-response. FEE-067."}
@@ -460,7 +511,7 @@ classes:
       carryForward: {range: boolean, required: true, description: "Whether a change below the threshold carries to the next year. FEE-024."}
       deferralBelow: {range: Money, inlined: true, description: "Fees below this amount wait until the sum of the deferred rates raises them by deferralStep. FEE-024."}
       deferralStep: {range: Money, inlined: true, description: "The rise that ends a deferral. FEE-024."}
-      roundingRule: {range: CodeValue, description: "The rounding rule of the indexed result. FEE-025."}
+      roundingRule: {range: CodeValue, description: "The rounding rule of the indexed result. Absent, the default rule of core applies. FEE-014, FEE-025."}
       caps: {range: RateCap, multivalued: true, inlined_as_list: true, description: "Caps on the rate, each over a period. FEE-024."}
       sourceIds: {range: CodeValue, multivalued: true, required: true, description: "The sources of the profile. FEE-011."}
 
@@ -469,6 +520,7 @@ classes:
     attributes:
       rate: {range: DecimalString, required: true, description: "The highest rate, in percent. FEE-024."}
       validity: {range: DateInterval, inlined: true, required: true, description: "The dates of the indexed values that the cap applies to. DAT-023."}
+      exceptFlags: {range: CodeValue, multivalued: true, description: "Flags of a fee item that put it outside the cap, such as a fee that a law excepts from it. FEE-012, FEE-024."}
       sourceId: {range: CodeValue, required: true, description: "The source of the profile. FEE-011."}
 
   RoundingRule:
@@ -476,6 +528,7 @@ classes:
     attributes:
       code: {range: CodeValue, required: true, description: "The rule. FEE-025."}
       method: {range: RoundingMethod, required: true, description: "The method. DAT-054."}
+      appliesTo: {range: RoundingScope, multivalued: true, required: true, description: "What the rule may round: the lines and taxes of quotes, indexed values, or both. FEE-025."}
       bands: {range: RoundingBand, multivalued: true, inlined_as_list: true, required: true, description: "The step for each range of results. DAT-054."}
       sourceId: {range: CodeValue, description: "The source of the profile that sets it, absent in core. FEE-011."}
 
@@ -495,7 +548,7 @@ classes:
       sourceId: {range: CodeValue, required: true, description: "The source of the profile. FEE-011."}
 
   ProfileParameter:
-    description: "Another dated value of the law, such as a materiality threshold or an interest rule. FEE-011."
+    description: "Another dated value of the law, such as a materiality threshold, an interest rule or the rate that an interest rule needs. One value for each code and each date. FEE-011, FEE-023, FEE-030."
     attributes:
       code: {range: CodeValue, required: true, description: "The parameter. FEE-011."}
       value: {range: Any, required: true, description: "The value. Money follows DAT-050 to DAT-055. FEE-011."}
@@ -552,6 +605,8 @@ enums:
       paid: {description: "One attempt succeeded."}
       no-payment-due: {description: "The amount due is zero, so the order takes no attempt."}
       canceled: {description: "The body canceled the order before any payment."}
+      refunded: {description: "Refunds returned every successful payment in full, so the body keeps none of it."}
+      reversed: {description: "A dispute on one of its attempts was lost, so the bank of the payer took money back."}
   RefundStatus:
     description: "The statuses of a refund, after GOV.UK Pay. FEE-060."
     permissible_values:
@@ -565,6 +620,16 @@ enums:
       under-review: {description: "The bank of the payer reviews the evidence."}
       won: {description: "The body keeps the payment. Final."}
       lost: {description: "The payment goes back to the payer. Final."}
+  EmbeddedFormMethod:
+    description: "How a page that embeds the form of a provider meets the script criterion of SAQ A. FEE-048."
+    permissible_values:
+      script-controls: {description: "The operator controls the scripts of the page."}
+      provider-confirmation: {description: "The provider confirms that its form protects itself from the scripts of the page."}
+  AcceptingEntityKind:
+    description: "The kind of entity that accepted the method of an embedded form. FEE-048."
+    permissible_values:
+      acquirer: {description: "The acquirer of the operator."}
+      card-brand: {description: "A card brand."}
   RemissionExecution:
     description: "How a remission reaches the payer. FEE-064."
     permissible_values:
@@ -591,6 +656,11 @@ enums:
       nearest-half-up: {description: "To the nearest multiple of the step; a result halfway goes up."}
       nearest-half-even: {description: "To the nearest multiple of the step; a result halfway goes to the even multiple."}
       down: {description: "To the multiple of the step at or below the result."}
+  RoundingScope:
+    description: "What a rounding rule may round. FEE-025."
+    permissible_values:
+      quotes: {description: "The lines, the taxes and the totals of quotes."}
+      indexed-values: {description: "The values that an indexation step publishes."}
   RoundingStage:
     description: "The step at which an engine rounds a quote. DAT-054, FEE-025."
     permissible_values:

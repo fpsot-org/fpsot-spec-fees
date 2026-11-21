@@ -19,14 +19,15 @@ Un profil énonce la pratique de la {abbr-fpsot-first}, et il ne constitue pas u
 Chaque profil DOIT être un fichier de la classe `FeeProfile` de `model/fees.yaml`, dans le dossier `profiles/`.
 Chaque profil DOIT énumérer ses sources.
 Pour chaque source, il DOIT indiquer si la recherche l’a lue, ou la marquer `to-be-verified`.
-Une source lue dans une copie archivée compte comme lue, et le profil donne cette copie.
+Une source lue dans une copie archivée compte comme lue seulement si cette copie contient le texte en vigueur.
+Le profil donne alors cette copie.
 
 [cols="2,3,4",options="header"]
 |===
 |Profil |S’applique à |Contenu de cette version
 |`core` |Tous les frais |Les valeurs par défaut de FEE-014 et les motifs de remboursement que tout moteur connaît.
-|`ca-federal` |Frais des organismes fédéraux du Canada |Le rajustement annuel selon l’indice des prix, la remise pour une norme de rendement non respectée, le remboursement d’une fin non réalisée, les seuils de faible importance, les intérêts, les frais d’un effet non honoré et l’exemption de la taxe sur les produits et services.
-|`ca-qc` |Frais des organismes publics du Québec |L’indexation de chaque 1^er^ janvier, son plafond jusqu’en 2026, le report des tarifs inférieurs à 5 $ et les tranches d’arrondissement.
+|`ca-federal` |Frais des organismes fédéraux du Canada |Le rajustement annuel selon l’indice des prix, la remise pour une norme de rendement non respectée, le remboursement d’une fin non réalisée, les seuils de faible importance, les intérêts avec leurs taux mensuels, les frais d’un effet non honoré et l’exemption de la taxe sur les produits et services.
+|`ca-qc` |Frais des organismes publics du Québec |L’indexation de chaque 1^er^ janvier, son plafond jusqu’en 2026 avec l’indicateur qui le lève pour les tarifs de l’annexe I de la loi de plafonnement, le report des tarifs inférieurs à 5 $ et les tranches d’arrondissement des valeurs indexées.
 |===
 
 Cette version ne contient aucun profil français.
@@ -41,7 +42,11 @@ La directive du {abbr-tbs-first} sur l’imposition de frais a refusé les lecte
 
 Le profil `ca-qc` suit le chapitre VIII.1 de la Loi sur l’administration financière.
 Il suit aussi le règlement sur l’arrondissement et la loi qui plafonne l’indexation.
-La recherche a lu les trois dans des copies archivées de LégisQuébec.
+La recherche a lu la loi et le règlement dans des copies archivées de LégisQuébec.
+Ces copies contiennent les textes en vigueur.
+La seule copie archivée de la loi de plafonnement date de 2024.
+Le gouvernement peut retirer un règlement de son annexe I, donc cette loi est _à vérifier_.
+
 Un tarif inférieur à 5 $ attend que la somme des taux reportés l’augmente de 0,05 $.
 Le 2026-11-21, la recherche n’a trouvé aucune loi qui prolonge le plafond au-delà de 2026.
 
@@ -107,7 +112,7 @@ Selon cette loi, l’organisme garde la part des frais qui correspond aux servic
 * link:https://laws-lois.justice.gc.ca/fra/lois/F-11/page-4.html[Loi sur la gestion des finances publiques, articles 16.1 à 23], L.R.C. 1985, ch. F-11, site Web de la législation (Justice). link:https://web.archive.org/web/20260807024451/https://laws-lois.justice.gc.ca/fra/lois/F-11/page-4.html[Copie archivée]
 * link:https://web.archive.org/web/20260303123405/https://www.legisquebec.gouv.qc.ca/fr/document/lc/A-6.001[Loi sur l'administration financière], RLRQ, c. A-6.001, chapitre VIII.1, LégisQuébec, à jour au 2025-12-11, copie archivée.
 * link:https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1[Règlement sur l'arrondissement des tarifs indexés], RLRQ, c. A-6.001, r. 0.1, LégisQuébec, à jour au 2025-10-24, copie archivée.
-* link:https://web.archive.org/web/20240809061656/https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-7.1[Loi limitant l'indexation de plusieurs tarifs gouvernementaux], RLRQ, c. I-7.1, LégisQuébec, à jour au 2024-05-01, copie archivée.
+* link:https://web.archive.org/web/20240809061656/https://www.legisquebec.gouv.qc.ca/fr/document/lc/I-7.1[Loi limitant l'indexation de plusieurs tarifs gouvernementaux], RLRQ, c. I-7.1, LégisQuébec, à jour au 2024-05-01, copie archivée, _à vérifier_.
 
 == Historique du document
 
