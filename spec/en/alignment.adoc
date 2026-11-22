@@ -48,7 +48,7 @@ Its reconciliation section asks for an internal id and an external id for each t
 
 == ISO 20022
 
-The link:https://www.iso20022.org/iso-20022-message-definitions[catalog of ISO 20022] refused automated readers, and so did its code sets.
+The link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[catalog of ISO 20022] refused automated readers, and so did its code sets.
 The research read the status codes in a link:https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[copy that a software package publishes].
 Every code below is therefore _to be verified_ against the official code set.
 
@@ -119,8 +119,8 @@ API-060 to API-063 already require the key, and this specification adds nothing 
 
 * link:https://docs.payments.service.gov.uk/api_reference/[API reference], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20261029092201/https://docs.payments.service.gov.uk/api_reference/[Archived copy]
 * link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, read 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Archived copy]
-* link:https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, _to be verified_ at the source. link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[Archived copy]
-* link:https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[ExternalPaymentTransactionStatus1Code], copy in the package iso20022_external_codes 1.0.1, a secondary source. link:https://web.archive.org/web/20261121171739/https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[Archived copy]
+* link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, archived copy, _to be verified_ at the source.
+* link:https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[ExternalPaymentTransactionStatus1Code], copy in the package iso20022_external_codes 1.0.1, a secondary source.
 * link:https://docs.stripe.com/payments/paymentintents/lifecycle[How PaymentIntents and SetupIntents work], Stripe documentation, read 2026-11-21. link:https://web.archive.org/web/20261114112140/https://docs.stripe.com/payments/paymentintents/lifecycle[Archived copy]
 * link:https://docs.stripe.com/webhooks[Receive Stripe events in your webhook endpoint], Stripe documentation, read 2026-11-21. link:https://web.archive.org/web/20261118034658/https://docs.stripe.com/webhooks[Archived copy]
 * link:https://www.collectivites-locales.gouv.fr/gerer-les-finances-publiques-locales/moyens-de-paiement/loffre-de-paiement-en-ligne-payfip[L'offre de paiement en ligne PayFiP], Direction générale des Finances publiques, collectivites-locales.gouv.fr, read 2026-11-21. link:https://web.archive.org/web/20261121171623/https://www.collectivites-locales.gouv.fr/gerer-les-finances-publiques-locales/moyens-de-paiement/loffre-de-paiement-en-ligne-payfip[Archived copy]

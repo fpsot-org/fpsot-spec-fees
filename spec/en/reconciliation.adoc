@@ -74,7 +74,7 @@ The ledger, its accounts and its rules stay with the finance system of the body.
 
 * link:https://docs.payments.service.gov.uk/reporting/[Reconcile and report on payments], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/reporting/[Archived copy]
 * link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, read 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Archived copy]
-* link:https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, catalog, _to be verified_ at the source. link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[Archived copy]
+* link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, archived copy, catalog, _to be verified_ at the source.
 
 == Document history
 
