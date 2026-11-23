@@ -92,5 +92,5 @@ Cela vaut pour la taxe sur les produits et services et pour la taxe de vente du 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-21 |Première version.
+|0.1.0 |2026-11-22 |Première version.
 |===

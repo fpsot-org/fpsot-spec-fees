@@ -210,5 +210,5 @@ The read can also show that the old attempt succeeded, and the order then needs 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Change
-|0.1.0 |2026-11-21 |First version.
+|0.1.0 |2026-11-22 |First version.
 |===

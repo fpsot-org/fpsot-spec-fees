@@ -132,5 +132,5 @@ API-060 à API-063 exigent déjà la clé, et cette spécification n’y ajoute 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-21 |Première version.
+|0.1.0 |2026-11-22 |Première version.
 |===

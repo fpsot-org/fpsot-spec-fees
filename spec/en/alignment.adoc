@@ -131,5 +131,5 @@ API-060 to API-063 already require the key, and this specification adds nothing 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Change
-|0.1.0 |2026-11-21 |First version.
+|0.1.0 |2026-11-22 |First version.
 |===

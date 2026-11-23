@@ -231,5 +231,5 @@ Ce sont celles sur les décisions, les types de données, les interfaces, les es
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-21 |Première version.
+|0.1.0 |2026-11-22 |Première version.
 |===
