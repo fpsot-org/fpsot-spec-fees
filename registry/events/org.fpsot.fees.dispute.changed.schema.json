@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fpsot.org/schemas/fees/events/org.fpsot.fees.dispute.changed.schema.json",
+  "$comment": "SPDX-License-Identifier: Community-Spec-1.0. FPSOT fees event data (FEE-075). The data holds identifiers, codes and instants only, never a party id, a payment reference, an amount or card data (FEE-076). A consumer reads the record by its id. The CloudEvents attributes follow API-101.",
+  "title": "org.fpsot.fees.dispute.changed",
+  "description": "A dispute took a new status (FEE-067, FEE-075).",
+  "type": "object",
+  "required": [
+    "disputeId",
+    "attemptId",
+    "status",
+    "changedAt"
+  ],
+  "properties": {
+    "disputeId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "The dispute (FEE-067)."
+    },
+    "attemptId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "The disputed attempt (FEE-067)."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "needs-response",
+        "under-review",
+        "won",
+        "lost"
+      ],
+      "description": "The new status (FEE-067)."
+    },
+    "evidenceDueDate": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "The last day to send evidence (FEE-067)."
+    },
+    "changedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,9})?Z$",
+      "description": "When the engine set the status (FEE-067)."
+    }
+  },
+  "additionalProperties": false
+}

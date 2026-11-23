@@ -1,0 +1,177 @@
+= Refunds, remissions and disputes
+include::_fpsot-terms.adoc[]
+
+Three acts undo or soften a payment, and each one has its own cause.
+A refund returns money that the body should not keep, such as a fee for a service that never came.
+A remission forgives or returns money that the payer owed, by a decision under a law.
+A dispute starts at the bank of the payer, outside the control of the body.
+
+Canadian federal law keeps refund and remission apart twice.
+Under section 20 of the Financial Administration Act, money paid for a purpose that fails may go back.
+The body keeps the part for services already rendered.
+Under section 23, the Governor in Council may remit a debt on grounds of equity or the public interest.
+Under section 7 of the Service Fees Act, a body that misses a performance standard remits part of the fee.
+
+The remission policy of Environment and Climate Change Canada adds a point.
+An overpayment or an administrative error leads to a refund, not a remission.
+
+== Refunds
+
+[[FEE-060]]
+*FEE-060.* Each refund MUST be a record of the class `Refund` of `model/fees.yaml`.
+It MUST name its order and one attempt of that order with the status `success`.
+Its status MUST be `submitted`, `success` or `error`, and the last two are final.
+Its status MUST move only as this table allows.
+Its history MUST keep each status, with its instant and what the engine read to set it.
+
+An engine MUST NOT treat `submitted` as the outcome of a refund.
+A provider may reverse a refund after it showed `success`, and the refund then keeps `success`.
+The engine MUST keep that reversal as an exception of reconciliation, under FEE-091.
+When the body still owes the money, it MUST make a new refund that names the reversed one.
+
+[cols="1,3",options="header"]
+|===
+|From |To
+|The start |`submitted`, `success` or `error`
+|`submitted` |`success` or `error`
+|`success` |No other status
+|`error` |No other status
+|===
+
+GOV.UK Pay warns that some providers keep a refund `submitted` for a while.
+A refund that ends in `error` moved no money, and the body may try again with a new refund.
+On Stripe, a refund that succeeded can still fail later, such as when the bank of the payer returns it.
+The research did not read the refund statuses of Stripe at the source, so they are _to be verified_.
+A new record keeps both facts, since the first refund did succeed and the payer still has no money.
+
+[[FEE-061]]
+*FEE-061.* The refunds of an attempt MUST NOT add up to more than its refundable balance.
+That balance is the amount of the attempt, less its lost disputes.
+It is also less the refunds of the attempt that did not end in `error`.
+A refund that a later refund replaces under FEE-060 no longer counts.
+
+Each request for a refund MUST state, in `refundableBefore`, the refundable balance that the client saw.
+The engine MUST refuse the request when that balance differs from its own.
+For each attempt, the engine MUST check the balance and create the refund in one atomic step.
+
+Two clerks may refund the same payment at the same time, and both may state the same balance.
+With one atomic step, only the first request passes, and the second finds a new balance.
+GOV.UK Pay guards against the same risk with the same echo of the balance.
+A conditional request does not serve here, since API-009 covers `PUT`, `PATCH` and `DELETE`, and a refund is a `POST`.
+The entity tag of the attempt does not change with a refund either.
+
+[[FEE-062]]
+*FEE-062.* Each refund MUST give a refund reason of its profile or of `core`.
+Some reasons of a profile come with a deduction for services already rendered.
+A refund for such a reason MUST state that deduction, even when it is zero.
+The reason `purpose-not-fulfilled` MUST serve when the payer paid for a service that the body did not provide.
+
+The federal law keeps the part for services rendered.
+It does so in section 20 of the Financial Administration Act and in section 2 of its regulations on repayment.
+The `ca-federal` profile therefore ties that reason to a deduction.
+
+[[FEE-063]]
+*FEE-063.* A refund SHOULD go back by the method of the payment that it refunds.
+A refund by another method MUST name its method and the reason for the change.
+
+A provider may refuse a refund to an expired card.
+The body then pays the payer another way, and the record shows why.
+
+== Remissions
+
+[[FEE-064]]
+*FEE-064.* Each remission MUST rest on a decision under the decisions specification, with its own decision record.
+The record MUST have the outcome `remitted`, the amount remitted, and the legal basis among its legal authorities.
+Each remission MUST be a record of the class `Remission`, which names that decision record and its order.
+When the payer has paid, the remission MUST lead to refunds that add up to the amount remitted.
+When the payer has not paid, it MUST reduce the amount due of its order instead.
+
+A remission MAY reduce the amount due only while the order has no attempt that is not finished.
+Otherwise the engine MUST first cancel that attempt under FEE-053, or carry the remission out by refund.
+When a dispute is open on an attempt of the order, the engine MUST record the remission with that dispute.
+It MUST hold the refunds of the remission until the dispute closes, under FEE-068.
+When the body loses the dispute, the refunds MUST leave out what the dispute returned, up to the amount remitted.
+The remission MUST record that part as its dispute offset.
+
+The decision holds the facts, such as whether the body met its performance standard in a fiscal year.
+The refund only moves the money.
+
+[[FEE-065]]
+*FEE-065.* A refund MUST NOT imply a remission.
+Only a refund with the reason `remission` MAY name a remission, and such a refund MUST name one.
+A report of remissions MUST count remission records only, never refunds.
+
+A federal body reports its remissions to Parliament under section 20 of the Service Fees Act.
+It also reports them in the Public Accounts under section 24 of the Financial Administration Act.
+A refund for an error that showed up in those reports would mislead both.
+
+[[FEE-066]]
+*FEE-066.* A body may remit for many payers at once.
+It MUST then make one decision record for each payer and each order.
+It MUST NOT cover several payers with one record.
+
+A remission for a missed performance standard reaches every payer of the fiscal year.
+Each record then gives the reasons for one payer, under DEC-052.
+
+== Disputes
+
+[[FEE-067]]
+*FEE-067.* Each dispute MUST be a record of the class `Dispute`, which names its attempt.
+Its status MUST be `needs-response`, `under-review`, `won` or `lost`, and the last two are final.
+Its status MUST move only as this table allows.
+Its history MUST keep each status, with its instant and what the engine read to set it.
+A dispute in `needs-response` MUST give the last day to send evidence.
+
+[cols="1,3",options="header"]
+|===
+|From |To
+|The start |`needs-response`, `under-review`, `won` or `lost`
+|`needs-response` |`under-review`, `won` or `lost`
+|`under-review` |`won` or `lost`
+|`won` |No other status
+|`lost` |No other status
+|===
+
+The four statuses come from GOV.UK Pay.
+A dispute never changes the status of its attempt, which stays `success`.
+A lost dispute changes the status of the order to `reversed`, under FEE-045.
+
+[[FEE-068]]
+*FEE-068.* An engine MUST NOT create a refund on an attempt while a dispute on that attempt is open.
+A dispute is open from its opening until it reaches `won` or `lost`.
+
+A refund while the bank reviews a dispute could pay the payer twice.
+GOV.UK Pay lists a dispute reason for a refund that the payer expected and did not get.
+
+[[FEE-069]]
+*FEE-069.* A lost dispute MUST appear in reconciliation as a payout line of the kind `dispute-reversal`.
+The amount of that line MUST be the negative of the amount of the dispute.
+The fee of a dispute MUST appear as a line of the kind `dispute-fee`, whatever the status of the dispute.
+The amount of that line MUST be the negative of the fee.
+An engine MUST NOT record a lost dispute as a refund.
+
+A provider may charge a fee for a dispute, and some charge it whether the body wins or loses.
+The fee then reduces the next payout, under FEE-091.
+
+== References
+
+=== Normative
+
+* link:https://docs.payments.service.gov.uk/refunding_payments/[Refund a payment], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20260802114113/https://docs.payments.service.gov.uk/refunding_payments/[Archived copy]
+* link:https://docs.payments.service.gov.uk/disputes/[Disputes], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/disputes/[Archived copy]
+
+=== Informative
+
+* link:https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html[Financial Administration Act, sections 16.1 to 23], R.S.C. 1985, c. F-11, Justice Laws Website. link:https://web.archive.org/web/20260721172843/https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/acts/F-11/page-5.html[Financial Administration Act, sections 24 to 25], R.S.C. 1985, c. F-11, Justice Laws Website. link:https://web.archive.org/web/20260806022544/https://laws-lois.justice.gc.ca/eng/acts/F-11/page-5.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html[Service Fees Act], S.C. 2017, c. 20, s. 451, Justice Laws Website, current to 2026-10-29. link:https://web.archive.org/web/20260731030650/https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-127/FullText.html[Repayment of Receipts Regulations, 1997], SOR/98-127, Justice Laws Website. link:https://web.archive.org/web/20260807113837/https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-127/FullText.html[Archived copy]
+* link:https://www.canada.ca/en/environment-climate-change/corporate/transparency/priorities-management/policies-guidelines/departmental-remissions-policy-service-fees.html[Departmental Remissions Policy for Service Fees], Environment and Climate Change Canada, effective 2021-04-01. link:https://web.archive.org/web/20260516232029/https://www.canada.ca/en/environment-climate-change/corporate/transparency/priorities-management/policies-guidelines/departmental-remissions-policy-service-fees.html[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-22 |First version.
+|===

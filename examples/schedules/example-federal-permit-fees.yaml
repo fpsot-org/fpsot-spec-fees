@@ -1,0 +1,127 @@
+# SPDX-License-Identifier: Community-Spec-1.0
+# Fee schedule (FEE-020), in the form of the class FeeSchedule of model/fees.yaml, which extends the
+# ParameterSet of the decisions specification (DEC-037). A fictional federal permit office under
+# the ca-federal profile: an application fee of $350, which has a performance standard and a
+# remission under the Service Fees Act, and an amendment fee of $40, which is below $51 and so
+# low-materiality. It also shows the other bases of FEE-022: an inspection fee tiered by the hour,
+# where each band of hours pays its own rate; a sampling fee banded by the number of samples, where
+# every sample pays the rate of the band that the whole quantity falls in; and a late renewal
+# surcharge of 10% of the renewal value. The regulations, the remission policy and every address
+# are fictional.
+code: example-federal-permit-fees
+version: 1.0.0
+title: {en: Example federal permit fees, fr: Frais d’exemple des permis fédéraux}
+profile: ca-federal
+roundingRule: cent-half-up
+roundingStage: per-line
+feeItems:
+  - code: permit-application-fee
+    title: {en: Permit application, fr: Demande de permis}
+    basis: flat
+    amountParameter: permit-application-fee-amount
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"]
+    taxTreatment: gst-government-license-exempt
+    indexationRule: service-fees-act-cpi
+  - code: permit-amendment-fee
+    title: {en: Permit amendment, fr: Modification de permis}
+    basis: flat
+    amountParameter: permit-amendment-fee-amount
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"]
+    taxTreatment: gst-government-license-exempt
+    flags: [low-materiality]
+  - code: inspection-fee
+    title: {en: Inspection, fr: Inspection}
+    basis: tiered
+    unit: hour
+    tiers:
+      - {from: 0, below: 3, amountParameter: inspection-fee-first-hours}
+      - {from: 3, amountParameter: inspection-fee-later-hours}
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-5.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-5.html"]
+    taxTreatment: gst-government-license-exempt
+  - code: sampling-fee
+    title: {en: Sampling, fr: Échantillonnage}
+    basis: banded
+    unit: sample
+    tiers:
+      - {from: 1, below: 10, amountParameter: sampling-fee-small-batch}
+      - {from: 10, amountParameter: sampling-fee-large-batch}
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-6.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-6.html"]
+    taxTreatment: gst-government-license-exempt
+  - code: late-renewal-surcharge
+    title: {en: Late renewal surcharge, fr: Supplément pour renouvellement tardif}
+    basis: percentage
+    unit: base-value
+    amountParameter: late-renewal-surcharge-rate
+    legalSource:
+      uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-7.html"
+      otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-7.html"]
+    taxTreatment: gst-government-license-exempt
+parameters:
+  - code: permit-application-fee-amount
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "350.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-3.html"
+          otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-3.html"]
+  - code: permit-amendment-fee-amount
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "40.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-4.html"
+          otherLanguageUris: ["https://laws.example.org/fra/reglements/EX-2025-1/article-4.html"]
+  - code: inspection-fee-first-hours
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "120.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-5.html"
+  - code: inspection-fee-later-hours
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "90.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-5.html"
+  - code: sampling-fee-small-batch
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "30.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-6.html"
+  - code: sampling-fee-large-batch
+    values:
+      - validity: {start: "2025-04-01"}
+        value: {amount: "25.00", currency: CAD}
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-6.html"
+  - code: late-renewal-surcharge-rate
+    values:
+      - validity: {start: "2025-04-01"}
+        value: "10"
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://laws.example.org/eng/regulations/EX-2025-1/section-7.html"
+  # The share of the application fee that the office remits when it misses the performance
+  # standard in a fiscal year, in percent, under its remission policy.
+  - code: permit-application-remission-rate
+    values:
+      - validity: {start: "2025-04-01"}
+        value: "25"
+        enactedAt: "2025-02-14T15:00:00Z"
+        legalSource:
+          uri: "https://www.example.org/permits/remission-policy#section-4"

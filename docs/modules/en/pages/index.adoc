@@ -1,15 +1,76 @@
-= Guide
-:page-type: explanation
+= Put a fee under the fees specification
+:page-type: how-to
 include::_fpsot-terms.adoc[]
 
-This page explains the specification for the people who adopt it.
-Each guide page has one type.
-It is a tutorial, a how-to guide, a reference or an explanation.
+This guide takes a public body from one fee to a conforming payment flow.
+Each step cites the rule that it meets.
+It is not legal advice, and the page of questions for counsel lists the points that a lawyer must settle.
+The files in `examples/` follow three synthetic fees through every step.
+
+== Name the law
+
+Find the profile whose law applies to the fee, such as `ca-federal` or `ca-qc`, under FEE-010.
+If none fits, write one, and cite a source for each rule and each value, under FEE-011.
+Mark each source that nobody read at its origin as `to-be-verified`.
+Keep every rate, threshold and rounding rule in the profile, never in code, under FEE-012.
+
+== Write the schedule
+
+Write a fee schedule under FEE-020, with one fee item for each fee.
+Give each item its basis, its legal source and its tax treatment, under FEE-022 and FEE-029.
+Publish each amount as a dated value, under FEE-023.
+For an indexed fee, add the indexation step that set each new value, under FEE-024.
+The file `examples/schedules/example-quebec-permit-fees.yaml` shows how Québec indexed its fees for 2026.
+
+== Quote as a decision
+
+Price each fee through a rule provider of the decisions specification, under FEE-026.
+Keep the lines in a quote that names the decision record, under FEE-027.
+Record an exemption as a fact of the decision, and send a discretionary waiver to a person, under FEE-028.
+The file `examples/decisions/pleasure-craft-quote.json` shows how the exemption applies to the pleasure craft license fee.
+
+== Take the payment
+
+Create an order for the quotes, and one payment attempt for each try, under FEE-040 and FEE-041.
+Send the payer to the page of the provider by a full redirect, under FEE-047.
+Keep card data out of every record, log and event, under FEE-046.
+Drop every card field from provider reads and notifications in the adapter, under FEE-052.
+Cancel and read again an unfinished attempt before you start a new one, under FEE-053.
+
+Set a status only after a read at the provider, under FEE-049 and FEE-071.
+Verify the signature of each notification, and accept the same one twice, under FEE-070 and FEE-072.
+
+== Refund, remit and dispute
+
+Refund against a successful attempt, within its refundable balance, under FEE-060 and FEE-061.
+Check the balance and create the refund in one atomic step for each attempt.
+Give each refund a reason of the profile, under FEE-062.
+
+Remit only by a decision, under FEE-064.
+Carry the remission out by refund, or reduce the amount due.
+Never report a refund as a remission, under FEE-065.
+Record each dispute on its own, and refund nothing while it is open, under FEE-067 and FEE-068.
+
+== Issue receipts
+
+Issue a receipt when the order reaches `paid`, and a new one after each refund or remission, under FEE-080.
+Seal each receipt under the signed records specification, under FEE-082.
+
+== Reconcile
+
+Read each payout of the provider, and match each of its lines to one record, under FEE-090 and FEE-091.
+Compare amounts to the cent, and leave each difference to a person, under FEE-093.
+Export only matched entries to the ledger, under FEE-095.
+
+== Test
+
+Run `bash examples/test-examples.sh` after `pip install --require-hashes -r examples/requirements.txt`.
+Write scenarios in English and in French, under FEE-102, with synthetic data only, under FEE-103.
 
 == Document history
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Change
-|0.1.0 |2026-11-03 |First version.
+|0.1.0 |2026-11-22 |First version.
 |===

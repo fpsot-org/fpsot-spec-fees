@@ -4,4 +4,24 @@
 
 include::index.adoc[leveloffset=+1]
 
+include::profiles.adoc[leveloffset=+1]
+
+include::schedules-and-quotes.adoc[leveloffset=+1]
+
+include::orders-and-payments.adoc[leveloffset=+1]
+
+include::refunds-and-remissions.adoc[leveloffset=+1]
+
+include::notifications.adoc[leveloffset=+1]
+
+include::receipts.adoc[leveloffset=+1]
+
+include::reconciliation.adoc[leveloffset=+1]
+
+include::conformance.adoc[leveloffset=+1]
+
+include::alignment.adoc[leveloffset=+1]
+
+include::questions-for-counsel.adoc[leveloffset=+1]
+
 include::glossary.adoc[leveloffset=+1]

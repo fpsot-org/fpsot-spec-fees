@@ -1,0 +1,18 @@
+{
+  "specversion": "1.0",
+  "id": "019c4e00-0012-7000-8000-000000000004",
+  "source": "/v1/fee-orders",
+  "type": "org.fpsot.fees.payout.reconciled",
+  "time": "2026-03-13T09:00:00Z",
+  "datacontenttype": "application/json",
+  "subject": "019c4e00-0008-7000-8000-000000000001",
+  "dataschema": "https://fpsot.org/schemas/fees/events/org.fpsot.fees.payout.reconciled.schema.json",
+  "data": {
+    "payoutId": "019c4e00-0008-7000-8000-000000000001",
+    "provider": "example-pay",
+    "payoutDate": "2026-03-13",
+    "reconciliationStatus": "reconciled",
+    "lineCount": 2,
+    "unmatchedLineCount": 0
+  }
+}

@@ -1,0 +1,31 @@
+# FPSOT fees specification
+
+> What software must record and prove about each fee that a public body charges under a law: fee schedules as dated parameters, with the indexation step behind each indexed value and the rounding rule; quotes as decisions with their lines and exemptions; fee orders and payment attempts with eight one-way statuses, set only after a read at the provider; refunds, remissions and disputes as separate records, where only a decision makes a remission; verified provider notifications and events with no personal value; sealed receipts; and payouts matched line by line to the cent. Card data never enters the software.
+
+## Specification
+
+- [Overview](spec/en/index.adoc): scope, conformance classes, legal status, owners of the parts and conformance; FEE-001 to FEE-006.
+- [Jurisdiction profiles](spec/en/profiles.adoc): FEE-010 to FEE-014.
+- [Schedules and quotes](spec/en/schedules-and-quotes.adoc): FEE-020 to FEE-030.
+- [Orders and payments](spec/en/orders-and-payments.adoc): FEE-040 to FEE-053.
+- [Refunds, remissions and disputes](spec/en/refunds-and-remissions.adoc): FEE-060 to FEE-069.
+- [Provider notifications and events](spec/en/notifications.adoc): FEE-070 to FEE-076.
+- [Receipts](spec/en/receipts.adoc): FEE-080 to FEE-085.
+- [Reconciliation](spec/en/reconciliation.adoc): FEE-090 to FEE-095.
+- [Interfaces, adapters and conformance](spec/en/conformance.adoc): FEE-100 to FEE-105.
+- [Alignment with other standards](spec/en/alignment.adoc): informative.
+- [Questions for counsel](spec/en/questions-for-counsel.adoc): informative, not legal advice.
+
+## Model, profiles and examples
+
+- [LinkML model](model/fees.yaml)
+- [Profiles](profiles/)
+- [Event schemas](registry/events/)
+- [Fee schedules](examples/schedules/), [decision records](examples/decisions/) and fee records ([permit](examples/permit/fees.json), [Québec permit](examples/quebec-permit/fees.json))
+- [Scenario](examples/features/en/fees.feature)
+- [How-to guide: put a fee under the specification](docs/modules/en/pages/index.adoc)
+
+## Optional
+
+- [Agent skill](skill/SKILL.md)
+- [Français](spec/fr/index.adoc)

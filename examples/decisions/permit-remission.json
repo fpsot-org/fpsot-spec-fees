@@ -1,0 +1,97 @@
+{
+  "id": "019c4e00-0009-7000-8000-000000000003",
+  "decisionType": "example-performance-remission",
+  "decisionTypeVersion": "1.0.0",
+  "profiles": [
+    {
+      "code": "core",
+      "version": "0.1.0"
+    },
+    {
+      "code": "ca-federal",
+      "version": "0.1.0"
+    }
+  ],
+  "impactLevel": "level-1",
+  "objects": [
+    {
+      "type": "Party",
+      "id": "019c4e00-0010-7000-8000-000000000002",
+      "qualifier": "subject"
+    },
+    {
+      "type": "FeeOrder",
+      "id": "019c4e00-0002-7000-8000-000000000002",
+      "qualifier": "case"
+    }
+  ],
+  "legalAuthorities": [
+    {
+      "uri": "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/section-7.html",
+      "otherLanguageUris": [
+        "https://laws-lois.justice.gc.ca/fra/lois/S-8.4/article-7.html"
+      ]
+    }
+  ],
+  "ruleSet": {
+    "code": "example-performance-remission",
+    "version": "1.0.0",
+    "digest": "bbe5ba73f72e0f404ad62dc6b1884a6e1e149622240b9e236c6b7381f59bdc5c",
+    "buildCoordinates": "org.example.fees:example-performance-remission-rules:1.0.0"
+  },
+  "parameterSets": [
+    {
+      "code": "example-federal-permit-fees",
+      "version": "1.0.0",
+      "digest": "34fe13ceda51820fad84b6fad44a11bc3e842d5814638991135798862e2155e3"
+    }
+  ],
+  "effectiveDate": "2026-03-31",
+  "recordTime": "2026-05-15T13:00:00Z",
+  "startedAt": "2026-05-15T13:00:01Z",
+  "completedAt": "2026-05-15T13:00:01Z",
+  "inputs": [
+    {
+      "name": "performance-standard-met",
+      "value": false,
+      "source": "service-records",
+      "asOfDate": "2026-04-30",
+      "collectionMethod": "internal-record"
+    },
+    {
+      "name": "fee-paid",
+      "value": {
+        "amount": "350.00",
+        "currency": "CAD"
+      },
+      "source": "fee-engine",
+      "asOfDate": "2026-04-30",
+      "collectionMethod": "internal-record"
+    }
+  ],
+  "resultKind": "decided",
+  "outcome": "remitted",
+  "amount": {
+    "amount": "87.50",
+    "currency": "CAD"
+  },
+  "reasonScheme": "https://vocab.example.org/fee-reasons/versions/1.0.0",
+  "reasons": [
+    {
+      "code": "performance-standard-missed",
+      "rank": 1,
+      "principal": true,
+      "clause": {
+        "uri": "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/section-7.html",
+        "otherLanguageUris": [
+          "https://laws-lois.justice.gc.ca/fra/lois/S-8.4/article-7.html"
+        ]
+      },
+      "actualValue": false,
+      "thresholdValue": true
+    }
+  ],
+  "automationDegree": "fully-automated",
+  "createdAt": "2026-05-15T13:00:01Z",
+  "updatedAt": "2026-05-15T13:00:01Z"
+}

@@ -1,0 +1,214 @@
+= Orders and payments
+include::_fpsot-terms.adoc[]
+
+A payer may try to pay more than once.
+A card can fail, a page can time out, and a bank transfer can take days to arrive.
+This page therefore keeps what the payer owes apart from each try to pay it.
+A fee order holds what the payer owes, and each payment attempt records one try.
+The statuses of an attempt come from GOV.UK Pay, and they move in one direction only.
+Card data stays at the provider.
+
+== Fee orders
+
+[[FEE-040]]
+*FEE-040.* Each fee order MUST be a record of the class `FeeOrder` of `model/fees.yaml`.
+It MUST name its quotes, its payer and the reference that the payer sees.
+The amount due MUST equal the sum of the totals of its quotes.
+A remission that reduces it under FEE-064 comes off that sum.
+An order MUST hold one currency.
+An order whose amount due is zero MUST take no payment attempt.
+
+The payer is a `Party` of DMO-040, by id.
+The payment reference appears on the page of the provider, in the bank statement and on the receipt.
+It MUST NOT hold personal information, under DAT-062.
+
+[[FEE-041]]
+*FEE-041.* Each payment attempt MUST be a record of the class `PaymentAttempt`, which names its order.
+Its amount MUST equal the amount due of the order when the engine creates it.
+An order MUST NOT have two attempts that are not finished at the same time, under FEE-053.
+An order SHOULD NOT have more than one attempt with the status `success`.
+When a second payment succeeds all the same, the engine MUST refund its whole amount with the reason `duplicate-payment`.
+
+One order with many attempts follows the payment intent of Stripe.
+GOV.UK Pay instead creates a new payment for each try.
+The order keeps the link that a payer, a clerk and an auditor look for.
+
+A second success can still happen, such as when a payer also sends a bank transfer with the payment reference.
+The engine then records that transfer as an attempt, from its read of the credit, and refunds it.
+The file `examples/quebec-permit/fees.json` holds that case.
+
+== Statuses
+
+[[FEE-042]]
+*FEE-042.* The status of each attempt MUST be one of these eight values.
+Its field `finished` MUST match the table.
+
+[cols="1,1,4",options="header"]
+|===
+|Status |`finished` |Meaning
+|`created` |false |The engine created the payment at the provider, and the payer has not reached its page.
+|`started` |false |The payer reached the page of the provider.
+|`submitted` |false |The payer sent the details, and the provider is still at work or waits for a confirmation.
+|`capturable` |false |The provider authorized the payment, and the engine may capture it.
+|`success` |true |The provider took the payment.
+|`failed` |true |The method was rejected, the payment expired or the payer canceled, and no money moved.
+|`cancelled` |true |The service canceled the payment, and no money moved.
+|`error` |true |The provider or the engine had a fault, and no money moved.
+|===
+
+A finished attempt is not a paid one.
+Only `success` pays an order.
+A bank transfer can stay `submitted` for days, until the provider or the bank statement shows the credit.
+
+[[FEE-043]]
+*FEE-043.* The statuses of an attempt MUST move in the order of the table.
+A finished status MUST NOT change.
+A read that shows an earlier status MUST NOT move an attempt back.
+A status MAY skip steps, such as from `created` to `success`.
+An attempt that ends in `failed`, `cancelled` or `error` MUST give a failure code of the model.
+The history of the attempt MUST keep each status, with its instant and what the engine read to set it.
+
+The failure codes are `method-rejected`, `expired`, `canceled-by-payer`, `canceled-by-service` and `provider-error`.
+A refund or a dispute never changes the status of the attempt.
+Each one has its own record, under FEE-060 and FEE-067.
+
+[[FEE-044]]
+*FEE-044.* Each attempt MUST keep its settlement apart from its status.
+The settlement is `not-settled` or `settled`, with the date and the payout that carried the funds.
+An attempt MUST NOT settle before `success`.
+An engine MUST NOT treat `success` as proof that the funds reached the account of the body.
+
+GOV.UK Pay also keeps a settlement summary for each payment, apart from its status.
+Under FEE-091, the engine then settles each attempt from a payout.
+
+[[FEE-045]]
+*FEE-045.* The status of an order MUST follow from its amount, its attempts, its refunds and its disputes.
+It is `no-payment-due` when the amount due is zero, and `paid` when an attempt succeeded.
+It is `refunded` when successful refunds returned every successful payment in full.
+It is `reversed` when the body lost a dispute on one of its attempts.
+Otherwise it is `awaiting-payment`, or `canceled` when the body canceled the order before any payment.
+
+A register keeps the payment status of a filing under REG-024.
+It MUST map these values onto the list of its pack.
+It MUST NOT map `refunded` or `reversed` onto the value that means paid.
+
+The last two values tell a register that the body no longer holds the money.
+A filing then waits for a person, instead of moving on as if the payer had paid.
+The pleasure craft pack of the registry specification lists `not-required`, `pending`, `paid` and `exempt`.
+An exempt quote gives an order with no payment due, and the filing shows `exempt`.
+In that pack, `refunded` and `reversed` map to `pending`.
+The events of FEE-075 name the attempt of each refund and dispute, and the attempt names its order.
+
+== Card data
+
+[[FEE-046]]
+*FEE-046.* Software that meets this specification MUST NOT keep, log or pass on card data.
+Card data is the card number, the security code, the expiry date, the track data and the PIN.
+An interface, a record, a log, an event or a receipt MUST NOT hold any of them.
+A record MAY show a card by its brand and its last four digits, as the provider returns them.
+A record MUST give the method only as a category, such as `card` or `direct-debit`.
+
+A provider may still return card data in a read or a notification.
+FEE-052 sets what the adapter does with it.
+Card data in a system of a public body brings that system under the Payment Card Industry Data Security Standard.
+With none of it, the scope stays at the provider.
+The logs follow OBS-090 and OBS-091, and an event holds no amount and no card, under FEE-076.
+
+[[FEE-047]]
+*FEE-047.* By default, a card payment MUST use a full redirect to the page of the provider.
+The provider then returns the payer to the body.
+
+A full redirect keeps every script of the body away from the payment form.
+GOV.UK Pay works this way, and so does the hosted checkout of Stripe.
+In February 2025, the PCI Security Standards Council said that its new script criterion does not apply to a redirect.
+
+[[FEE-048]]
+*FEE-048.* A body MAY embed the payment form of its provider in its own page, such as in a frame.
+It MUST first record how its page meets the script criterion of the Self-Assessment Questionnaire A of January 2025.
+The record MUST be of the class `EmbeddedFormRecord` of `model/fees.yaml`.
+
+The record MUST name the provider, the method, the person who checked it and the date of the check.
+The method is either controls on the scripts of the page or a confirmation from the provider.
+The record MUST also name the acquirer or the card brand that accepted that method.
+It MUST also give the text that the method rests on and the period for which the record holds.
+Each attempt with an embedded form MUST name the record that covered it on its day.
+
+The method follows FAQ 1588 of the PCI Security Standards Council, as its notice of 28 February 2025 summarizes it.
+The text of the questionnaire and of the FAQ is _to be verified_ at the source.
+Reports say that a 2026 revision of FAQ 1331 asks merchants to consult their acquirer or the card brands.
+That revision is _to be verified_ too.
+So is the basis of the part of the record that names an acquirer or a brand.
+
+== Provider reads
+
+[[FEE-049]]
+*FEE-049.* The return of the payer from the page of the provider MUST NOT change the status of an attempt.
+On that return, the engine MUST read the payment at the provider, and set the status from that read.
+
+A payer can open the return address by hand, or a browser can replay it.
+The return proves only that a browser arrived.
+
+[[FEE-050]]
+*FEE-050.* Each request that creates an order, an attempt or a refund MUST carry an `Idempotency-Key`, under API-060 to API-063.
+When the provider accepts a key, the engine MUST send its own key for each attempt and each refund.
+The engine MUST NOT send the same key for two different attempts.
+
+A retry after a timeout then finds the first attempt, instead of charging the payer twice.
+GOV.UK Pay and Stripe both accept such a key.
+
+[[FEE-051]]
+*FEE-051.* An attempt MUST keep the id of its payment at the provider.
+It MUST also keep the status that the provider gave at the last read.
+Each adapter MUST publish how it maps the statuses of its provider onto the eight statuses of FEE-042.
+
+The raw status lets an auditor check the mapping long after the provider changed its interface.
+The page xref:alignment.adoc[Alignment with other standards] gives the mappings for GOV.UK Pay, GovStack, ISO 20022 and Stripe.
+On Stripe, an attempt maps to one charge of a payment intent, never to the payment intent.
+The payment intent keeps its id across tries.
+
+[[FEE-052]]
+*FEE-052.* An adapter MUST drop every card field from each provider read and each notification.
+It MUST do so before it stores, logs or passes on anything to the engine.
+The card fields are the card data of FEE-046 and the name of the cardholder.
+The first digits of the card and the billing address are card fields too.
+The adapter MAY keep the brand and the last four digits for display.
+
+GOV.UK Pay returns the card details of a payment, with its expiry date and its first digits.
+Those details also hold the name of the cardholder and the billing address.
+Stripe returns the expiry month and year of a card, and the billing details of the payer.
+Reads and notifications thus bring card fields into the adapter, which must not let them go further.
+
+The name, the first digits and the address are personal information.
+OBS-090 keeps them out of records that do not declare them.
+
+[[FEE-053]]
+*FEE-053.* Before it creates a new attempt for an order, the engine MUST cancel each unfinished attempt of that order.
+It does so at the provider.
+It MUST then read that attempt at the provider again, under FEE-049.
+It MUST create the new attempt only once that read shows the old attempt finished.
+The provider may be unable to cancel an attempt, such as a pending bank transfer.
+That attempt then blocks a new attempt only until it finishes.
+
+A payer who comes back after a timeout may still have a payment in progress at the provider.
+Without the cancellation and the read, both payments could succeed.
+The read can also show that the old attempt succeeded, and the order then needs no new attempt.
+
+== References
+
+=== Normative
+
+* link:https://docs.payments.service.gov.uk/api_reference/[API reference], GOV.UK Pay technical documentation, payment statuses, read 2026-11-21. link:https://web.archive.org/web/20261029092201/https://docs.payments.service.gov.uk/api_reference/[Archived copy]
+* link:https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[FAQ Clarifies New SAQ A Eligibility Criteria for E-Commerce Merchants], PCI Security Standards Council, 2025-02-28. link:https://web.archive.org/web/20261029044431/https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[Archived copy]
+
+=== Informative
+
+* link:https://blog.pcisecuritystandards.org/important-updates-announced-for-merchants-validating-to-self-assessment-questionnaire-a[Important Updates Announced for Merchants Validating to Self-Assessment Questionnaire A], PCI Security Standards Council, 2025-01-30. link:https://web.archive.org/web/20261102203853/https://blog.pcisecuritystandards.org/important-updates-announced-for-merchants-validating-to-self-assessment-questionnaire-a[Archived copy]
+* link:https://docs.stripe.com/payments/paymentintents/lifecycle[How PaymentIntents and SetupIntents work], Stripe documentation, read 2026-11-21. link:https://web.archive.org/web/20261114112140/https://docs.stripe.com/payments/paymentintents/lifecycle[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-22 |First version.
+|===

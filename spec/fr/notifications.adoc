@@ -1,0 +1,111 @@
+= Avis des fournisseurs et événements
+include::_fpsot-terms.adoc[]
+
+Un fournisseur de paiement informe l’organisme d’un changement par un avis, souvent appelé webhook.
+Les fournisseurs envoient chaque avis au moins une fois, et dans n’importe quel ordre.
+GOV.UK Pay prévient que les avis peuvent arriver dans le désordre, et Stripe ne garantit aucun ordre.
+Un avis est aussi une requête venue de l’extérieur, que n’importe qui peut contrefaire.
+Cette page traite donc un avis seulement comme une invitation à relire le paiement.
+Elle fixe aussi les événements que le moteur envoie aux autres services.
+
+== Avis reçus
+
+[[FEE-070]]
+*FEE-070.* Un adaptateur DOIT vérifier la signature de chaque avis sur son corps brut, selon le procédé de son fournisseur.
+Il DOIT comparer les signatures en temps constant.
+Si le procédé signe un horodatage, l’adaptateur DOIT rejeter un avis plus ancien que sa fenêtre.
+Un avis dont la signature ne se vérifie pas NE DOIT PAS entraîner de changement.
+Le moteur DOIT le consigner avec le résultat `rejected`.
+
+GOV.UK Pay signe le corps brut avec un condensé à clé.
+Stripe signe un horodatage et le corps, et conseille une fenêtre de cinq minutes.
+
+[[FEE-071]]
+*FEE-071.* Après avoir vérifié un avis, le moteur DOIT lire chez le fournisseur l’objet que l’avis nomme.
+Il DOIT fixer un statut seulement à partir de cette lecture, selon FEE-043.
+Un avis NE DOIT PAS changer un statut à lui seul.
+Le moteur DOIT consigner l’instant de la lecture et son résultat, `applied` ou `no-change`.
+
+La lecture rend l’ordre d’arrivée sans importance.
+Un avis `submitted` arrivé en retard trouve la tentative déjà en `success`, et la lecture montre de nouveau `success`.
+Le fichier `examples/permit/fees.json` contient ce cas, avec le résultat `no-change`.
+
+[[FEE-072]]
+*FEE-072.* Un adaptateur DOIT répondre à un avis par un code d’état `2xx` dès qu’il l’a enregistré.
+Il DOIT répondre avant que le moteur n’agisse.
+Il DOIT enregistrer la donnée analysée de la classe `ProviderNotification`, et non le corps brut.
+Il PEUT garder le corps dans `redactedBody`, seulement après en avoir retiré chaque champ de FEE-052.
+Le moteur peut avoir déjà traité l’identifiant d’événement d’un avis.
+Il DOIT alors consigner l’avis avec le résultat `duplicate`, et ne rien changer.
+
+Les fournisseurs renvoient chaque avis jusqu’à ce qu’ils reçoivent une réponse `2xx`.
+Une réponse lente ramène alors le même avis.
+Le moteur doit l’accepter deux fois, comme API-104 le demande à tout consommateur.
+Un corps brut peut contenir les champs de carte que FEE-052 retire.
+L’adaptateur vérifie donc la signature sur le corps en mémoire, et garde seulement ce qu’il a analysé.
+
+[[FEE-073]]
+*FEE-073.* Un moteur DEVRAIT lire chez le fournisseur chaque tentative non terminée, à un intervalle que l’exploitant fixe.
+Il DEVRAIT le faire jusqu’à ce que la tentative se termine ou que le fournisseur cesse de la suivre.
+
+Un fournisseur peut renoncer à un avis après quelques essais.
+Une lecture à intervalle trouve alors quand même le résultat.
+
+[[FEE-074]]
+*FEE-074.* Chaque clé qui vérifie des avis ou appelle un fournisseur DOIT être un secret selon SEC-020 à SEC-024.
+Le point de terminaison qui reçoit les avis DOIT respecter API-080.
+Son adresse NE DOIT PAS porter de secret, selon API-085.
+
+Stripe permet à un organisme de renouveler son secret de signature, avec une période où les deux secrets fonctionnent.
+Chaque clé a alors une personne responsable et une période de renouvellement, selon SEC-023.
+
+== Événements envoyés
+
+[[FEE-075]]
+*FEE-075.* Un moteur DOIT émettre un événement d’affaires selon OBS-070 à chaque changement de statut.
+Cela vaut pour une tentative, un remboursement ou une contestation.
+Il DOIT aussi en émettre un quand il délivre un reçu et quand il rapproche un versement.
+Un événement qu’il envoie à un autre service DOIT être un événement CloudEvents selon API-100 et API-101.
+Les types et les schémas de leurs données se trouvent dans `registry/events/`, selon API-103.
+
+[cols="2,3",options="header"]
+|===
+|Type |Quand
+|`org.fpsot.fees.payment-attempt.changed` |Une tentative a pris un nouveau statut, après une lecture chez le fournisseur.
+|`org.fpsot.fees.refund.changed` |Un remboursement a pris un nouveau statut.
+|`org.fpsot.fees.dispute.changed` |Une contestation a pris un nouveau statut.
+|`org.fpsot.fees.receipt.issued` |Le moteur a délivré et cacheté un reçu.
+|`org.fpsot.fees.payout.reconciled` |Le moteur a rapproché les lignes d’un versement.
+|===
+
+Une remise est une décision, donc son événement est celui de la spécification sur les décisions, selon DEC-071.
+
+[[FEE-076]]
+*FEE-076.* Un événement d’un moteur de frais NE DOIT contenir aucune de ces valeurs.
+
+* Un identifiant de partie.
+* Une référence de paiement.
+* Un montant.
+* Des données de carte, ou un champ de carte de FEE-052.
+
+Un consommateur qui a besoin d’une de ces valeurs DOIT lire la donnée, que l’interface protège selon IAM-050.
+
+Un événement peut tout de même porter une date, un compte ou un indicateur, comme le montre son schéma.
+Stripe les appelle _thin events_, puisqu’ils ne portent guère plus que des identifiants.
+Une référence de paiement ou un montant peut mener à une personne.
+Un événement voyage aussi plus loin que la donnée qu’il nomme.
+
+== Références
+
+=== Références informatives
+
+* link:https://docs.payments.service.gov.uk/webhooks/[Webhooks], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20260802114013/https://docs.payments.service.gov.uk/webhooks/[Copie archivée]
+* link:https://docs.stripe.com/webhooks[Receive Stripe events in your webhook endpoint], Stripe documentation, lu le 2026-11-21. link:https://web.archive.org/web/20261118034658/https://docs.stripe.com/webhooks[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-22 |Première version.
+|===

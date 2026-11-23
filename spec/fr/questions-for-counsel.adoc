@@ -1,0 +1,102 @@
+= Questions pour les juristes
+include::_fpsot-terms.adoc[]
+
+Cette page est informative.
+Elle ne fixe aucune règle, et elle ne constitue pas un avis juridique.
+Elle énumère les questions juridiques que cette spécification soulève sans pouvoir y répondre.
+Une ou un juriste doit répondre à chacune avant que la {abbr-fpsot-first} ou un organisme s’y fie.
+
+LégisQuébec et Légifrance refusent les lecteurs automatisés.
+La recherche a lu les textes québécois dans des copies archivées, et n’a lu aucun code français.
+La directive du {abbr-tbs-first} sur l’imposition de frais a aussi refusé les lecteurs automatisés.
+Un point marqué _à vérifier_ repose sur une source secondaire ou une page gouvernementale, pas sur la loi elle-même.
+
+== Les frais et leur fondement
+
+. *Frais de faible importance.* Les articles 3 à 18 de la Loi sur les frais de service les écartent.
+Un devis ou un reçu doit-il montrer que des frais sont de faible importance ?
+Le barème des exemples marque de tels frais par un simple indicateur.
+
+. *Le plafond du coût.* L’article 19 de la Loi sur la gestion des finances publiques plafonne des frais au coût.
+Un barème doit-il garder la base de coût à côté de chaque montant ?
+Ou le rapport annuel sur les frais suffit-il ?
+
+. *Un droit déclaré.* L’article 112 du Règlement sur les petits bâtiments dispense certains propriétaires des frais du permis.
+Ces propriétaires déclarent un droit visé à l’article 35.
+Le règlement parle d’un propriétaire qui peut exercer ce droit.
+Un communiqué de Transports Canada parle d’utiliser l’embarcation pour l’exercer.
+Quel libellé l’emporte, et l’organisme peut-il exiger plus que la déclaration ?
+
+. *La ratification en France.* Un décret peut créer une rémunération pour service rendu.
+Elle devient caduque si la loi de finances suivante ne la ratifie pas.
+Un barème français doit-il consigner cette ratification, et refuser un devis une fois la rémunération caduque ?
+L’article 4 de la loi organique relative aux lois de finances, modifié en 2021, est _à vérifier_.
+
+== Indexation et arrondissement
+
+[start=5]
+. *L’arrondissement fédéral.* L’article 17 de la Loi sur les frais de service permet d’arrondir à la baisse des frais rajustés.
+L’organisme le fait selon une politique du Conseil du Trésor.
+Quelle politique fixe le pas, et lie-t-elle tous les organismes ?
+La directive sur l’imposition de frais est _à vérifier_.
+
+. *Le report québécois.* L’article 2 du règlement sur l’arrondissement reporte l’indexation d’un tarif inférieur à 5 $.
+Le tarif attend que les taux reportés l’augmentent de 0,05 $.
+Le critère vise-t-il la hausse avant arrondissement, comme le supposent les exemples, ou après ?
+Pour un tarif de 2,00 $ en 2026, la hausse brute est de 0,041 $, mais l’arrondissement donnerait 2,05 $.
+
+. *Le plafond après 2026.* La loi qui plafonne l’indexation à 3 % s’applique de 2023 à 2026.
+Sauf nouvelle loi, les tarifs plafonnés prennent-ils le plein taux de l’article 83.3 le 1^er^ janvier 2027 ?
+Son annexe I et ses modifications après mai 2024 sont _à vérifier_.
+
+. *Les tarifs hors du chapitre VIII.1.* L’article 83.11 de la Loi sur l’administration financière exclut certains tarifs.
+Ce sont les tarifs qu’une loi, un contrat ou la Régie de l’énergie fixe.
+Comment un organisme montre-t-il qu’un tarif tombe dans une de ces catégories ?
+
+== Remboursements et remises
+
+[start=9]
+. *Un délai pour les remboursements.* Le règlement fédéral sur le remboursement de recettes ne fixe aucun délai.
+Un délai de prescription général limite-t-il la demande de remboursement fédéral ?
+Quelle est la règle au Québec et en France, où la recherche n’en a trouvé aucune ?
+
+. *Les remises fédérales.* La politique de remise d’Environnement et Changement climatique Canada repose sur l’article 4.2.4 de la directive.
+Elle dit qu’une remise ne porte pas intérêt, passe par le mode de paiement initial et n’est jamais de 0 %.
+Ces conditions lient-elles tous les organismes fédéraux, ou seulement ce ministère ?
+
+. *La remise au Québec.* La recherche n’a trouvé aucune disposition générale de remise dans la Loi sur l’administration financière.
+Quelle loi permet à un organisme québécois de remettre un tarif ?
+Serait-ce la Loi sur l’administration fiscale ou une loi sectorielle ?
+
+. *La France.* La remise gracieuse de l’article L. 247 du Livre des procédures fiscales est-elle l’équivalent d’une remise pour une rémunération pour service rendu ?
+Un organisme peut-il rembourser un timbre fiscal inutilisé dans les 18 mois, comme le dit une page gouvernementale ?
+Les deux points sont _à vérifier_.
+
+== Reçus, taxes et cartes
+
+[start=13]
+. *Le contenu fiscal d’un reçu.* Que montre le reçu de frais soumis à la taxe sur les produits et services ?
+Que doit-il montrer pour la taxe de vente du Québec ?
+Comment la taxe de vente du Québec s’applique-t-elle même aux tarifs québécois ?
+
+. *Un reçu pour chaque demande.* Les règlements fédéraux exigent un reçu sur demande, ou quand le ministre l’ordonne.
+Un reçu cacheté pour chaque demande de paiement crée-t-il une obligation de conservation ou de confidentialité ?
+Un reçu sur demande pourrait ne pas en créer.
+
+. *Une page qui redirige.* Selon la FAQ 1588, le critère sur les scripts ne vise pas une redirection.
+Ce critère appartient au questionnaire d’autoévaluation A.
+La page qui lance la redirection a-t-elle encore besoin d’un contrôle ?
+Des sources rapportent une révision de la FAQ 1331.
+Selon elle, qui doit accepter la réponse : l’acquéreur, la marque de carte ou les deux ?
+
+. *Contestations et remboursements.* Une personne peut demander un remboursement et ouvrir une contestation pour le même paiement.
+Quel droit régit le choix de l’organisme ?
+L’organisme peut-il attendre l’issue de la contestation, comme le demande FEE-068 ?
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-22 |Première version.
+|===

@@ -1,12 +1,58 @@
 # Comparison data. The format is defined by fpsot-spec-doc (model/jurisdiction.yaml).
-# This example row compares requirement TPL-001. Replace it with the rows of this specification.
-# Add one file per jurisdiction, such as ca.yaml or ca/qc.yaml, only when a source exists.
+# The international column draws on the payment platform of the United Kingdom government, the
+# GovStack Payments building block, the PCI Security Standards Council and OpenFisca, which bind
+# no Canadian or French body. This file is informational and not legal advice.
 topics:
-  keywords: {en: Requirement keywords, fr: Mots clés des exigences}
+  schedules: {en: Fee schedules and indexation, fr: Barèmes de frais et indexation}
+  payments: {en: Payments and card data, fr: Paiements et données de carte}
+  refunds: {en: Refunds and remissions, fr: Remboursements et remises}
+  receipts: {en: Receipts and reconciliation, fr: Reçus et rapprochement}
 rows:
-  - id: TPL-001
-    topic: keywords
-    requirement: {en: Use the BCP 14 keywords., fr: Utiliser les mots clés du BCP 14.}
-    international: {en: "BCP 14 defines MUST, SHOULD and MAY. Only the capital forms carry that meaning.", fr: "Le BCP 14 définit MUST, SHOULD et MAY. Seules les majuscules ont ce sens."}
-    international_source: {title: "RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words (BCP 14)", version: "BCP 14", date: "2017-05", url: "https://www.rfc-editor.org/info/rfc8174", archive: "https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/"}
-    fpsot: {en: "Keywords in capitals, with a fixed French mapping.", fr: "Mots clés en majuscules, avec une correspondance française fixe."}
+  - id: FEE-020
+    topic: schedules
+    requirement: {en: "Keep each fee as dated values in a parameter file, with its legal source.", fr: "Garder chacun des frais sous forme de valeurs datées dans un fichier de paramètres, avec sa source juridique."}
+    international: {en: "OpenFisca keeps each legal parameter as a file of dated values, each with a reference to the law.", fr: "OpenFisca garde chaque paramètre juridique dans un fichier de valeurs datées, chacune avec une référence à la loi."}
+    international_source: {title: "OpenFisca documentation, Parameters", url: "https://openfisca.org/doc/coding-the-legislation/legislation_parameters.html", archive: "https://web.archive.org/web/20260412222533/https://openfisca.org/doc/coding-the-legislation/legislation_parameters.html"}
+    fpsot: {en: "A fee schedule extends the dated parameter set of the decisions specification, with fee items and their sources.", fr: "Un barème de frais prolonge le jeu de paramètres datés de la spécification sur les décisions, avec des éléments de frais et leurs sources."}
+  - id: FEE-024
+    topic: schedules
+    requirement: {en: "Publish each indexed value with the step that set it: rule, rate, cap, raw result and rounding.", fr: "Publier chaque valeur indexée avec l’étape qui l’a fixée : règle, taux, plafond, résultat brut et arrondissement."}
+    international: {en: "OpenFisca stores the value in force for each period, not the formula that would compute it.", fr: "OpenFisca conserve la valeur en vigueur pour chaque période, et non la formule qui la calculerait."}
+    international_source: {title: "OpenFisca documentation, Parameters", url: "https://openfisca.org/doc/coding-the-legislation/legislation_parameters.html", archive: "https://web.archive.org/web/20260412222533/https://openfisca.org/doc/coding-the-legislation/legislation_parameters.html"}
+    fpsot: {en: "Dated values only, never an amount computed at run time, each with its indexation step.", fr: "Des valeurs datées seulement, jamais un montant calculé à l’exécution, chacune avec son étape d’indexation."}
+  - id: FEE-042
+    topic: payments
+    requirement: {en: "Give each payment attempt one of eight statuses, with a flag that says whether it is final.", fr: "Donner à chaque tentative de paiement un de huit statuts, avec un indicateur qui dit s’il est définitif."}
+    international: {en: "GOV.UK Pay uses eight payment statuses and a finished flag, and warns that finished does not mean paid.", fr: "GOV.UK Pay emploie huit statuts de paiement et un indicateur finished, et prévient que finished ne veut pas dire payé."}
+    international_source: {title: "GOV.UK Pay technical documentation, API reference", date: "2026-11-21", url: "https://docs.payments.service.gov.uk/api_reference/", archive: "https://web.archive.org/web/20261029092201/https://docs.payments.service.gov.uk/api_reference/"}
+    fpsot: {en: "The same eight statuses, which move one way only and only after a read at the provider.", fr: "Les mêmes huit statuts, qui n’avancent que dans un sens, et seulement après une lecture chez le fournisseur."}
+  - id: FEE-047
+    topic: payments
+    requirement: {en: "Take card payments by a full redirect to the page of the provider.", fr: "Recevoir les paiements par carte par une redirection complète vers la page du fournisseur."}
+    international: {en: "The PCI Security Standards Council says that the script criterion of SAQ A does not apply to a merchant that redirects to its provider.", fr: "Le PCI Security Standards Council dit que le critère sur les scripts du SAQ A ne vise pas le marchand qui redirige vers son fournisseur."}
+    international_source: {title: "FAQ Clarifies New SAQ A Eligibility Criteria for E-Commerce Merchants, PCI Security Standards Council", date: "2025-02-28", url: "https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants", archive: "https://web.archive.org/web/20261029044431/https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants"}
+    fpsot: {en: "A full redirect by default. An embedded form only with a record of how the page meets the script criterion.", fr: "Une redirection complète par défaut. Un formulaire intégré seulement avec une consignation de la façon dont la page respecte le critère."}
+  - id: FEE-062
+    topic: refunds
+    requirement: {en: "Give each refund a reason of the profile, with the part kept for services rendered where the law says so.", fr: "Donner à chaque remboursement un motif du profil, avec la part gardée pour les services rendus quand la loi le prévoit."}
+    international: {en: "GOV.UK Pay allows partial refunds, back to the method of payment only, up to the amount still available.", fr: "GOV.UK Pay permet des remboursements partiels, vers le mode de paiement seulement, jusqu’au montant encore disponible."}
+    international_source: {title: "GOV.UK Pay technical documentation, Refund a payment", date: "2026-11-21", url: "https://docs.payments.service.gov.uk/refunding_payments/", archive: "https://web.archive.org/web/20260802114113/https://docs.payments.service.gov.uk/refunding_payments/"}
+    fpsot: {en: "Reasons from the profile, a cap at the refundable balance, and an echo of that balance on each request.", fr: "Des motifs tirés du profil, un plafond au solde remboursable, et un rappel de ce solde dans chaque demande."}
+  - id: FEE-064
+    topic: refunds
+    requirement: {en: "Make each remission a decision with its legal basis, apart from the refunds that carry it out.", fr: "Faire de chaque remise une décision avec sa base juridique, à part des remboursements qui l’exécutent."}
+    international: {en: "A payment platform knows only refunds: GOV.UK Pay records that money went back, never why it was owed.", fr: "Une plateforme de paiement ne connaît que des remboursements : GOV.UK Pay consigne que l’argent est revenu, jamais pourquoi il était dû."}
+    international_source: {title: "GOV.UK Pay technical documentation, Refund a payment", date: "2026-11-21", url: "https://docs.payments.service.gov.uk/refunding_payments/", archive: "https://web.archive.org/web/20260802114113/https://docs.payments.service.gov.uk/refunding_payments/"}
+    fpsot: {en: "A decision record with the outcome remitted, and a remission record that names it. A refund never implies a remission.", fr: "Un enregistrement de décision au résultat remitted, et une donnée de remise qui le nomme. Un remboursement n’implique jamais une remise."}
+  - id: FEE-080
+    topic: receipts
+    requirement: {en: "Issue a sealed receipt when an order is paid, and a new one after each refund or remission.", fr: "Délivrer un reçu cacheté quand une demande est payée, et un nouveau après chaque remboursement ou remise."}
+    international: {en: "GovStack asks the payments building block to send receipts to payers, without setting their content.", fr: "GovStack demande au bloc de paiement d’envoyer des reçus aux personnes qui paient, sans en fixer le contenu."}
+    international_source: {title: "GovStack Payments, 6 Functional Requirements", date: "2026-11-21", url: "https://specs.govstack.global/payments/6-functional-requirements", archive: "https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements"}
+    fpsot: {en: "A receipt of fixed content, sealed and logged under the signed records specification, that never changes.", fr: "Un reçu au contenu fixe, cacheté et journalisé selon la spécification sur les documents signés, qui ne change jamais."}
+  - id: FEE-091
+    topic: receipts
+    requirement: {en: "Match each line of each payout to one attempt, refund or dispute, to the cent.", fr: "Rattacher chaque ligne de chaque versement à une seule tentative, un seul remboursement ou une seule contestation, au cent près."}
+    international: {en: "GovStack asks for an internal and an external id for each transaction, unique and never rolling over.", fr: "GovStack exige un identifiant interne et un identifiant externe pour chaque transaction, uniques et sans retour à zéro."}
+    international_source: {title: "GovStack Payments, 6 Functional Requirements", date: "2026-11-21", url: "https://specs.govstack.global/payments/6-functional-requirements", archive: "https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements"}
+    fpsot: {en: "Each line matched by kind, provider id and exact amount. A payout reconciles only when every line matched.", fr: "Chaque ligne rattachée par genre, identifiant chez le fournisseur et montant exact. Un versement n’est rapproché que si toutes ses lignes le sont."}

@@ -1,33 +1,39 @@
-= FPSOT specification template
+= FPSOT fees specification
 
-This repository is the starting point for an FPSOT specification.
-Create a new repository from it, then replace this text.
-
-== Start a specification
-
-. Set `SPEC_PREFIX` in `.github/workflows/ci.yml` to the three-letter prefix of the requirement IDs.
-. Replace the titles in `spec/`, `docs/antora.yml`, `publiccode.yml`, `AGENTS.md`, `NOTICE` and `skill/SKILL.md`.
-. Replace the example requirement TPL-001 and the example row in `jurisdictions/baseline.yaml`.
-. List each spec page in `spec/<lang>/book.adoc`. The glossary stays the last include.
-
-Each page ends with a document history.
-Each guide page sets `:page-type:` to tutorial, how-to, reference or explanation.
-Write abbreviations and defined terms as `{abbr-…}` and `{term-…}` from the term base of `fpsot-spec-writing`.
-Write English in US spelling.
-Each page that cites outside sources ends with a References section, right before its document history.
-Each code block names its language, such as `[source,text]` or `[source,plantuml]`.
-The continuous integration writes `_fpsot-terms.adoc`, the glossaries and the comparison pages. Git ignores them.
+Rules for software that quotes, collects, refunds or remits a fee that a public body charges under a law.
+Each fee is a dated value in a parameter file, and each indexed value comes with the step that set it.
+A quote is a decision of the decisions specification, with its lines and exemptions.
+Payment attempts use the eight statuses of GOV.UK Pay, which move one way, and only after a read at the provider.
+Refunds, remissions and disputes are separate records, and only a decision makes a remission.
+Receipts are sealed, and every line of every payout matches one record to the cent.
+Card data never enters the software.
+Version 0.1 is a draft.
 
 == Implement this spec
 
 Read the normative text in `spec/en/` or `spec/fr/`.
-Each requirement has an ID, such as `XYZ-001`.
-Check your implementation against every requirement.
+Each requirement has an ID from `FEE-001` to `FEE-105`.
+
+* State your conformance classes, and never claim that a fee or a deployment meets a law or PCI DSS (FEE-001 to FEE-006).
+* Take every legal rule and value from a jurisdiction profile with its sources, and refuse when a value is missing (FEE-010 to FEE-014). The profiles are data files in `profiles/`.
+* Keep each fee in a fee schedule of dated values, with the indexation step behind each indexed value and the rounding rule (FEE-020 to FEE-025).
+* Price each fee as a decision, with a quote that holds its lines, exemptions and taxes (FEE-026 to FEE-030).
+* Keep the order apart from its payment attempts, move statuses one way after a read at the provider, and keep card data out (FEE-040 to FEE-053).
+* Keep refunds, remissions and disputes apart, and make each remission a decision (FEE-060 to FEE-069).
+* Verify provider notifications, read the provider before any change, and send events with no personal value (FEE-070 to FEE-076). The event schemas are in `registry/events/`.
+* Issue a sealed receipt for each paid order and after each refund or remission (FEE-080 to FEE-085).
+* Match each payout line to one record, to the cent (FEE-090 to FEE-095).
+* Offer idempotent interfaces and provider adapters, and test them on synthetic fixtures (FEE-100 to FEE-105).
+* Run `bash examples/test-examples.sh` to check the example files, after `pip install --require-hashes -r examples/requirements.txt`.
 
 == Adopt this spec
 
-Read the guides in `docs/modules/en/pages/` or `docs/modules/fr/pages/`.
-They explain what the spec gives your organization and how to require it.
+Read the guide in `docs/modules/en/pages/index.adoc` or `docs/modules/fr/pages/index.adoc`.
+It takes one fee through every step, with three synthetic fees as examples.
+A request for proposals can require a fee engine, a provider adapter, a profile or an operator to meet the conformance classes of FEE-002.
+The comparison data in `jurisdictions/` shows how Canada, Québec and France handle the same topics.
+The pages `alignment.adoc` and `questions-for-counsel.adoc` are informative, and the latter lists the legal questions that a lawyer must settle.
+This specification is not legal advice.
 
 == Layout
 
@@ -36,10 +42,22 @@ They explain what the spec gives your organization and how to require it.
 | Folder | Content
 
 | `spec/`
-| Normative text, in English and French. `book.adoc` joins the pages into one book.
+| Normative text, in English and French. `book.adoc` joins the pages into one book, published as PDF with each release.
 
 | `docs/`
 | Guides, in the Antora folder layout.
+
+| `model/`
+| The LinkML model of fees, and unchanged copies of the data types and decisions models.
+
+| `profiles/`
+| The jurisdiction profiles, each released apart from the core rules.
+
+| `registry/`
+| The JSON Schemas of the data of each event type.
+
+| `examples/`
+| Synthetic fee schedules, decision records, fee records and events, with their check, its test and scenarios in English and French.
 
 | `skill/`
 | The agent skill: a short summary that cites requirement IDs.
@@ -51,7 +69,7 @@ They explain what the spec gives your organization and how to require it.
 | PlantUML sources and their rendered SVG files.
 
 | `jurisdictions/`
-| Comparison data per jurisdiction. `baseline.yaml` lists the compared requirements.
+| Comparison data: how each government handles the same topics.
 |===
 
 == License

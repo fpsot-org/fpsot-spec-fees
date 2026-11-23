@@ -1,0 +1,197 @@
+= Schedules and quotes
+include::_fpsot-terms.adoc[]
+
+A fee is a decision.
+The registry specification asks this of every register under REG-026.
+The decisions specification already keeps amounts in dated parameter files, under DEC-037.
+This page adds what a fee needs beyond them.
+Those are the fee items, the indexation steps, rounding, exemptions, taxes and the lines of a quote.
+
+== Fee schedules
+
+[[FEE-020]]
+*FEE-020.* Each fee schedule MUST be a file of the class `FeeSchedule` of `model/fees.yaml`.
+That class extends the `ParameterSet` of DEC-037, so each amount stays a dated parameter value.
+The schedule MUST name its profile.
+Each fee item MUST have a code, a name in both languages and a basis.
+It MUST also have a legal source, a tax treatment, and an amount parameter or bands that each name one.
+A schedule that changes MUST take a new version.
+
+Each decision record names the version of the schedule and its digest, under DEC-037.
+The digest ties every quote to the exact file that priced it.
+A changed amount under the same version would break that link, and the check of the examples rejects it.
+
+[[FEE-021]]
+*FEE-021.* Each amount of a schedule MUST be money under DAT-050 to DAT-053.
+It has the decimals of the minor unit of its currency.
+Each rate MUST be a decimal string in percent, such as `"2.05"`, under DAT-041.
+An engine MUST NOT compute with binary floating-point numbers, under DAT-055.
+
+[[FEE-022]]
+*FEE-022.* The basis of each fee item MUST be one of these values.
+A fee item whose basis is not `flat` MUST name the unit of its quantity, under DAT-043.
+
+* `flat`: one amount, whatever the quantity.
+* `per-unit`: an amount for each unit.
+* `tiered`: each band of the quantity pays the amount of its own band.
+* `banded`: the whole quantity pays the amount of the band that it falls in.
+* `percentage`: a rate on a stated value.
+
+A tiered or banded fee item MUST list its bands, each with its own amount parameter.
+Each band gives its first quantity and the first quantity after it, and the last band has no end.
+A percentage line MUST give the rate in force and the base value that the rate applies to.
+
+The difference between `tiered` and `banded` changes the amount at each edge of a band.
+The federal schedule of the examples has both, with a surcharge of 10% on a base value.
+Four hours of inspection, tiered at $120.00 for the first three and $90.00 after, cost $450.00.
+Twelve samples, banded at $25.00 each from ten samples, cost $300.00.
+A schedule that names the basis lets a reviewer check the amount without reading code.
+
+== Indexation
+
+[[FEE-023]]
+*FEE-023.* An indexed amount MUST be a dated value of the schedule.
+Each parameter MUST have one value for each date.
+An engine MUST NOT compute an indexed amount at run time from an index, a rate or a formula.
+
+A published value lets a lawyer review the number that the payer sees.
+It also keeps each decision a function of its input and its parameters, as DEC-023 asks.
+In Québec, the body that fixed a fee publishes each indexed result.
+Section 83.6 of the Loi sur l'administration financière says so.
+
+[[FEE-024]]
+*FEE-024.* Each indexed value MUST come with an indexation step in the schedule, of the class `IndexationStep`.
+The step MUST name the indexation rule of the profile, the published rate and where the rate appeared.
+It MUST also give the rate after any cap and the amount before the step.
+It MUST give the result before rounding, whether the profile deferred it, and the result.
+A rule that carries changes forward or defers them MUST state the accumulated rate.
+That rate MUST be the applied rate, plus the accumulated rate of a previous step that the rule deferred.
+
+Anyone can then redo the arithmetic from the file alone.
+Under section 17 of the Service Fees Act, a change below 1% carries forward.
+The rule then defers a step at 0.6%, and a next step at 0.7% applies 1.3%.
+
+For 2026, the published Québec rate is 2.05%, below the cap of 3%.
+A fee of $87.00 then gives 88.7835, which the regulation rounds to $88.75.
+A fee of $2.00 would rise by less than $0.05.
+It therefore stays $2.00, and the rate of 2.05% carries forward.
+
+The cap law of Québec excepts the fees of the regulations in its Schedule I.
+A fee item of such a regulation carries a flag that lifts the cap, under FEE-012.
+The research read only an archived copy of the cap law from 2024.
+The law and its list are therefore _to be verified_.
+
+[[FEE-025]]
+*FEE-025.* Each schedule MUST name the rounding rule of its profile that its quotes and their taxes follow.
+That rule MUST round to the cent, unless a law that the profile cites sets another rounding for quotes.
+The schedule MUST also state the stage at which the engine rounds a quote: `per-line` or `per-total`.
+Each rounding rule MUST state its method and its step for each band of results, under DAT-054.
+It MUST also state where a result halfway goes, and whether it rounds quotes, indexed values or both.
+
+Where a law sets the rounding, the profile MUST cite it, and the rule MUST follow it.
+An indexed value MUST round under the rule that its indexation rule names.
+When that rule names none, the indexed value MUST round under the rule of `core`.
+
+The Québec regulation rounds only tariffs indexed under sections 83.3 and 83.4 of the Loi sur l'administration financière.
+It rounds to 0.05 below $10 and to 0.10 below $25.
+It rounds to 0.25 below $100, and to the dollar above.
+A result halfway goes up.
+Its bands therefore round indexed values only, and a Québec quote and its taxes round to the cent.
+
+The Service Fees Act lets a federal body round an adjusted fee down, under Treasury Board policy.
+That policy is _to be verified_.
+
+== Quotes
+
+[[FEE-026]]
+*FEE-026.* A quote MUST be a decision under the decisions specification, with one decision record under DEC-040.
+The record MUST name the schedule in its parameter sets, with its digest, under DEC-037.
+Its amount MUST be the total due, and its outcome a code such as `fee-payable`, `exempt` or `partly-exempt`.
+An engine MUST NOT price a fee outside a decision record.
+
+The record then holds the facts, the rule version, the parameters and the reasons of the price.
+A replay under DEC-047 gives the same amount.
+
+[[FEE-027]]
+*FEE-027.* The lines of a quote MUST be in a record of the class `FeeQuote` of `model/fees.yaml`.
+That record names the decision record.
+Each line MUST name its fee item, its quantity, its legal source and the unit amount in force.
+It MUST also give the first date of that value, the gross amount, any exemption, the amount and the taxes.
+The total MUST equal both the sum of the lines and taxes and the amount of the decision record.
+A quote MUST NOT change once stored.
+
+The decision record has no field for line detail, and the decisions specification keeps that class closed.
+The quote therefore carries the lines, and the record carries the result.
+The receipt of FEE-081 copies the lines, so a payer sees each fee with its source.
+
+[[FEE-028]]
+*FEE-028.* Each exemption that a quote applies MUST be one that its fee item grants.
+The fee item names its legal source and the fact which triggers it.
+That fact MUST be an input of the decision record, with its source, under DEC-042.
+A fact that the payer declares MUST keep the source `applicant-declaration`, and MUST NOT become a status that someone verified.
+A discretionary waiver MUST lead to the result kind `referred`, under DEC-026.
+A person then decides it, under DEC-061 to DEC-063.
+
+Section 112 of the Small Vessel Regulations sets a fee of $24 for a pleasure craft license.
+An owner who declares a right on the application pays nothing.
+The right is one under section 35 of the Constitution Act, 1982.
+The engine records that declaration as a fact, and the quote applies the exemption.
+The file `examples/decisions/pleasure-craft-quote.json` shows that record.
+
+SOR/2025-272 replaced that section, and the research did not read its text in full.
+The amount and the exemption are therefore _to be verified_.
+
+[[FEE-029]]
+*FEE-029.* Each line MUST state how each tax that its profile names applies, with its legal source.
+The treatment is `taxable` with a rate and an amount, `exempt`, `zero-rated` or `outside-scope`.
+A tax that is not `taxable` MUST have an amount of zero.
+A tax MUST round under the rule of the schedule, under FEE-025.
+That rule rounds to the cent, unless a cited law says otherwise.
+
+The goods and services tax does not apply to a license or a permit that a government supplies.
+Schedule V of the Excise Tax Act exempts them.
+It also exempts the processing of an application for them.
+Some rights stay taxable, such as hunting and fishing rights.
+How the Québec sales tax applies to Québec fees is _to be verified_.
+The profile `ca-qc` therefore names no such tax yet.
+
+[[FEE-030]]
+*FEE-030.* A quote MUST state the last instant at which an order may use it.
+An order after that instant MUST rest on a new quote and a new decision.
+A penalty or interest for late payment MUST be a line of its own decision.
+That decision follows a rule of the profile.
+An engine MUST NOT add such an amount to an order outside a decision.
+
+Each rate that such a rule applies, such as an interest rate, MUST be a dated value of the profile.
+That value follows the terms of FEE-023.
+An engine MUST NOT compute that rate at run time from a reference rate.
+
+The `ca-federal` profile holds the interest rule of the Interest and Administrative Charges Regulations.
+Interest there is the average bank rate plus 3%, compounded monthly.
+The average bank rate of a month is the weighted average of the bank rates of the month before.
+The Bank Rate stayed at 2.50% from 30 October 2025 to 28 October 2026.
+The profile therefore publishes 5.50% for each month from December 2025 to October 2026.
+
+The Bank Rate changed on 29 October 2026.
+The value for November 2026 therefore waits for the next release of the profile.
+Until then, an interest decision for that month returns `not-applicable`, under FEE-013.
+Nobody can explain or replay a penalty that no decision records.
+
+== References
+
+=== Informative
+
+* link:https://gazette.gc.ca/rp-pr/p2/2025/2025-12-31/html/sor-dors272-eng.html[Regulations Amending the Small Vessel Regulations, SOR/2025-272], Canada Gazette, Part II, 2025-12-31, not read in full, _to be verified_. link:https://web.archive.org/web/20260412123703/https://gazette.gc.ca/rp-pr/p2/2025/2025-12-31/html/sor-dors272-eng.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html[Excise Tax Act, Schedule V, Part VI], R.S.C. 1985, c. E-15, Justice Laws Website. link:https://web.archive.org/web/20261009054903/https://laws-lois.justice.gc.ca/eng/acts/E-15/page-120.html[Archived copy]
+* link:https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-188/FullText.html[Interest and Administrative Charges Regulations], SOR/96-188, Justice Laws Website. link:https://web.archive.org/web/20260615114756/https://laws-lois.justice.gc.ca/eng/regulations/SOR-96-188/FullText.html[Archived copy]
+* link:https://www.bankofcanada.ca/valet/observations/V39078/json?start_date=2025-10-01[Bank Rate, series V39078], Bank of Canada, daily values, read 2026-11-21. link:https://web.archive.org/web/20261121183309/https://www.bankofcanada.ca/valet/observations/V39078/json?start_date=2025-10-01[Archived copy]
+* link:https://web.archive.org/web/20260201101002/https://www.legisquebec.gouv.qc.ca/fr/document/rc/A-6.001,%20r.%200.1[Règlement sur l'arrondissement des tarifs indexés], RLRQ, c. A-6.001, r. 0.1, LégisQuébec, current to 2025-10-24, archived copy.
+* link:https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics[Tarification des services publics], Gouvernement du Québec, rates of 2024 to 2026. link:https://web.archive.org/web/20260512134329/https://www.quebec.ca/gouvernement/finances-publiques/revenus/tarification-services-publics[Archived copy]
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-22 |First version.
+|===

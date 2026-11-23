@@ -1,0 +1,85 @@
+= Rapprochement
+include::_fpsot-terms.adoc[]
+
+Un fournisseur envoie rarement un virement pour chaque paiement.
+Il compense plusieurs paiements, remboursements et frais qui lui reviennent dans un seul versement.
+Certains fournisseurs retiennent aussi des frais sur chaque paiement.
+Un organisme qui ne rapproche que des totaux ne peut pas dire à quel paiement appartient un dollar manquant.
+Cette page rattache donc chaque ligne de chaque versement à une seule donnée, au cent près.
+Le grand livre de l’organisme est hors de portée, et seule l’exportation des écritures rapprochées en fait partie.
+
+== Versements
+
+[[FEE-090]]
+*FEE-090.* Chaque versement DOIT être une donnée de la classe `Payout` de `model/fees.yaml`, avec ses lignes.
+Son montant brut DOIT égaler la somme des montants de ses lignes.
+Ses frais DOIVENT égaler la somme des frais de ses lignes.
+Son montant net DOIT égaler le brut moins les frais.
+Une ligne qui fait sortir de l’argent, comme un remboursement, DOIT porter un montant négatif.
+
+GOV.UK Pay donne des frais et un montant net pour chaque paiement, et le montant net peut être négatif.
+Le versement des exemples compense un paiement de 390,00 $, un remboursement de 40,00 $ et 5,85 $ de frais.
+
+[[FEE-091]]
+*FEE-091.* Le moteur DOIT rattacher chaque ligne d’un versement à une seule tentative, un seul remboursement ou une seule contestation.
+Le genre, l’identifiant chez le fournisseur et le montant de la ligne DOIVENT concorder avec cette donnée.
+Une ligne qui ne se rattache à aucune donnée DOIT rester `unmatched`, et le versement a alors le statut `exceptions`.
+Un versement DOIT avoir le statut `reconciled` seulement si toutes ses lignes sont rattachées.
+Chaque tentative que porte un versement DOIT alors montrer ce versement dans sa réception des fonds, selon FEE-044.
+Une ligne d’une contestation DOIT porter le montant que FEE-069 fixe pour son genre.
+
+Une personne doit expliquer chaque exception.
+Un fournisseur qui contrepasse un remboursement réussi envoie une ligne qui ne se rattache à aucun remboursement.
+Cette ligne reste une exception, selon FEE-060.
+Le moteur n’en ferme jamais une de lui-même.
+
+[[FEE-092]]
+*FEE-092.* Chaque tentative, remboursement et contestation DOIT garder l’identifiant que son fournisseur lui a donné.
+Chaque demande de paiement DOIT garder sa référence de paiement.
+Pour un virement, le moteur DEVRAIT aussi garder l’identifiant de bout en bout et la référence structurée du paiement.
+Il les garde quand la banque les donne.
+Un moteur NE DOIT PAS réemployer un identifiant ou une référence pour une autre donnée.
+
+GovStack exige des identifiants uniques qui ne reviennent jamais à zéro, pour chaque donnée interne et externe.
+Une référence réemployée rattacherait une ligne de versement à la mauvaise personne.
+
+[[FEE-093]]
+*FEE-093.* Le moteur DOIT comparer les montants exactement, dans l’unité divisionnaire de la monnaie, selon DAT-053 et DAT-055.
+Un écart DOIT rester une exception.
+Un moteur NE DOIT PAS passer un écart en perte comme un arrondi.
+
+Un écart d’un cent peut venir de frais que le fournisseur a changés sans préavis.
+
+== Relevés bancaires et grand livre
+
+[[FEE-094]]
+*FEE-094.* Un moteur PEUT importer des relevés bancaires pour rapprocher les versements et les virements.
+Quand il importe des messages ISO 20022, il DEVRAIT lire le relevé de fin de journée camt.053.
+Il DEVRAIT aussi lire camt.054, qui avise de chaque crédit ou débit.
+
+La page xref:alignment.adoc[Correspondance avec d’autres normes] fait correspondre ces messages aux données de cette page.
+Paiements Canada signale un guide de camt.053 pour son système de grande valeur Lynx.
+La recherche ne l’a pas lu, donc il est _à vérifier_.
+
+[[FEE-095]]
+*FEE-095.* Un organisme PEUT exporter les écritures rapprochées vers son grand livre.
+Une exportation DOIT contenir seulement des lignes rattachées, chacune avec les identifiants de son versement et de sa donnée.
+Elle NE DOIT PAS inscrire une ligne non rattachée comme rattachée.
+
+Le grand livre, ses comptes et ses règles restent dans le système financier de l’organisme.
+
+== Références
+
+=== Références informatives
+
+* link:https://docs.payments.service.gov.uk/reporting/[Reconcile and report on payments], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/reporting/[Copie archivée]
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, lu le 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Copie archivée]
+* link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, copie archivée, catalogue, _à vérifier_ à la source.
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-22 |Première version.
+|===

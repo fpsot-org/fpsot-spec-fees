@@ -1,0 +1,136 @@
+= Correspondance avec d’autres normes
+include::_fpsot-terms.adoc[]
+
+Cette page est informative, et elle ne fixe aucune règle.
+Aucune norme publiée ne fixe les données de frais publics, de leur barème jusqu’à leur versement.
+Chaque source ci-dessous couvre une partie, donc cette spécification s’y rattache sans déclarer de conformité à aucune.
+Les fournisseurs de cette page ne sont que des exemples, et aucune règle n’en exige un.
+
+== GOV.UK Pay
+
+link:https://docs.payments.service.gov.uk/api_reference/[GOV.UK Pay] est la plateforme de paiement que le gouvernement du Royaume-Uni exploite pour ses services.
+Ses huit statuts sont ceux de FEE-042, avec le même champ `finished`.
+Ses remboursements ont les trois statuts de FEE-060, et ses contestations les quatre statuts de FEE-067.
+Les codes de cette spécification emploient la casse kebab, selon NAM-060, donc `needs_response` devient `needs-response`.
+
+[cols="2,2,3",options="header"]
+|===
+|GOV.UK Pay |Cette spécification |Note
+|`state.status` et `state.finished` |`status` et `finished` de `PaymentAttempt` |Les mêmes huit valeurs.
+|`state.code`, comme P0010 ou P0020 |`failureCode` |`method-rejected`, `expired`, `canceled-by-payer`, `canceled-by-service`, `provider-error`.
+|`next_url` |L’adresse de page que rend un adaptateur |Une redirection complète, selon FEE-047.
+|`refund_summary.amount_available` |`refundableBefore` de `Refund` |La reprise du solde qui empêche deux remboursements simultanés, selon FEE-061.
+|`settlement_summary` |`settlement` de `PaymentAttempt` |À part du statut, selon FEE-044.
+|`card_details` |`cardDisplay` de `PaymentAttempt` |La marque et les quatre derniers chiffres seulement, puisque l’adaptateur retire les autres champs de carte selon FEE-052.
+|`reference` |`paymentReference` de `FeeOrder` |Selon FEE-040.
+|`fee` et `net_amount` |`fee` de `PayoutLine` |Selon FEE-090.
+|`Pay-Signature` |La signature que vérifie un adaptateur |Selon FEE-070.
+|===
+
+GOV.UK Pay crée un nouveau paiement pour chaque essai.
+Cette spécification regroupe les essais d’une demande, comme le fait l’intention de paiement de Stripe.
+
+== GovStack Payments
+
+Le link:https://specs.govstack.global/payments/6-functional-requirements[bloc Payments de GovStack] ne nomme que trois statuts de transaction : réussie, échouée et en cours.
+Il exige des reçus, des entrées d’audit immuables et des identifiants qui ne reviennent jamais à zéro.
+Sa section sur le rapprochement exige un identifiant interne et un identifiant externe pour chaque transaction.
+
+[cols="2,2",options="header"]
+|===
+|GovStack |Cette spécification
+|en cours |`created`, `started`, `submitted`, `capturable`
+|réussie |`success`
+|échouée |`failed`, `cancelled`, `error`
+|Reçus et accusés de réception |`Receipt`, selon FEE-080 à FEE-085
+|Identifiants de rapprochement |Identifiants des fournisseurs et références de paiement, selon FEE-092
+|===
+
+== ISO 20022
+
+Le link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[catalogue d’ISO 20022] a refusé les lecteurs automatisés, tout comme ses listes de codes.
+La recherche a lu les codes de statut dans une link:https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[copie que publie un paquet logiciel].
+Chaque code ci-dessous est donc _à vérifier_ par rapport à la liste officielle.
+
+[cols="2,2,3",options="header"]
+|===
+|Code de statut |Cette spécification |Note
+|RCVD, ACTC |`started` |La banque a reçu l’instruction et l’a vérifiée.
+|ACCP, ACFC, ACSP, PDNG, PATC |`submitted` |Vérifications réussies ou en attente, règlement en cours.
+|ACCC |`success` |Règlement au compte du créancier, qu’un organisme public devrait attendre.
+|ACSC |`success`, du côté du débiteur seulement |Une demande de changement déconseille son emploi pour l’information financière.
+|RJCT |`failed` |La banque a rejeté l’instruction.
+|CANC |`cancelled` |Une annulation que l’émetteur a demandée.
+|===
+
+Ces messages comptent pour un moteur de frais, et leurs versions sont aussi _à vérifier_.
+
+[cols="1,3",options="header"]
+|===
+|Message |Rôle
+|camt.053 |Le relevé d’un compte en fin de journée, principale donnée d’entrée de FEE-094.
+|camt.054 |Un avis de chaque crédit ou débit en cours de journée.
+|pain.001 et pain.002 |Un virement que lance l’organisme, comme un remboursement par la banque, et son statut.
+|pain.013 et pain.014 |Une invitation à payer que l’organisme envoie, et son statut.
+|===
+
+Un virement peut rester `submitted` pendant des jours.
+Il atteint `success` quand le fournisseur ou le relevé montre le crédit.
+
+== Stripe, Moneris et PayFiP
+
+link:https://docs.stripe.com/payments/paymentintents/lifecycle[Stripe] regroupe les essais d’un paiement dans une intention de paiement.
+Après un refus, l’intention revient à son premier statut.
+Sa page de paiement hébergée est une redirection complète.
+Ses link:https://docs.stripe.com/webhooks[avis] portent une signature sur un horodatage et le corps, et arrivent sans ordre fixe.
+
+Une tentative de cette spécification correspond à un débit d’une intention de paiement, qui est un essai de payer.
+Elle ne correspond jamais à l’intention de paiement elle-même, puisque celle-ci garde un seul identifiant pour tous les essais.
+Y faire correspondre les tentatives donnerait le même identifiant de fournisseur à deux tentatives, ce que FEE-092 interdit.
+Un adaptateur pour Stripe lit les deux objets, et en tire le statut de la tentative selon ce tableau.
+
+[cols="2,2,3",options="header"]
+|===
+|Stripe |Cette spécification |Note
+|Un nouveau débit, ou une intention de paiement qui attend un mode de paiement ou une confirmation |`created` |Stripe n’a aucun statut pour `started`, et l’adaptateur le saute, selon FEE-043.
+|Intention de paiement `requires_action` ou `processing`, ou débit `pending` |`submitted` |La personne doit finir une étape, ou le paiement est encore en cours.
+|Intention de paiement `requires_capture` |`capturable` |Le moteur peut capturer le paiement ou l’annuler.
+|Débit `succeeded` |`success` |L’intention de paiement montre alors `succeeded`.
+|Débit `failed` |`failed` |Avec le code d’échec `method-rejected`, pendant que l’intention de paiement revient à son premier statut pour le prochain essai.
+|Intention de paiement `canceled` |`cancelled` ou `failed` |`cancelled` quand l’organisme l’a annulée, sinon `failed` avec `expired` ou `canceled-by-payer`.
+|===
+
+Moneris décrit une page de paiement hébergée qui, selon l’entreprise, réduit la portée des règles sur les données de carte.
+Sa documentation est une application que la recherche n’a pas pu lire, donc ses détails sont _à vérifier_.
+
+link:https://www.collectivites-locales.gouv.fr/gerer-les-finances-publiques-locales/moyens-de-paiement/loffre-de-paiement-en-ligne-payfip[PayFiP] est le service de paiement en ligne que la Direction générale des Finances publiques offre aux collectivités.
+Il accepte les cartes et les prélèvements uniques, sur une page que l’État exploite.
+Ses guides techniques sont remis sur demande, donc ses statuts sont _à vérifier_.
+
+== Idempotence
+
+Le link:https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/[projet sur l’en-tête Idempotency-Key] du {abbr-ietf-first} reste un projet.
+Il répond `409 Conflict` à une requête répétée qui arrive pendant que la première requête s’exécute.
+Il répond `422 Unprocessable Content` à une clé qui revient avec un autre corps.
+API-060 à API-063 exigent déjà la clé, et cette spécification n’y ajoute rien.
+
+== Références
+
+=== Références informatives
+
+* link:https://docs.payments.service.gov.uk/api_reference/[API reference], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20261029092201/https://docs.payments.service.gov.uk/api_reference/[Copie archivée]
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, lu le 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Copie archivée]
+* link:https://web.archive.org/web/20261101175506/https://www.iso20022.org/iso-20022-message-definitions[ISO 20022 message definitions], ISO 20022 Registration Authority, copie archivée, _à vérifier_ à la source.
+* link:https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[ExternalPaymentTransactionStatus1Code], copie dans le paquet iso20022_external_codes 1.0.1, source secondaire. link:https://web.archive.org/web/20261122213733/https://cdn.jsdelivr.net/npm/@taprsvp/iso20022_external_codes@1.0.1/code_sets/external_payment_transaction_status_code.json[Copie archivée]
+* link:https://docs.stripe.com/payments/paymentintents/lifecycle[How PaymentIntents and SetupIntents work], Stripe documentation, lu le 2026-11-21. link:https://web.archive.org/web/20261114112140/https://docs.stripe.com/payments/paymentintents/lifecycle[Copie archivée]
+* link:https://docs.stripe.com/webhooks[Receive Stripe events in your webhook endpoint], Stripe documentation, lu le 2026-11-21. link:https://web.archive.org/web/20261118034658/https://docs.stripe.com/webhooks[Copie archivée]
+* link:https://www.collectivites-locales.gouv.fr/gerer-les-finances-publiques-locales/moyens-de-paiement/loffre-de-paiement-en-ligne-payfip[L'offre de paiement en ligne PayFiP], Direction générale des Finances publiques, collectivites-locales.gouv.fr, lu le 2026-11-21. link:https://web.archive.org/web/20261121171623/https://www.collectivites-locales.gouv.fr/gerer-les-finances-publiques-locales/moyens-de-paiement/loffre-de-paiement-en-ligne-payfip[Copie archivée]
+* link:https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/[The Idempotency-Key HTTP Header Field], IETF, Internet-Draft draft-ietf-httpapi-idempotency-key-header, travail en cours. link:https://web.archive.org/web/20261108034218/https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/[Copie archivée]
+
+== Historique du document
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Changement
+|0.1.0 |2026-11-22 |Première version.
+|===

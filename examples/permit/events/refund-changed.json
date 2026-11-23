@@ -1,0 +1,18 @@
+{
+  "specversion": "1.0",
+  "id": "019c4e00-0012-7000-8000-000000000002",
+  "source": "/v1/fee-orders",
+  "type": "org.fpsot.fees.refund.changed",
+  "time": "2026-03-09T15:02:00Z",
+  "datacontenttype": "application/json",
+  "subject": "019c4e00-0005-7000-8000-000000000001",
+  "dataschema": "https://fpsot.org/schemas/fees/events/org.fpsot.fees.refund.changed.schema.json",
+  "data": {
+    "refundId": "019c4e00-0005-7000-8000-000000000001",
+    "orderId": "019c4e00-0002-7000-8000-000000000002",
+    "attemptId": "019c4e00-0003-7000-8000-000000000002",
+    "status": "success",
+    "reason": "purpose-not-fulfilled",
+    "changedAt": "2026-03-09T15:02:00Z"
+  }
+}

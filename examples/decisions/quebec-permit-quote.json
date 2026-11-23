@@ -1,0 +1,85 @@
+{
+  "id": "019c4e00-0009-7000-8000-000000000101",
+  "decisionType": "example-quebec-permit-fee",
+  "decisionTypeVersion": "1.0.0",
+  "profiles": [
+    {
+      "code": "core",
+      "version": "0.1.0"
+    },
+    {
+      "code": "ca-qc",
+      "version": "0.1.0"
+    }
+  ],
+  "impactLevel": "level-1",
+  "objects": [
+    {
+      "type": "Party",
+      "id": "019c4e00-0010-7000-8000-000000000101",
+      "qualifier": "subject"
+    },
+    {
+      "type": "Filing",
+      "id": "019c4e00-0011-7000-8000-000000000101",
+      "qualifier": "case"
+    }
+  ],
+  "legalAuthorities": [
+    {
+      "uri": "https://lois.example.org/fr/reglement/EX-1/article-2",
+      "otherLanguageUris": [
+        "https://lois.example.org/en/regulation/EX-1/section-2"
+      ]
+    }
+  ],
+  "ruleSet": {
+    "code": "example-quebec-permit-fee",
+    "version": "1.0.0",
+    "digest": "4f0c1e7a9b2d3c5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6",
+    "buildCoordinates": "org.example.fees:example-quebec-permit-fee-rules:1.0.0"
+  },
+  "parameterSets": [
+    {
+      "code": "example-quebec-permit-fees",
+      "version": "1.1.0",
+      "digest": "14ccdf25406e75787b5510ed8b9576bcad713f30c44b6fae5c1ce205e1b31c64"
+    }
+  ],
+  "effectiveDate": "2026-02-10",
+  "recordTime": "2026-02-10T15:00:00Z",
+  "startedAt": "2026-02-10T15:00:01Z",
+  "completedAt": "2026-02-10T15:00:01Z",
+  "inputs": [
+    {
+      "name": "application-kind",
+      "value": "new-permit",
+      "source": "applicant-declaration",
+      "asOfDate": "2026-02-10",
+      "collectionMethod": "online-form"
+    }
+  ],
+  "resultKind": "decided",
+  "outcome": "fee-payable",
+  "amount": {
+    "amount": "88.75",
+    "currency": "CAD"
+  },
+  "reasonScheme": "https://vocab.example.org/fee-reasons/versions/1.0.0",
+  "reasons": [
+    {
+      "code": "permit-fee-applies",
+      "rank": 1,
+      "principal": true,
+      "clause": {
+        "uri": "https://lois.example.org/fr/reglement/EX-1/article-2",
+        "otherLanguageUris": [
+          "https://lois.example.org/en/regulation/EX-1/section-2"
+        ]
+      }
+    }
+  ],
+  "automationDegree": "fully-automated",
+  "createdAt": "2026-02-10T15:00:01Z",
+  "updatedAt": "2026-02-10T15:00:01Z"
+}

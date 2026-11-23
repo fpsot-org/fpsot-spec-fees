@@ -1,8 +1,191 @@
 = Spécification FPSOT sur les frais
 include::_fpsot-terms.adoc[]
 
-Remplacez cette page par le texte normatif de la spécification.
-Commencez par la portée, puis les classes de conformité, puis les exigences.
+Cette spécification fixe ce qu’un logiciel doit consigner et prouver pour les frais d’un organisme public.
+Ce sont les frais que l’organisme exige en vertu d’une loi.
+Elle vise le barème de frais, le devis, le paiement, le remboursement, la remise et le reçu.
+Elle vise aussi la façon dont un organisme rapproche les versements de son fournisseur.
+Elle laisse aux profils juridictionnels chaque valeur et chaque règle qu’une loi fixe.
+
+La recherche pour cette spécification a comparé les frais du Canada, du Québec et de la France.
+Leurs lois diffèrent sur qui peut fixer des frais, sur leur indexation et sur l’arrondissement du résultat.
+Elles diffèrent aussi sur le moment où un organisme doit rendre de l’argent.
+Les trois gardent pourtant deux actes distincts.
+Un remboursement rend de l’argent que l’organisme ne devrait pas garder, comme le paiement d’un service jamais rendu.
+Par une remise, l’organisme renonce à une somme due ou la rend, par une décision que la loi permet.
+
+Les règles reposent donc sur six éléments qui fonctionnent sous toute loi.
+
+* Le barème : chacun des frais sous forme de valeurs datées dans un fichier de paramètres, avec sa source juridique.
+Chaque valeur indexée vient avec l’étape qui l’a fixée.
+* Le devis : une décision de la spécification sur les décisions.
+Ses lignes nomment les frais, la valeur et l’exemption appliquées.
+* Le paiement : une demande de paiement et ses tentatives de paiement.
+Leurs statuts n’avancent que dans un sens, et seulement après une lecture chez le fournisseur.
+* Les remboursements, les remises et les contestations : trois données distinctes, et seule une décision crée une remise.
+* Le reçu : un document cacheté de ce que la demande a coûté et des sommes qui ont circulé.
+* Le rapprochement : chaque ligne de chaque versement rattachée à une seule donnée, au cent près.
+Cette donnée est une tentative, un remboursement ou une contestation.
+
+Les données de carte n’entrent jamais dans le logiciel.
+La personne paie sur la page d’un fournisseur de paiement, et le logiciel ne voit qu’une marque et quatre chiffres.
+
+Les règles réutilisent les autres spécifications de la {abbr-fpsot-first} et n’en redéfinissent aucun élément.
+Les montants viennent de la spécification sur les types de données, et l’{term-decision-record} de la spécification sur les décisions.
+Les cachets et le {term-transparency-log} viennent de la spécification sur les documents signés.
+
+== Portée
+
+[[FEE-001]]
+*FEE-001.* Ces règles visent les logiciels qui établissent, perçoivent, remboursent ou remettent des frais en vertu d’une loi.
+Des frais en ce sens sont une somme qu’un organisme public exige pour un service, un droit ou un document.
+Une loi, un règlement ou un barème la fixe.
+Un système DOIT appliquer ces règles à tous les frais de ce genre qu’il traite.
+Le traitement des cartes, le choix d’un fournisseur, le grand livre et le recouvrement sont hors de portée.
+Les impôts qu’un organisme établit, comme l’impôt sur le revenu, sont aussi hors de portée.
+
+La spécification s’arrête à la frontière du fournisseur.
+Elle fixe ce que le logiciel garde au sujet d’un paiement.
+Le fournisseur et les banques déplacent l’argent.
+
+== Rôles et classes de conformité
+
+[[FEE-002]]
+*FEE-002.* Chaque partie qui déclare sa conformité DOIT indiquer chaque {term-conformance-class} qu’elle déclare, parmi les quatre de ce tableau.
+Une partie peut en déclarer plus d’une.
+
+[cols="1,2,3",options="header"]
+|===
+|Classe |Qui la déclare |Règles
+|`engine` |Un moteur de frais, qui établit les devis, reçoit les paiements, rembourse, remet et délivre les reçus |Les règles de chaque page, sauf celles qui ne visent qu’un adaptateur, un profil ou un exploitant, et aussi FEE-061, FEE-090 et FEE-091
+|`adapter` |Un adaptateur de fournisseur, qui relie un moteur à un fournisseur de paiement |FEE-043, FEE-044, FEE-046, FEE-049 à FEE-052, FEE-060, FEE-061, FEE-067, FEE-070 à FEE-074 et FEE-101
+|`profile` |L’auteur d’un profil juridictionnel ou d’un barème de frais |FEE-010 à FEE-013, FEE-020 à FEE-025, FEE-028, FEE-029 et FEE-062
+|`operator` |Un {term-deploying-body} qui reçoit les paiements de ses frais |FEE-003, FEE-046 à FEE-048, FEE-066, FEE-074, FEE-082, FEE-090, FEE-091 et FEE-095
+|===
+
+Un acheteur peut alors demander à chaque fournisseur la classe qu’il livre.
+Un adaptateur qui n’établit jamais de devis doit tout de même garder les données de carte à l’écart.
+FEE-061, FEE-090 et FEE-091 visent aussi le moteur, puisque le moteur refuse un remboursement et rapproche chaque ligne de versement.
+
+== Statut juridique
+
+[[FEE-003]]
+*FEE-003.* Une déclaration de conformité NE DOIT PAS affirmer ni laisser entendre que des frais respectent une loi.
+Il en va de même d’un remboursement ou d’une remise.
+Elle NE DOIT PAS non plus laisser entendre qu’un déploiement respecte la norme PCI DSS.
+La conformité montre que le logiciel tient les documents que plusieurs lois demandent.
+Elle montre aussi qu’il garde les données de carte à l’écart.
+Seul l’organisme, avec ses juristes et son acquéreur, peut dire ce que sa loi et ses contrats de cartes exigent.
+
+Cette spécification énonce la pratique de la {abbr-fpsot}, et elle ne constitue pas un avis juridique.
+Les faits propres à une collectivité publique figurent dans les profils et les données de comparaison, jamais dans une règle.
+Les questions juridiques se trouvent à la page xref:questions-for-counsel.adoc[Questions pour les juristes].
+Un texte juridique que la recherche n’a pas lu à la source porte la mention _à vérifier_.
+LégisQuébec et Légifrance refusent les lecteurs automatisés, donc la recherche a lu les textes québécois dans des copies archivées.
+Elle marque un texte _à vérifier_ quand sa copie archivée pourrait ne pas contenir le texte en vigueur.
+
+== Responsables des éléments
+
+[[FEE-004]]
+*FEE-004.* Une mise en œuvre DOIT prendre chaque élément de ce tableau dans la spécification qui en est responsable.
+Elle NE DOIT PAS définir le sien.
+
+[cols="2,3",options="header"]
+|===
+|Élément |Responsable et règles
+|Montants, énoncé de l’arrondi, instants, dates, intervalles, identifiants |Types de données : DAT-010, DAT-014, DAT-023, DAT-050 à DAT-055, DAT-060 à DAT-066
+|Le devis et la remise comme décisions, versions de règles, paramètres datés, enregistrements de décision |Décisions : DEC-020 à DEC-027, DEC-030 à DEC-037, DEC-040 à DEC-048
+|Le statut de paiement d’une déclaration, et les frais comme décisions d’un registre |Registres : REG-024, REG-026
+|La personne qui paie, comme partie |Modèles de données : DMO-040
+|Qui agit, et la vérification de chaque requête |Identité : IAM-050, IAM-057
+|Listes de codes, comme les motifs de remboursement et les codes de frais |Vocabulaires : VOC-001 à VOC-065
+|Cachets, horodatages et journal de transparence des reçus |Documents signés : LOG-002, LOG-010, LOG-019, LOG-031, LOG-082
+|Événements d’audit, événements d’affaires et absence de secrets dans les entrées |Observabilité : OBS-024, OBS-027, OBS-070, OBS-090, OBS-091
+|Idempotence, requêtes conditionnelles, événements et secrets dans les adresses |API RESTful : API-008, API-009, API-060 à API-063, API-085, API-100 à API-104
+|Secrets et clés des fournisseurs |Sécurité : SEC-020 à SEC-024
+|Scénarios, suites de conformité et données synthétiques |Essais : TST-020 à TST-036, TST-044, TST-045, TST-050
+|===
+
+Le modèle `model/fees.yaml` importe des copies inchangées des modèles des types de données et des décisions.
+Il n’ajoute que ce qu’aucune autre spécification ne définit, comme la tentative de paiement et le versement.
+
+== Versions et essais de conformité
+
+[[FEE-005]]
+*FEE-005.* Une mise en œuvre DOIT suivre les versions des normes externes que cette page énumère sous Normes.
+Elle PEUT suivre une version ultérieure de la même norme quand les éléments qu’elle emploie gardent leur sens.
+Un reçu doit rester lisible aussi longtemps que l’organisme le garde.
+Chaque lecteur doit alors savoir quel texte s’appliquait.
+
+[[FEE-006]]
+*FEE-006.* Une suite de conformité de cette spécification DOIT vérifier ce que produit une mise en œuvre, selon TST-044.
+Ce sont les barèmes, les devis, les demandes de paiement, les tentatives, les remboursements et les remises.
+S’y ajoutent les reçus, les versements et les événements.
+La suite NE DOIT PAS exiger le code source de la mise en œuvre.
+Les dossiers `model/`, `profiles/`, `registry/` et `examples/` contiennent les premières données d’essai.
+Le script `examples/check-examples.py` les vérifie.
+
+== Parties
+
+Les règles se répartissent en huit parties, suivies de deux pages informatives.
+
+* xref:profiles.adoc[Profils juridictionnels] fixe les fichiers de profil, avec leurs sources, leurs dates et les valeurs par défaut.
+* xref:schedules-and-quotes.adoc[Barèmes et devis] fixe le barème de frais, l’indexation, l’arrondissement, les exemptions, les taxes et le devis.
+* xref:orders-and-payments.adoc[Demandes de paiement et paiements] fixe la demande, la tentative de paiement et ses statuts.
+Elle fixe aussi la frontière qui écarte les données de carte.
+* xref:refunds-and-remissions.adoc[Remboursements, remises et contestations] fixe les trois données qui annulent ou adoucissent un paiement.
+* xref:notifications.adoc[Avis des fournisseurs et événements] fixe ce que fait le moteur quand un fournisseur l’avise.
+Elle fixe aussi les événements que le moteur envoie.
+* xref:receipts.adoc[Reçus] fixe le contenu et le cachet de chaque reçu.
+* xref:reconciliation.adoc[Rapprochement] fixe le versement et la façon dont chacune de ses lignes se rattache à une donnée.
+* xref:conformance.adoc[Interfaces, adaptateurs et conformité] fixe les interfaces, le contrat d’un adaptateur et les données d’essai.
+* xref:alignment.adoc[Correspondance avec d’autres normes] est informative.
+Elle fait correspondre les statuts à GOV.UK Pay, à GovStack Payments et à ISO 20022.
+Elle ne présente les fournisseurs qu’à titre d’exemple.
+* xref:questions-for-counsel.adoc[Questions pour les juristes] est informative, et énumère les points juridiques qu’une ou un juriste doit régler.
+
+== Spécifications liées
+
+Cette spécification s’appuie sur d’autres spécifications de la {abbr-fpsot}, et cite leurs règles par numéro.
+
+* La spécification sur les types de données fixe la forme d’un montant selon DAT-050 à DAT-055.
+Elle fixe l’énoncé d’un arrondi selon DAT-054.
+* La spécification sur les décisions fixe le contrat de décision selon DEC-020 à DEC-027.
+Elle fixe aussi les versions de règles et les fichiers de paramètres datés selon DEC-030 à DEC-037.
+Elle fixe les enregistrements de décision selon DEC-040 à DEC-048.
+* La spécification sur les registres fixe le statut de paiement d’une déclaration selon REG-024.
+Elle fait des frais des décisions selon REG-026.
+* La spécification sur les documents signés fixe le cachet, son manifeste et le journal, selon LOG-002 à LOG-082.
+* La spécification sur l’observabilité fixe les événements d’affaires selon OBS-070, et écarte les secrets des entrées selon OBS-091.
+* La spécification sur les API RESTful fixe l’idempotence selon API-060 à API-063 et les événements selon API-100 à API-104.
+* La spécification sur la sécurité fixe la façon dont un projet garde et renouvelle ses secrets, selon SEC-020 à SEC-024.
+* La spécification sur l’identité et l’accès fixe la vérification de chaque requête selon IAM-050.
+* La spécification sur les vocabulaires fixe les listes de codes.
+La spécification sur les essais fixe les scénarios, les suites et les données synthétiques.
+* La spécification sur le nommage fixe les noms des champs, des événements et des codes, selon NAM-010, NAM-050 et NAM-060.
+
+== Exemples
+
+Le dossier `examples/` contient des frais synthétiques selon les profils `ca-federal` et `ca-qc`.
+Chaque personne, numéro, fournisseur et règlement y est fictif, sauf les textes de loi que les profils citent.
+
+* `schedules/` contient trois barèmes de frais.
+Le barème prévoit l’exemption du droit de 24 $ du permis d’embarcation de plaisance, pour le propriétaire qui déclare un droit.
+Ce droit est un droit visé à l’article 35 de la Loi constitutionnelle de 1982.
+Un bureau fédéral fictif de permis a des frais avec une remise.
+Il a aussi des frais aux bases `tiered`, `banded` et `percentage`.
+Un organisme québécois fictif montre ses valeurs de 2026, après indexation, avec les étapes qui les ont fixées.
+* `decisions/` contient cinq enregistrements de décision.
+Ce sont le devis exempté, deux devis du bureau de permis, la remise et un devis québécois.
+* `pleasure-craft/fees.json` contient le devis exempté, sa demande sans paiement dû et son reçu.
+* `permit/fees.json` contient deux devis et une demande, une tentative refusée, une tentative réussie et les avis qui les ont suivies.
+Il contient aussi un remboursement partiel, une remise versée par remboursement, trois reçus et un versement.
+* `quebec-permit/fees.json` contient une demande payée par un formulaire intégré, avec sa consignation selon FEE-048.
+La personne a ensuite aussi envoyé un virement, que le moteur rembourse comme paiement en double.
+* `permit/events/` contient quatre événements.
+* `features/` contient les scénarios en anglais et en français.
+
+Le script `examples/test-examples.sh` vérifie que `examples/check-examples.py` rejette des copies altérées de ces fichiers.
 
 == Conformité
 
@@ -11,35 +194,42 @@ ____
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 (link:https://www.rfc-editor.org/info/rfc2119[RFC 2119], link:https://www.rfc-editor.org/info/rfc8174[RFC 8174]) when, and only when, they appear in all capitals, as shown here.
 ____
 
-Les mots clés suivent l'exigence WRT-010 de la spécification de rédaction de la {abbr-fpsot-first}.
-La version française emploie les mots clés français de l'exigence WRT-011.
+Les mots clés suivent l’exigence WRT-010 de la spécification de rédaction de la {abbr-fpsot}.
+La version française emploie les mots clés français de l’exigence WRT-011.
 
-== Exigences
+== Normes
 
-Donnez à chaque exigence une ancre avec son identifiant, juste au-dessus de son paragraphe.
-L'ancre ressemble à `+[[XYZ-001]]+`.
-L'exemple ci-dessous montre la forme. Remplacez-le par la première exigence.
+Les règles résument les normes externes dans leurs propres mots et n’en reprennent aucun texte.
+Elles citent ces versions.
 
-[[TPL-001]]
-*TPL-001.* Un énoncé normatif DOIT employer un des mots clés du {abbr-bcp-first} 14, en majuscules.
-Le mot clé donne sa force à la règle.
+* Statuts de paiement : la link:https://docs.payments.service.gov.uk/api_reference/[référence de l’API de GOV.UK Pay], lue le 2026-11-21.
+S’y ajoutent ses pages sur les link:https://docs.payments.service.gov.uk/refunding_payments/[remboursements] et les link:https://docs.payments.service.gov.uk/disputes/[contestations].
+* Données de carte : la norme PCI DSS sur la sécurité des données de cartes, version 4.0.1.
+Son questionnaire d’autoévaluation A de janvier 2025 est _à vérifier_ à la source.
+La recherche a lu l’link:https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[avis du PCI Security Standards Council sur la FAQ 1588].
+* Bloc de paiement : link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments], exigences fonctionnelles, lues le 2026-11-21.
+* Paramètres, enregistrements, événements, scénarios et modèles : les versions que fixent les autres spécifications.
+Ce sont celles sur les décisions, les types de données, les interfaces, les essais et les modèles de données.
 
 == Références
-
-Donnez ici chaque source externe que cite cette page, avec la même adresse que son lien dans le texte.
-Chaque entrée donne le titre, l'éditeur, la version, la date et une copie archivée.
 
 === Références normatives
 
 * link:https://www.rfc-editor.org/info/rfc2119[RFC 2119, Key words for use in RFCs to Indicate Requirement Levels], IETF, BCP 14, 1997-03. link:https://web.archive.org/web/20261103005705/https://www.rfc-editor.org/info/rfc2119/[Copie archivée]
 * link:https://www.rfc-editor.org/info/rfc8174[RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words], IETF, BCP 14, 2017-05. link:https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/[Copie archivée]
+* link:https://docs.payments.service.gov.uk/api_reference/[API reference], GOV.UK Pay technical documentation, Government Digital Service, lu le 2026-11-21. link:https://web.archive.org/web/20261029092201/https://docs.payments.service.gov.uk/api_reference/[Copie archivée]
+* link:https://docs.payments.service.gov.uk/refunding_payments/[Refund a payment], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20260802114113/https://docs.payments.service.gov.uk/refunding_payments/[Copie archivée]
+* link:https://docs.payments.service.gov.uk/disputes/[Disputes], GOV.UK Pay technical documentation, lu le 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/disputes/[Copie archivée]
+* link:https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[FAQ Clarifies New SAQ A Eligibility Criteria for E-Commerce Merchants], PCI Security Standards Council, 2025-02-28. link:https://web.archive.org/web/20261029044431/https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[Copie archivée]
+
+=== Références informatives
+
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, lu le 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Copie archivée]
 
 == Historique du document
-
-Ajoutez une ligne pour chaque version qui modifie cette page.
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-03 |Première version.
+|0.1.0 |2026-11-22 |Première version.
 |===

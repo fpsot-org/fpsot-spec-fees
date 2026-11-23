@@ -1,0 +1,72 @@
+= Interfaces, adapters and conformance
+include::_fpsot-terms.adoc[]
+
+A body may change its payment provider, and a provider may change its interface.
+The engine then keeps its records, and only the adapter changes.
+This page sets the interface of the engine, the contract of an adapter and the fixtures that prove both.
+
+== Interfaces
+
+[[FEE-100]]
+*FEE-100.* An interface MUST create orders, attempts and refunds with `POST` and an `Idempotency-Key`, under API-060.
+It MUST NOT offer an operation that edits or deletes an attempt, a refund, a remission or a receipt.
+To cancel an order or an attempt, a client MUST create a cancellation as a new resource, under API-014.
+The interface MUST ask the authorization engine on every request, under IAM-050.
+A provider of the interface MUST test it against its description, under TST-040.
+
+A cancellation as a resource keeps its own id, its instant and its actor.
+A `DELETE` would erase that trace.
+
+== Adapters
+
+[[FEE-101]]
+*FEE-101.* Each adapter MUST offer these operations to the engine, or state that its provider lacks one.
+
+* Create a payment, and return the address of the page of the provider.
+* Read a payment, and capture or cancel it.
+* Drop every card field of a read or a notification, under FEE-052.
+* Create a refund, and read it.
+* Read the disputes of a payment.
+* Read the payouts, with their lines.
+* Verify a notification, under FEE-070.
+
+Each adapter MUST also publish its mapping of statuses, under FEE-051.
+
+GOV.UK Pay, Stripe and PayFiP all fit this contract.
+They differ in how they redirect, when a payment becomes final and how they net a payout.
+The page xref:alignment.adoc[Alignment with other standards] shows them as examples, and requires none.
+
+== Fixtures
+
+[[FEE-102]]
+*FEE-102.* A conformance suite of this specification MUST hold schedules, decision records and the records of fees and payouts.
+It MUST also hold scenarios in English and in French, under TST-020 to TST-036.
+Each scenario MUST state its dates, and name its fee items and its statuses.
+A producer SHOULD test each event against the schema of its type, under TST-043.
+
+The folder `examples/` holds the first such fixtures, and `examples/test-examples.sh` checks that the check rejects broken copies.
+
+[[FEE-103]]
+*FEE-103.* Fixtures, examples and tests MUST use synthetic data only, under TST-050.
+They MUST NOT hold a card number, not even a test number that a provider publishes.
+Ids of providers, payment references and bank references MUST be fictional.
+
+A test card number in a fixture teaches a reader that card numbers may sit in records.
+The examples show a card only as a brand and four digits.
+
+[[FEE-104]]
+*FEE-104.* An engine MAY offer an adapter to the Payments building block of GovStack.
+Such an adapter MUST map each requirement that it claims to a rule of this specification.
+
+[[FEE-105]]
+*FEE-105.* An engine or an adapter that replaces another one MUST pass the same conformance suite, under TST-045.
+
+A body can then change its supplier, or its provider, without a change to its records.
+
+== Document history
+
+[cols="1,1,4",options="header"]
+|===
+|Version |Date |Change
+|0.1.0 |2026-11-22 |First version.
+|===

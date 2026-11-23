@@ -1,15 +1,74 @@
-= Guide
-:page-type: explanation
+= Placer des frais sous la spécification sur les frais
+:page-type: how-to
 include::_fpsot-terms.adoc[]
 
-Cette page explique la spécification aux personnes qui l’adoptent.
-Chaque page de guide a un seul type.
-C’est un tutoriel, un guide pratique, une référence ou une explication.
+Ce guide mène un organisme public de frais isolés jusqu’à un parcours de paiement conforme.
+Chaque étape cite la règle qu’elle respecte.
+Il ne constitue pas un avis juridique, et la page des questions pour les juristes énumère les points à régler.
+Les fichiers de `examples/` suivent trois frais synthétiques à chaque étape.
+
+== Nommer la loi
+
+Trouvez le profil dont la loi s’applique aux frais, comme `ca-federal` ou `ca-qc`, selon FEE-010.
+Si aucun ne convient, rédigez-en un, et citez une source pour chaque règle et chaque valeur, selon FEE-011.
+Marquez `to-be-verified` chaque source que personne n’a lue à l’origine.
+Gardez chaque taux, seuil et règle d’arrondi dans le profil, jamais dans le code, selon FEE-012.
+
+== Rédiger le barème
+
+Rédigez un barème de frais selon FEE-020, avec un élément de frais pour chacun des frais.
+Donnez à chaque élément sa base, sa source juridique et son traitement fiscal, selon FEE-022 et FEE-029.
+Publiez chaque montant comme une valeur datée, selon FEE-023.
+Pour des frais indexés, ajoutez l’étape d’indexation qui a fixé chaque nouvelle valeur, selon FEE-024.
+Le fichier `examples/schedules/example-quebec-permit-fees.yaml` montre l’indexation québécoise de 2026.
+
+== Établir le devis comme une décision
+
+Établissez chacun des frais par un fournisseur de règles de la spécification sur les décisions, selon FEE-026.
+Gardez les lignes dans un devis qui nomme l’enregistrement de décision, selon FEE-027.
+Consignez une exemption comme un fait de la décision, et confiez une dispense discrétionnaire à une personne, selon FEE-028.
+Le fichier `examples/decisions/pleasure-craft-quote.json` montre l’exemption des frais du permis d’embarcation de plaisance.
+
+== Recevoir le paiement
+
+Créez une demande de paiement pour les devis, et une tentative pour chaque essai, selon FEE-040 et FEE-041.
+Envoyez la personne vers la page du fournisseur par une redirection complète, selon FEE-047.
+Gardez les données de carte hors de chaque donnée, journal et événement, selon FEE-046.
+Retirez dans l’adaptateur chaque champ de carte des lectures et des avis du fournisseur, selon FEE-052.
+Annulez et relisez une tentative non terminée avant d’en commencer une nouvelle, selon FEE-053.
+
+Fixez un statut seulement après une lecture chez le fournisseur, selon FEE-049 et FEE-071.
+Vérifiez la signature de chaque avis, et acceptez le même avis deux fois, selon FEE-070 et FEE-072.
+
+== Rembourser, remettre et contester
+
+Remboursez une tentative réussie, dans les limites de son solde remboursable, selon FEE-060 et FEE-061.
+Vérifiez le solde et créez le remboursement en une seule étape atomique pour chaque tentative.
+Donnez à chaque remboursement un motif du profil, selon FEE-062.
+Ne remettez que par une décision, et exécutez la remise par remboursement ou par réduction du montant dû, selon FEE-064.
+Ne déclarez jamais un remboursement comme une remise, selon FEE-065.
+Consignez chaque contestation à part, et ne remboursez rien tant qu’elle est ouverte, selon FEE-067 et FEE-068.
+
+== Délivrer les reçus
+
+Délivrez un reçu quand la demande est payée, et un nouveau après chaque remboursement ou remise, selon FEE-080.
+Cachetez chaque reçu selon la spécification sur les documents signés, selon FEE-082.
+
+== Rapprocher
+
+Lisez chaque versement du fournisseur, et rattachez chacune de ses lignes à une seule donnée, selon FEE-090 et FEE-091.
+Comparez les montants au cent près, et confiez chaque écart à une personne, selon FEE-093.
+N’exportez vers le grand livre que les écritures rapprochées, selon FEE-095.
+
+== Éprouver
+
+Exécutez `bash examples/test-examples.sh` après `pip install --require-hashes -r examples/requirements.txt`.
+Rédigez des scénarios en anglais et en français, selon FEE-102, avec des données synthétiques seulement, selon FEE-103.
 
 == Historique du document
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Changement
-|0.1.0 |2026-11-03 |Première version.
+|0.1.0 |2026-11-22 |Première version.
 |===

@@ -9,22 +9,47 @@ developmentStatus: concept
 softwareType: "standalone/other"
 description:
   en:
-    shortDescription: Template for FPSOT specification repositories.
+    shortDescription: Rules that make each public fee traceable from its schedule to its payout, with card data kept out.
     longDescription: >
-      Starting point for an FPSOT specification repository. It holds the
-      layout, the Community Specification License files, and the CI that
-      checks requirement IDs, links, languages and prose.
+      Rules for software that quotes, collects, refunds or remits a fee that a
+      public body charges under a law. Each fee is a dated value in a
+      parameter file, and each indexed value comes with the step that set it.
+      A quote is a decision with its lines and exemptions. Payment attempts
+      use eight statuses that move one way, and only after a read at the
+      provider. Refunds, remissions and disputes are separate records, and
+      only a decision makes a remission. Receipts are sealed, and every line
+      of every payout matches one record to the cent. Card data never enters
+      the software.
     features:
-      - Specification repository layout
+      - Fee schedules as dated parameters, with indexation steps and rounding rules
+      - Quotes as decisions, with lines, exemptions and taxes
+      - Payment attempts with eight one-way statuses and provider reads
+      - Card data boundary with a full redirect by default
+      - Refunds, remissions and disputes as separate records
+      - Sealed receipts and payout reconciliation to the cent
+      - Jurisdiction profiles for Canada and Québec
   fr:
-    shortDescription: Gabarit des dépôts de spécification de FPSOT.
+    shortDescription: Règles pour que chacun des frais publics soit traçable de son barème jusqu’à son versement, sans données de carte.
     longDescription: >
-      Point de départ d'un dépôt de spécification de FPSOT. Il contient la
-      structure, les fichiers de la Community Specification License, et
-      l'intégration continue qui vérifie les identifiants, les liens, les
-      langues et la rédaction.
+      Règles pour les logiciels qui établissent, perçoivent, remboursent ou
+      remettent des frais qu’un organisme public exige en vertu d’une loi.
+      Chacun des frais est une valeur datée dans un fichier de paramètres, et
+      chaque valeur indexée vient avec l’étape qui l’a fixée. Un devis est une
+      décision avec ses lignes et ses exemptions. Les tentatives de paiement
+      emploient huit statuts qui n’avancent que dans un sens, et seulement
+      après une lecture chez le fournisseur. Les remboursements, les remises et
+      les contestations sont des données distinctes, et seule une décision crée
+      une remise. Les reçus sont cachetés, et chaque ligne de chaque versement
+      se rattache à une seule donnée, au cent près. Les données de carte
+      n’entrent jamais dans le logiciel.
     features:
-      - Structure d'un dépôt de spécification
+      - Barèmes de frais en paramètres datés, avec étapes d’indexation et règles d’arrondi
+      - Devis comme décisions, avec lignes, exemptions et taxes
+      - Tentatives de paiement à huit statuts qui n’avancent que dans un sens
+      - Frontière des données de carte, avec redirection complète par défaut
+      - Remboursements, remises et contestations comme données distinctes
+      - Reçus cachetés et rapprochement des versements au cent près
+      - Profils juridictionnels pour le Canada et le Québec
 legal:
   license: Community-Spec-1.0
 maintenance:

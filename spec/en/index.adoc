@@ -1,8 +1,180 @@
 = FPSOT fees specification
 include::_fpsot-terms.adoc[]
 
-Replace this page with the normative text of the specification.
-Start with the scope, then the conformance classes, then the requirements.
+This specification sets what software must record and prove about each fee that a public body charges under a law.
+It covers the fee schedule, the quote, the payment, the refund, the remission and the receipt.
+It also covers how a body matches the payouts of its provider.
+It leaves to jurisdiction profiles every value and every rule that a law sets.
+
+The research for this specification compared fees in Canada, Québec and France.
+Their laws differ on who may set a fee, how a fee follows inflation and how the result rounds.
+They also differ on when a body must give money back.
+Yet all three keep two acts apart.
+A refund returns money that the body should not keep, such as a payment for a service that never came.
+A remission forgives or returns money that the payer owed, by a decision that a law allows.
+
+The rules therefore rest on six parts that work under any law.
+
+* The schedule: each fee as dated values in a parameter file, with its legal source.
+Each indexed value comes with the step that set it.
+* The quote: a decision of the decisions specification, whose lines name the fee, the value and the exemption that applied.
+* The payment: an order with its payment attempts.
+Their statuses move one way, and only after a read at the provider.
+* Refunds, remissions and disputes: three separate records, where only a decision makes a remission.
+* The receipt: a sealed record of what the order cost and of what moved against it.
+* Reconciliation: each line of each payout matched to one attempt, refund or dispute, to the cent.
+
+Card data never enters the software.
+The payer pays on the page of a payment provider, and the software sees only a brand and four digits.
+
+The rules reuse the other specifications of the {abbr-fpsot-first} and redefine none of their parts.
+Money comes from the data types specification, and the {term-decision-record} from the decisions specification.
+Seals and the {term-transparency-log} come from the signed records specification.
+
+== Scope
+
+[[FEE-001]]
+*FEE-001.* These rules apply to software that quotes, collects, refunds or remits a fee under a law.
+A fee here is an amount that a public body charges for a service, a right or a document.
+A law, a regulation or a schedule sets it.
+A system MUST apply these rules to each such fee that it handles.
+Card processing, the choice of a payment provider, the accounting ledger and the collection of debts are out of scope.
+Taxes that a body assesses, such as income tax, are out of scope as well.
+
+The specification stops at the edge of the provider.
+It sets what the software keeps about a payment.
+The provider and the banks move the money.
+
+== Roles and conformance classes
+
+[[FEE-002]]
+*FEE-002.* Each party that claims conformance MUST state which of these four {term-conformance-class} names it claims.
+A party can claim more than one.
+
+[cols="1,2,3",options="header"]
+|===
+|Class |Who claims it |Rules
+|`engine` |A fee engine, which quotes, takes payments, refunds, remits and issues receipts |The rules of every page, except those that bind only an adapter, a profile or an operator, and also FEE-061, FEE-090 and FEE-091
+|`adapter` |A provider adapter, which links an engine to one payment provider |FEE-043, FEE-044, FEE-046, FEE-049 to FEE-052, FEE-060, FEE-061, FEE-067, FEE-070 to FEE-074 and FEE-101
+|`profile` |The author of a jurisdiction profile or of a fee schedule |FEE-010 to FEE-013, FEE-020 to FEE-025, FEE-028, FEE-029 and FEE-062
+|`operator` |A {term-deploying-body} that runs payments for its fees |FEE-003, FEE-046 to FEE-048, FEE-066, FEE-074, FEE-082, FEE-090, FEE-091 and FEE-095
+|===
+
+A buyer can then ask each supplier for the class it delivers.
+A provider adapter that never quotes a fee still has to keep card data out.
+FEE-061, FEE-090 and FEE-091 bind the engine too, since the engine refuses a refund and matches each payout line.
+
+== Legal status
+
+[[FEE-003]]
+*FEE-003.* A conformance claim MUST NOT state or suggest that a fee, a refund or a remission meets any law.
+It MUST NOT state or suggest that a deployment meets the Payment Card Industry Data Security Standard.
+Conformance shows that the software keeps the records that several laws ask for, and keeps card data out.
+Only the body, with its counsel and its acquirer, can say what its law and its card contracts ask.
+
+This specification states the practice of {abbr-fpsot}, and it is not legal advice.
+Jurisdiction facts sit in the profile files and the comparison data, never in a rule.
+Legal questions sit on the page xref:questions-for-counsel.adoc[Questions for counsel].
+A legal text that the research did not read at its source carries the mark _to be verified_.
+LégisQuébec and Légifrance refuse automated readers, so the research read the Québec texts in archived copies.
+It marks a text _to be verified_ when its archived copy may not hold the text in force.
+
+== Owners of the parts
+
+[[FEE-004]]
+*FEE-004.* An implementation MUST take each part of this table from the specification that owns it.
+It MUST NOT define its own.
+
+[cols="2,3",options="header"]
+|===
+|Part |Owner and rules
+|Money, rounding statements, instants, dates, intervals, identifiers |Data types: DAT-010, DAT-014, DAT-023, DAT-050 to DAT-055, DAT-060 to DAT-066
+|The quote and the remission as decisions, rule versions, dated parameters, decision records |Decisions: DEC-020 to DEC-027, DEC-030 to DEC-037, DEC-040 to DEC-048
+|The payment status of a filing, and fees as decisions of a register |Registry: REG-024, REG-026
+|The payer as a party |Data models: DMO-040
+|Who acts, and the check of each request |Identity: IAM-050, IAM-057
+|Code lists, such as refund reasons and fee codes |Vocabularies: VOC-001 to VOC-065
+|Seals, time stamps and the transparency log of receipts |Signed records: LOG-002, LOG-010, LOG-019, LOG-031, LOG-082
+|Audit events, business events and the absence of secrets in records |Observability: OBS-024, OBS-027, OBS-070, OBS-090, OBS-091
+|Idempotency, conditional requests, events and secrets in addresses |RESTful API: API-008, API-009, API-060 to API-063, API-085, API-100 to API-104
+|Secrets and keys of providers |Security: SEC-020 to SEC-024
+|Scenarios, conformance suites and synthetic data |Testing: TST-020 to TST-036, TST-044, TST-045, TST-050
+|===
+
+The model in `model/fees.yaml` imports unchanged copies of the data types and decisions models.
+It adds only what no other specification defines, such as the payment attempt and the payout.
+
+== Versions and conformance testing
+
+[[FEE-005]]
+*FEE-005.* An implementation MUST follow the versions of the outside standards that this page lists under Standards.
+It MAY follow a later version of the same standard when the parts that it uses keep their meaning.
+A receipt must stay readable for as long as the body keeps it.
+Each reader must then know which text applied.
+
+[[FEE-006]]
+*FEE-006.* A conformance suite of this specification MUST check the output of an implementation, under TST-044.
+The output is the schedules, the quotes, the orders, the attempts, the refunds and the remissions.
+It also holds the receipts, the payouts and the events.
+The suite MUST NOT need the source code of the implementation.
+The folders `model/`, `profiles/`, `registry/` and `examples/` hold the first fixtures.
+The script `examples/check-examples.py` checks them.
+
+== Parts
+
+The rules come in eight parts, and two informative pages follow them.
+
+* xref:profiles.adoc[Jurisdiction profiles] sets the profile files, with their sources, their dates and the defaults.
+* xref:schedules-and-quotes.adoc[Schedules and quotes] sets the fee schedule, indexation, rounding, exemptions, taxes and the quote.
+* xref:orders-and-payments.adoc[Orders and payments] sets the order, the payment attempt, its statuses and the boundary that keeps card data out.
+* xref:refunds-and-remissions.adoc[Refunds, remissions and disputes] sets the three records that undo or forgive a payment.
+* xref:notifications.adoc[Provider notifications and events] sets what the engine does when a provider notifies it.
+It also sets the events that the engine sends.
+* xref:receipts.adoc[Receipts] sets the content and the seal of each receipt.
+* xref:reconciliation.adoc[Reconciliation] sets the payout and how each of its lines matches a record.
+* xref:conformance.adoc[Interfaces, adapters and conformance] sets the interfaces, the adapter contract and the fixtures.
+* xref:alignment.adoc[Alignment with other standards] is informative.
+It maps the statuses to GOV.UK Pay, GovStack Payments and ISO 20022, and shows providers as examples only.
+* xref:questions-for-counsel.adoc[Questions for counsel] is informative, and lists the legal points that a lawyer must settle.
+
+== Related specifications
+
+This specification builds on other {abbr-fpsot} specifications, and cites their rules by number.
+
+* The data types specification sets the form of an amount under DAT-050 to DAT-055, and of a rounding under DAT-054.
+* The decisions specification sets the decision contract under DEC-020 to DEC-027.
+It also sets rule versions and dated parameter files under DEC-030 to DEC-037, and decision records under DEC-040 to DEC-048.
+* The registry specification sets the payment status of a filing under REG-024, and makes fees decisions under REG-026.
+* The signed records specification sets the seal, its manifest and the log of sealed records, under LOG-002 to LOG-082.
+* The observability specification sets the business events under OBS-070, and bars secrets from records under OBS-091.
+* The RESTful API specification sets idempotency under API-060 to API-063 and events under API-100 to API-104.
+* The security specification sets how a project keeps and rotates secrets, under SEC-020 to SEC-024.
+* The identity and access specification sets the check of each request under IAM-050.
+* The vocabularies specification sets the code lists, and the testing specification sets scenarios, suites and synthetic data.
+* The naming specification sets the names of fields, events and codes, under NAM-010, NAM-050 and NAM-060.
+
+== Examples
+
+The folder `examples/` holds synthetic fees under the profiles `ca-federal` and `ca-qc`.
+Every person, number, provider and regulation in it is fictional, except the texts of law that the profiles cite.
+
+* `schedules/` holds three fee schedules.
+The schedule exempts the pleasure craft license from its fee of $24, for an owner who declares a right.
+That right is one under section 35 of the Constitution Act, 1982.
+A fictional federal permit office has fees with a remission.
+It also has fees with tiered, banded and percentage bases.
+A fictional Québec body shows its values for 2026, after indexation, with the steps behind them.
+* `decisions/` holds five decision records.
+They are the exempt quote, two quotes of the permit office, the remission and a Québec quote.
+* `pleasure-craft/fees.json` holds the exempt quote, its order with no payment due and its receipt.
+* `permit/fees.json` holds two quotes and an order, an attempt that failed and one that succeeded, and the notifications behind them.
+It also holds a partial refund, a remission paid by refund, three receipts and a payout.
+* `quebec-permit/fees.json` holds an order paid through an embedded form, with its record under FEE-048.
+The payer then also sent a bank transfer, which the engine refunds as a duplicate payment.
+* `permit/events/` holds four events.
+* `features/` holds the scenarios in English and in French.
+
+The script `examples/test-examples.sh` checks that `examples/check-examples.py` rejects broken copies of these files.
 
 == Conformance
 
@@ -11,35 +183,40 @@ ____
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 (link:https://www.rfc-editor.org/info/rfc2119[RFC 2119], link:https://www.rfc-editor.org/info/rfc8174[RFC 8174]) when, and only when, they appear in all capitals, as shown here.
 ____
 
-The keywords follow requirement WRT-010 of the {abbr-fpsot-first} writing specification.
+The keywords follow requirement WRT-010 of the {abbr-fpsot} writing specification.
 The French version uses the French keywords of WRT-011.
 
-== Requirements
+== Standards
 
-Give each requirement an anchor line with its ID, directly above its paragraph.
-The anchor looks like `+[[XYZ-001]]+`.
-The example below shows the form. Replace it with the first requirement.
+The rules summarize outside standards in their own words and take no text from them.
+They cite these versions.
 
-[[TPL-001]]
-*TPL-001.* A normative statement MUST use one of the {abbr-bcp-first} 14 keywords in capitals.
-The keyword gives the rule its strength.
+* Payment statuses: the link:https://docs.payments.service.gov.uk/api_reference/[API reference of GOV.UK Pay], with its pages on link:https://docs.payments.service.gov.uk/refunding_payments/[refunds] and link:https://docs.payments.service.gov.uk/disputes/[disputes], read on 2026-11-21.
+* Card data: the Payment Card Industry Data Security Standard, version 4.0.1.
+Its Self-Assessment Questionnaire A of January 2025 is _to be verified_ at the source.
+The research read the link:https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[notice of the PCI Security Standards Council on FAQ 1588].
+* Payments building block: link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments], functional requirements, read on 2026-11-21.
+* Parameters, records, events, scenarios and models: the versions that the decisions, data types, interface, testing and data models specifications pin.
 
 == References
-
-List here each outside source that this page cites, with the same address as its link in the text.
-Each entry gives the title, publisher, version, date and an archived copy.
 
 === Normative
 
 * link:https://www.rfc-editor.org/info/rfc2119[RFC 2119, Key words for use in RFCs to Indicate Requirement Levels], IETF, BCP 14, 1997-03. link:https://web.archive.org/web/20261103005705/https://www.rfc-editor.org/info/rfc2119/[Archived copy]
 * link:https://www.rfc-editor.org/info/rfc8174[RFC 8174, Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words], IETF, BCP 14, 2017-05. link:https://web.archive.org/web/20261103005743/https://www.rfc-editor.org/info/rfc8174/[Archived copy]
+* link:https://docs.payments.service.gov.uk/api_reference/[API reference], GOV.UK Pay technical documentation, Government Digital Service, read 2026-11-21. link:https://web.archive.org/web/20261029092201/https://docs.payments.service.gov.uk/api_reference/[Archived copy]
+* link:https://docs.payments.service.gov.uk/refunding_payments/[Refund a payment], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20260802114113/https://docs.payments.service.gov.uk/refunding_payments/[Archived copy]
+* link:https://docs.payments.service.gov.uk/disputes/[Disputes], GOV.UK Pay technical documentation, read 2026-11-21. link:https://web.archive.org/web/20260820175630/https://docs.payments.service.gov.uk/disputes/[Archived copy]
+* link:https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[FAQ Clarifies New SAQ A Eligibility Criteria for E-Commerce Merchants], PCI Security Standards Council, 2025-02-28. link:https://web.archive.org/web/20261029044431/https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants[Archived copy]
+
+=== Informative
+
+* link:https://specs.govstack.global/payments/6-functional-requirements[GovStack Payments, 6 Functional Requirements], GovStack, read 2026-11-21. link:https://web.archive.org/web/20260615134617/https://specs.govstack.global/payments/6-functional-requirements[Archived copy]
 
 == Document history
-
-Add one row for each version that changes this page.
 
 [cols="1,1,4",options="header"]
 |===
 |Version |Date |Change
-|0.1.0 |2026-11-03 |First version.
+|0.1.0 |2026-11-22 |First version.
 |===

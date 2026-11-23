@@ -1,0 +1,94 @@
+{
+  "id": "019c4e00-0009-7000-8000-000000000001",
+  "decisionType": "pleasure-craft-license-fee",
+  "decisionTypeVersion": "1.0.0",
+  "profiles": [
+    {
+      "code": "core",
+      "version": "0.1.0"
+    },
+    {
+      "code": "ca-federal",
+      "version": "0.1.0"
+    }
+  ],
+  "impactLevel": "level-1",
+  "objects": [
+    {
+      "type": "Party",
+      "id": "019c4e00-0010-7000-8000-000000000001",
+      "qualifier": "subject"
+    },
+    {
+      "type": "Filing",
+      "id": "019c4e00-0011-7000-8000-000000000001",
+      "qualifier": "case"
+    }
+  ],
+  "legalAuthorities": [
+    {
+      "uri": "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html",
+      "otherLanguageUris": [
+        "https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"
+      ]
+    }
+  ],
+  "ruleSet": {
+    "code": "pleasure-craft-license-fee",
+    "version": "1.0.0",
+    "digest": "f5ef6f0783796835242084a46e199c6c0ec14bfe44bc7e748811e0735272cf47",
+    "buildCoordinates": "org.example.fees:pleasure-craft-license-fee-rules:1.0.0"
+  },
+  "parameterSets": [
+    {
+      "code": "pleasure-craft-license-fees",
+      "version": "1.0.0",
+      "digest": "912954622331da3169af72c5b0ed3f02e7aaa5b96ab4fe062315d71b6c2e31b5"
+    }
+  ],
+  "effectiveDate": "2026-03-10",
+  "recordTime": "2026-03-10T15:00:00Z",
+  "startedAt": "2026-03-10T15:00:01Z",
+  "completedAt": "2026-03-10T15:00:01Z",
+  "inputs": [
+    {
+      "name": "license-transaction",
+      "value": "issue",
+      "source": "applicant-declaration",
+      "asOfDate": "2026-03-10",
+      "collectionMethod": "online-form"
+    },
+    {
+      "name": "declares-section-35-right",
+      "value": true,
+      "source": "applicant-declaration",
+      "asOfDate": "2026-03-10",
+      "collectionMethod": "online-form"
+    }
+  ],
+  "resultKind": "decided",
+  "outcome": "exempt",
+  "amount": {
+    "amount": "0.00",
+    "currency": "CAD"
+  },
+  "reasonScheme": "https://vocab.example.org/fee-reasons/versions/1.0.0",
+  "reasons": [
+    {
+      "code": "section-35-right-declared",
+      "rank": 1,
+      "principal": true,
+      "clause": {
+        "uri": "https://laws-lois.justice.gc.ca/eng/regulations/SOR-2010-91/section-112.html",
+        "otherLanguageUris": [
+          "https://laws-lois.justice.gc.ca/fra/reglements/DORS-2010-91/article-112.html"
+        ]
+      },
+      "actualValue": true,
+      "thresholdValue": true
+    }
+  ],
+  "automationDegree": "fully-automated",
+  "createdAt": "2026-03-10T15:00:01Z",
+  "updatedAt": "2026-03-10T15:00:01Z"
+}

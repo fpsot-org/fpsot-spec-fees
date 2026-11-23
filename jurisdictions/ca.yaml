@@ -1,0 +1,32 @@
+# Comparison data. The format is defined by fpsot-spec-doc (model/jurisdiction.yaml).
+# The Service Fees Act, the Financial Administration Act and its regulations were read at the
+# Justice Laws Website. The Treasury Board directive on charging was not read. This file is
+# informational and not legal advice.
+code: CA
+name: {en: Canada, fr: Canada}
+rows:
+  - id: FEE-020
+    text: {en: "Fees are fixed by regulation or by an order of a minister, and may not exceed the cost of the service or facility to the Crown.", fr: "Les frais sont fixés par règlement ou par arrêté d’un ministre, et ne peuvent pas dépasser ce que coûte le service ou l’installation à l’État."}
+    status: stricter
+    source: {title: "Financial Administration Act, R.S.C. 1985, c. F-11, section 19", url: "https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html", archive: "https://web.archive.org/web/20260721172843/https://laws-lois.justice.gc.ca/eng/acts/F-11/page-4.html"}
+    last_checked: "2026-11-21"
+  - id: FEE-024
+    text: {en: "Most fees adjust each year by the April All-items consumer price index for Canada. A change below 1% carries forward until it reaches 1%, and the authority may round down under Treasury Board policy.", fr: "La plupart des frais sont rajustés chaque année selon l’indice d’ensemble des prix à la consommation d’avril pour le Canada. Une variation inférieure à 1 % est reportée jusqu’à ce qu’elle atteigne 1 %, et l’autorité peut arrondir à la baisse selon la politique du Conseil du Trésor."}
+    status: same
+    source: {title: "Service Fees Act, S.C. 2017, c. 20, s. 451, section 17", date: "2026-10-29", url: "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html", archive: "https://web.archive.org/web/20260731030650/https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html"}
+    last_checked: "2026-11-21"
+  - id: FEE-062
+    text: {en: "Money paid for a purpose that is not fulfilled may be returned, less the part for services already rendered, unless the payer cannot be identified or found.", fr: "Une somme payée pour une fin non réalisée peut être remboursée, moins la part des services déjà rendus, sauf si la personne ne peut être identifiée ni retrouvée."}
+    status: same
+    source: {title: "Repayment of Receipts Regulations, 1997, SOR/98-127, section 2", url: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-127/FullText.html", archive: "https://web.archive.org/web/20260807113837/https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-127/FullText.html"}
+    last_checked: "2026-11-21"
+  - id: FEE-064
+    text: {en: "A body that misses a performance standard remits part of the fee before 1 July of the next fiscal year. The Governor in Council may also remit a debt by order, under section 23 of the Financial Administration Act.", fr: "Un organisme qui ne respecte pas une norme de rendement remet une partie des frais avant le 1er juillet de l’exercice suivant. Le gouverneur en conseil peut aussi remettre une dette par décret, selon l’article 23 de la Loi sur la gestion des finances publiques."}
+    status: same
+    source: {title: "Service Fees Act, S.C. 2017, c. 20, s. 451, section 7", date: "2026-10-29", url: "https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html", archive: "https://web.archive.org/web/20260731030650/https://laws-lois.justice.gc.ca/eng/acts/S-8.4/FullText.html"}
+    last_checked: "2026-11-21"
+  - id: FEE-080
+    text: {en: "A collector issues a receipt on request, or when the minister directs. No receipt is required for every payment.", fr: "La personne qui perçoit délivre un reçu sur demande, ou quand le ministre l’ordonne. Aucun reçu n’est exigé pour chaque paiement."}
+    status: looser
+    source: {title: "Receipt and Deposit of Public Money Regulations, 1997, SOR/98-128", url: "https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-128/FullText.html", archive: "https://web.archive.org/web/20260808125028/https://laws-lois.justice.gc.ca/eng/regulations/SOR-98-128/FullText.html"}
+    last_checked: "2026-11-21"
